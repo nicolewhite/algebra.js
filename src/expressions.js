@@ -70,22 +70,21 @@ Expression.prototype.evaluateAt = function(constant) {
 };
 
 Expression.prototype.print = function() {
-    this.coefficient = this.coefficient.reduce();
-    this.constant = this.constant.reduce();
+    var coefficient = this.coefficient.reduce();
+    var constant = this.constant.reduce();
 
-    var s = "";
+    if (coefficient.numer == 0 && constant.numer == 0) {
+        return "0";
+    }
 
-    if (this.coefficient.decimal() == 1) {
-        s += this.variable;
+    if (coefficient.numer == 0) {
+        return constant.abs().print();
     } else {
-        s += this.coefficient.print() + this.variable;
+        return (coefficient.numer < 0 ? "-" : "") +
+               (coefficient.decimal() == 1 ? "" : coefficient.print()) +
+               this.variable +
+               (constant.numer > 0 ? " + " : " - ") + constant.abs().print();
     }
-
-    if (this.constant.numer) {
-        s += " " + (this.constant.numer > 0 ? "+ " : "- ") + this.constant.abs().print();
-    }
-
-    return s;
 };
 
 Expression.prototype.tex = function(type) {
