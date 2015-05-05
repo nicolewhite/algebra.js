@@ -1,5 +1,7 @@
+var isInt = require('./helper').isInt;
+
 var Fraction = function(a, b) {
-    if (a % 1 == 0 && b % 1 == 0 && b) {
+    if (isInt(a) && isInt(b) && b) {
         this.numer = a;
         this.denom = b;
     }
