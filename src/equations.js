@@ -1,6 +1,17 @@
+var Fraction = require('./fractions');
+var Expression = require('./expressions');
+
+var isInt = require('./helper').isInt;
+
 var Equation = function(lhs, rhs) {
     this.lhs = lhs;
-    this.rhs = rhs;
+
+    if (rhs instanceof Expression) {
+        this.rhs = rhs;
+    } else if (rhs instanceof Fraction || isInt(rhs)) {
+        this.rhs = new Expression(lhs.variable).multiply(0).add(rhs);
+    }
+
 };
 
 Equation.prototype.solveFor = function(variable) {
