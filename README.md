@@ -16,19 +16,15 @@ Add, subtract, multiply, and divide fractions by either integers or other fracti
 var Fraction = algebra.Fraction;
 
 var frac = new Fraction(1, 2);
-
 console.log(frac.print());
 
 frac = frac.add(4);
-
 console.log(frac.print());
 
 frac = frac.multiply(new Fraction(6, 7));
-
 console.log(frac.print());
 
 frac = frac.reduce();
-
 console.log(frac.print());
 ```
 
