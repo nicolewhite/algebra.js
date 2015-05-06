@@ -127,24 +127,14 @@ Fraction.prototype.print = function() {
     }
 };
 
-Fraction.prototype.tex = function(type) {
-    var s;
-
+Fraction.prototype.tex = function() {
     if (this.numer == 0) {
-        s = "0";
+        return "0";
     } else if (this.denom == 1) {
-        s = this.numer;
+        return this.numer;
     } else {
-        s = "\\frac{" + this.numer + "}{" + this.denom + "}";
+        return "\\frac{" + this.numer + "}{" + this.denom + "}";
     }
-
-    if (type == "inline") {
-        return "$" + s + "$";
-    } else if (type == "block") {
-        return "$$\n" + s + "\n$$";
-    }
-
-    return s;
 };
 
 module.exports = Fraction;

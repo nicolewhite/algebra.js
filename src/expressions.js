@@ -88,28 +88,21 @@ Expression.prototype.print = function() {
 };
 
 Expression.prototype.tex = function(type) {
-    this.coefficient = this.coefficient.reduce();
-    this.constant = this.constant.reduce();
+    var coefficient = this.coefficient.reduce();
+    var constant = this.constant.reduce();
 
-    var s = "";
+    if (coefficient.numer == 0 && constant.numer == 0) {
+        return "0";
+    }
 
-    if (this.coefficient.decimal() == 1) {
-        s += this.variable;
+    if (coefficient.numer == 0) {
+        return constant.abs().tex();
     } else {
-        s += this.coefficient.tex() + this.variable;
+        return (coefficient.numer < 0 ? "-" : "") +
+            (coefficient.decimal() == 1 ? "" : coefficient.tex()) +
+            this.variable +
+            (constant.numer > 0 ? " + " : " - ") + constant.abs().tex();
     }
-
-    if (this.constant.numer) {
-        s += " " + (this.constant.numer > 0 ? "+ " : "- ") + this.constant.abs().tex();
-    }
-
-    if (type == "inline") {
-        return "$" + s + "$";
-    } else if (type == "block") {
-        return "$$\n" + s + "\n$$"
-    }
-
-    return s;
 };
 
 module.exports = Expression;
