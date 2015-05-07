@@ -96,7 +96,7 @@ Expression.prototype.tex = function(type) {
     }
 
     if (coefficient.numer == 0) {
-        return constant.abs().tex();
+        return constant.tex();
     } else {
         return (coefficient.numer < 0 ? "-" : "") +
             (coefficient.decimal() == 1 ? "" : coefficient.tex()) +
