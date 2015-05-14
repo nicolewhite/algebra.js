@@ -35,7 +35,7 @@ Fraction.prototype.add = function(f) {
     if (f instanceof Fraction) {
         a = f.numer;
         b = f.denom;
-    } else if (f % 1 == 0) {
+    } else if (isInt(f)) {
         a = f;
         b = 1;
     }
@@ -65,7 +65,7 @@ Fraction.prototype.subtract = function(f) {
 
     if (f instanceof Fraction) {
         return copy.add(new Fraction(-f.numer, f.denom));
-    } else if (f % 1 == 0) {
+    } else if (isInt(f)) {
         return copy.add(new Fraction(-f, 1));
     }
 };
@@ -76,7 +76,7 @@ Fraction.prototype.multiply = function(f) {
     if (f instanceof Fraction) {
         a = f.numer;
         b = f.denom;
-    } else if (f % 1 == 0 && f) {
+    } else if (isInt(f) && f) {
         a = f;
         b = 1;
     } else if (f == 0) {
@@ -94,14 +94,14 @@ Fraction.prototype.multiply = function(f) {
 
 Fraction.prototype.divide = function(f) {
     if (f == 0) {
-        return "stahp";
+        return;
     }
 
     var copy = this.copy();
 
     if (f instanceof Fraction) {
         return copy.multiply(new Fraction(f.denom, f.numer));
-    } else if (f % 1 == 0) {
+    } else if (isInt(f)) {
         return copy.multiply(new Fraction(1, f));
     }
 };
