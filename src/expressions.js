@@ -1,27 +1,47 @@
 var Fraction = require('./fractions');
+var Term = require('./terms');
+var isInt = require('./helper').isInt;
+
+// The constant of the expression is maintained on the Expression object itself.
+// Anything else is held in an array of Term objects.
 
 var Expression = function(variable) {
-    this.variable = variable;
-    this.coefficient = new Fraction(1, 1);
     this.constant = new Fraction(0, 1);
+    this.terms = [new Term(variable)];
 };
 
 Expression.prototype.copy = function() {
-    var ex = new Expression(this.variable);
-    ex.coefficient = this.coefficient;
-    ex.constant = this.constant;
-    return ex;
+    var copy = new Expression('');
+    copy.constant = this.constant.copy();
+
+    var terms = [];
+    this.terms.forEach(function(t) {terms.push(t.copy());} );
+    copy.terms = terms;
+    return copy;
 };
 
 Expression.prototype.add = function(a) {
     var copy = this.copy();
 
     if (a instanceof Expression) {
-        if (copy.variable == a.variable) {
-            copy.coefficient = copy.coefficient.add(a.coefficient);
-            copy.constant = copy.constant.add(a.constant);
+        var oldTerms = a.copy().terms;
+        copy.constant = copy.constant.add(a.constant);
+
+        for (i = 0; i < copy.terms.length; i++) {
+            for (j = 0; j < oldTerms.length; j++) {
+                var thisTerm = copy.terms[i];
+                var thatTerm = oldTerms[j];
+
+                if (thisTerm.hasTheSameVariableAs(thatTerm)) {
+                    thisTerm.coefficient = thisTerm.coefficient.add(thatTerm.coefficient);
+                    oldTerms = oldTerms.splice(j);
+                }
+            }
         }
-    } else {
+
+        copy.terms = copy.terms.concat(oldTerms);
+
+    } else if (isInt(a) || a instanceof Fraction) {
         copy.constant = copy.constant.add(a);
     }
 
@@ -30,79 +50,105 @@ Expression.prototype.add = function(a) {
 
 Expression.prototype.subtract = function(a) {
     var copy = this.copy();
+    var inverse;
 
     if (a instanceof Expression) {
-        if (copy.variable == a.variable) {
-            copy.coefficient = copy.coefficient.subtract(a.coefficient);
-            copy.constant = copy.constant.subtract(a.constant);
+        var newTerms = [];
+
+        for (i = 0; i < a.terms.length; i++) {
+            var t = a.terms[i].copy();
+            t = t.multiply(-1);
+            newTerms.push(t);
         }
-    } else {
-        copy.constant = copy.constant.subtract(a);
+
+        inverse = a.copy();
+        inverse.terms = newTerms;
+    } else if (isInt(a)) {
+        inverse = -a;
+    } else if (a instanceof Fraction) {
+        inverse = a.multiply(-1);
     }
 
-    return copy;
+    return copy.add(inverse);
 };
 
 Expression.prototype.multiply = function(a) {
     var copy = this.copy();
 
-    copy.coefficient = copy.coefficient.multiply(a);
     copy.constant = copy.constant.multiply(a);
+
+    for (i = 0; i < copy.terms.length; i++) {
+        copy.terms[i].coefficient = copy.terms[i].coefficient.multiply(a);
+    }
 
     return copy;
 };
 
 Expression.prototype.divide = function(a) {
     if (a == 0) {
-        return "stahp";
+        return;
     }
 
     var copy = this.copy();
 
-    copy.coefficient = copy.coefficient.divide(a);
     copy.constant = copy.constant.divide(a);
+
+    for (i = 0; i < copy.terms.length; i++) {
+        copy.terms[i].coefficient = copy.terms[i].coefficient.divide(a);
+    }
+
     return copy;
 };
 
-Expression.prototype.evaluateAt = function(constant) {
-    var x = this.coefficient.multiply(constant);
-    return x.add(this.constant);
+Expression.prototype.evaluateAt = function(values) {
+    var terms = [];
+    var vars = Object.keys(values);
+    var constant = this.constant;
+
+    for (i = 0; i < this.terms.length; i++) {
+        for (j = 0; j < vars.length; j++) {
+            if (this.terms[i].variable == vars[j]) {
+                constant += this.terms[i].coefficient.multiply(values[vars[j]]);
+            }
+        }
+
+    }
 };
 
 Expression.prototype.print = function() {
-    var coefficient = this.coefficient.reduce();
+    var str = (this.terms[0].coefficient.numer < 0 ? "-": "") + this.terms[0].print();
+
+    for (i = 1; i < this.terms.length; i++) {
+        var coefficient = this.terms[i].coefficient.reduce();
+
+        str += (coefficient.numer < 0 ? " - " : " + ") + this.terms[i].print();
+    }
+
     var constant = this.constant.reduce();
 
-    if (coefficient.numer == 0 && constant.numer == 0) {
-        return "0";
+    if (constant.numer) {
+        str += (constant.numer < 0 ? " - " : " + ") + constant.abs().print();
     }
 
-    if (coefficient.numer == 0) {
-        return constant.abs().print();
-    } else {
-        return (coefficient.numer < 0 ? "-" : "") +
-               (coefficient.decimal() == 1 ? "" : coefficient.print()) +
-               this.variable +
-               (constant.numer > 0 ? " + " : " - ") + constant.abs().print();
-    }
+    return str;
 };
 
-Expression.prototype.tex = function(type) {
-    var coefficient = this.coefficient.reduce();
+Expression.prototype.tex = function() {
+    var str = (this.terms[0].coefficient.numer < 0 ? "-": "") + this.terms[0].tex();
+
+    for (i = 1; i < this.terms.length; i++) {
+        var coefficient = this.terms[i].coefficient.reduce();
+
+        str += (coefficient.numer < 0 ? " - " : " + ") + this.terms[i].tex();
+    }
+
     var constant = this.constant.reduce();
 
-    if (coefficient.numer == 0 && constant.numer == 0) {
-        return "0";
+    if (constant.numer) {
+        str += (constant.numer < 0 ? " - " : " + ") + constant.abs().tex();
     }
 
-    if (coefficient.numer == 0) {
-        return constant.tex();
-    } else {
-        return (coefficient.numer < 0 ? "-" : "") +
-            (coefficient.decimal() == 1 ? "" : coefficient.tex()) +
-            this.variable +
-            (constant.numer > 0 ? " + " : " - ") + constant.abs().tex();
-    }
+    return str;
 };
 
 module.exports = Expression;
