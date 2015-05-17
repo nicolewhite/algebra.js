@@ -7,12 +7,7 @@ var isInt = require('./helper').isInt;
 
 var Expression = function(variable) {
     this.constant = new Fraction(0, 1);
-    this.terms = (variable ? new Term(variable) : []);
-    if (variable) {
-        this.terms = [new Term(variable)];
-    } else {
-        this.terms = [];
-    }
+    this.terms = (variable ? [new Term(variable)] : []);
 };
 
 Expression.prototype.copy = function() {
