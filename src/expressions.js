@@ -29,8 +29,7 @@ Expression.prototype.add = function(a) {
     var copy = this.copy();
 
     if (a instanceof Term) {
-        var exp = new Expression(a.variable).multiply(a.coefficient);
-        return copy.add(exp);
+        copy.terms.push(a.copy());
     } else if (a instanceof Expression) {
         copy.constant = copy.constant.add(a.constant);
         var newTerms = a.copy().terms;
@@ -62,8 +61,9 @@ Expression.prototype.subtract = function(a) {
     var inverse;
 
     if (a instanceof Term) {
-        var exp = new Expression(a.variable).multiply(a.coefficient).multiply(-1);
-        return copy.add(exp);
+        var invA = a.copy();
+        invA.coefficient = invA.coefficient.multiply(-1);
+        copy.terms.push(invA);
     } else if (a instanceof Expression) {
         var newTerms = [];
 
