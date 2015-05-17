@@ -54,18 +54,22 @@ y = y.subtract(new Fraction(4, 5));
 y = y.multiply(3);
 
 console.log(y.print());
+
+x = x.add(y)
+console.log(x.print())
 ```
 
 ```
 1/4x + 5/4
 3y - 12/5
+1/4x + 3y - 23/20
 ```
 
 ## Equations
 
 Build an equation by setting an expression equal to another expression or to an integer or fraction.
 
-If setting equal to another expression of a different variable, solving for either variable will return an expression.
+If the equation contains more than one variable, solving for a variable will return an expression.
 
 ```javascript
 var Equation = algebra.Equation;
@@ -87,16 +91,16 @@ x = 12y - 73/5
 y = 1/12x + 73/60
 ```
 
-If setting equal to another expression of the same variable, solving for the variable will return a fraction object.
+If the equation only has one variable, solving for that variable will return a fraction object.
 
 ```javascript
 var x1 = new Expression("x").add(new Fraction(2, 3)).divide(5);
 var x2 = new Expression("x").divide(7).add(4);
 
 var eq = new Equation(x1, x2);
-
 console.log(eq.print());
-console.log("x = " + eq.solveFor("x").print());
+
+console.log(eq.solveFor("x").print());
 ```
 
 ```
