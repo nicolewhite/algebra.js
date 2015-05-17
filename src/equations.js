@@ -1,6 +1,5 @@
 var Fraction = require('./fractions');
 var Expression = require('./expressions');
-
 var isInt = require('./helper').isInt;
 
 var Equation = function(lhs, rhs) {
@@ -9,33 +8,43 @@ var Equation = function(lhs, rhs) {
     if (rhs instanceof Expression) {
         this.rhs = rhs;
     } else if (rhs instanceof Fraction || isInt(rhs)) {
-        this.rhs = new Expression(lhs.variable).multiply(0).add(rhs);
+        this.rhs = new Expression().multiply(0).add(rhs);
     }
-
 };
 
 Equation.prototype.solveFor = function(variable) {
-    if (this.lhs.variable == variable && this.rhs.variable == variable) {
-        var scalar = this.lhs.coefficient.subtract(this.rhs.coefficient);
-        var constant = this.rhs.constant.subtract(this.lhs.constant);
-        var answer = constant.divide(scalar);
+    var newLhs = new Expression().multiply(0);
+    var newRhs = new Expression().multiply(0);
 
-        return answer.reduce();
-    } else if (this.rhs.variable == variable) {
-        var lhsCopy = this.lhs.copy();
+    for (i = 0; i < this.rhs.terms.length; i++) {
+        var term = this.rhs.terms[i];
 
-        lhsCopy.constant = lhsCopy.constant.subtract(this.rhs.constant);
-        lhsCopy = lhsCopy.divide(this.rhs.coefficient);
-
-        return lhsCopy;
-    } else if (this.lhs.variable == variable) {
-        var rhsCopy = this.rhs.copy();
-
-        rhsCopy.constant = rhsCopy.constant.subtract(this.lhs.constant);
-        rhsCopy = rhsCopy.divide(this.lhs.coefficient);
-
-        return rhsCopy;
+        if (term.variable == variable) {
+            newLhs = newLhs.subtract(term);
+        } else {
+            newRhs = newRhs.add(term);
+        }
     }
+
+    for (i = 0; i < this.lhs.terms.length; i++) {
+        var term = this.lhs.terms[i];
+
+        if (term.variable == variable) {
+            newLhs = newLhs.add(term);
+        } else {
+            newRhs = newRhs.subtract(term);
+        }
+    }
+
+    newRhs = newRhs.subtract(this.lhs.constant);
+    newRhs = newRhs.add(this.rhs.constant);
+    newRhs = newRhs.divide(newLhs.terms[0].coefficient);
+
+    if (newRhs.terms.length == 0) {
+        return newRhs.constant;
+    }
+
+    return newRhs;
 };
 
 Equation.prototype.print = function() {
