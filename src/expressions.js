@@ -7,7 +7,12 @@ var isInt = require('./helper').isInt;
 
 var Expression = function(variable) {
     this.constant = new Fraction(0, 1);
-    this.terms = [new Term(variable)];
+    this.terms = (variable ? new Term(variable) : []);
+    if (variable) {
+        this.terms = [new Term(variable)];
+    } else {
+        this.terms = [];
+    }
 };
 
 Expression.prototype.copy = function() {
@@ -23,23 +28,27 @@ Expression.prototype.copy = function() {
 Expression.prototype.add = function(a) {
     var copy = this.copy();
 
-    if (a instanceof Expression) {
-        var oldTerms = a.copy().terms;
+    if (a instanceof Term) {
+        var exp = new Expression(a.variable).multiply(a.coefficient);
+        return copy.add(exp);
+    } else if (a instanceof Expression) {
         copy.constant = copy.constant.add(a.constant);
+        var newTerms = a.copy().terms;
 
         for (i = 0; i < copy.terms.length; i++) {
-            for (j = 0; j < oldTerms.length; j++) {
-                var thisTerm = copy.terms[i];
-                var thatTerm = oldTerms[j];
+            var thisTerm = copy.terms[i];
+
+            for (j = 0; j < newTerms.length; j++) {
+                var thatTerm = newTerms[j];
 
                 if (thisTerm.hasTheSameVariableAs(thatTerm)) {
                     thisTerm.coefficient = thisTerm.coefficient.add(thatTerm.coefficient);
-                    oldTerms = oldTerms.splice(j);
+                    newTerms.splice(j, 1);
                 }
             }
         }
 
-        copy.terms = copy.terms.concat(oldTerms);
+        copy.terms = copy.terms.concat(newTerms);
 
     } else if (isInt(a) || a instanceof Fraction) {
         copy.constant = copy.constant.add(a);
@@ -52,7 +61,10 @@ Expression.prototype.subtract = function(a) {
     var copy = this.copy();
     var inverse;
 
-    if (a instanceof Expression) {
+    if (a instanceof Term) {
+        var exp = new Expression(a.variable).multiply(a.coefficient).multiply(-1);
+        return copy.add(exp);
+    } else if (a instanceof Expression) {
         var newTerms = [];
 
         for (i = 0; i < a.terms.length; i++) {
@@ -62,6 +74,7 @@ Expression.prototype.subtract = function(a) {
         }
 
         inverse = a.copy();
+        inverse.constant = inverse.constant.multiply(-1);
         inverse.terms = newTerms;
     } else if (isInt(a)) {
         inverse = -a;
@@ -101,22 +114,32 @@ Expression.prototype.divide = function(a) {
 };
 
 Expression.prototype.evaluateAt = function(values) {
-    var terms = [];
+    var copy = this.copy();
     var vars = Object.keys(values);
-    var constant = this.constant;
 
-    for (i = 0; i < this.terms.length; i++) {
+    for (i = 0; i < copy.terms.length; i++) {
         for (j = 0; j < vars.length; j++) {
-            if (this.terms[i].variable == vars[j]) {
-                constant += this.terms[i].coefficient.multiply(values[vars[j]]);
+            if (copy.terms[i].variable == vars[j]) {
+                copy.constant = copy.constant.add(copy.terms[i].coefficient.multiply(values[vars[j]]));
+                copy.terms.splice(i, 1);
             }
         }
-
     }
+
+    if (copy.terms.length == 0) {
+        return copy.constant;
+    }
+
+    return copy;
 };
 
 Expression.prototype.print = function() {
-    var str = (this.terms[0].coefficient.numer < 0 ? "-": "") + this.terms[0].print();
+    if (this.terms.length == 0) {
+        return this.constant.print();
+    }
+
+    var firstTermCoefficient = this.terms[0].coefficient.reduce();
+    var str = (firstTermCoefficient.numer < 0 ? "-": "") + this.terms[0].print();
 
     for (i = 1; i < this.terms.length; i++) {
         var coefficient = this.terms[i].coefficient.reduce();
@@ -134,7 +157,12 @@ Expression.prototype.print = function() {
 };
 
 Expression.prototype.tex = function() {
-    var str = (this.terms[0].coefficient.numer < 0 ? "-": "") + this.terms[0].tex();
+    if (this.terms.length == 0) {
+        return this.constant.tex();
+    }
+
+    var firstTermCoefficient = this.terms[0].coefficient.reduce();
+    var str = (firstTermCoefficient.numer < 0 ? "-": "") + this.terms[0].tex();
 
     for (i = 1; i < this.terms.length; i++) {
         var coefficient = this.terms[i].coefficient.reduce();
