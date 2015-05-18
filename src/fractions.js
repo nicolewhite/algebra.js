@@ -1,4 +1,6 @@
 var isInt = require('./helper').isInt;
+var gcd = require('./helper').gcd;
+var lcm = require('./helper').lcm;
 
 var Fraction = function(a, b) {
     if (isInt(a) && isInt(b) && b) {
@@ -6,9 +8,6 @@ var Fraction = function(a, b) {
         this.denom = b;
     }
 };
-
-var gcd = require('./helper').gcd;
-var lcm = require('./helper').lcm;
 
 Fraction.prototype.copy = function() {
     return new Fraction(this.numer, this.denom);
