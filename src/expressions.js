@@ -47,6 +47,8 @@ Expression.prototype.add = function(a) {
 
     } else if (isInt(a) || a instanceof Fraction) {
         copy.constant = copy.constant.add(a);
+    } else {
+        return;
     }
 
     return copy;
@@ -64,7 +66,7 @@ Expression.prototype.subtract = function(a) {
 
         for (i = 0; i < a.terms.length; i++) {
             var t = a.terms[i].copy();
-            t = t.multiply(-1);
+            t.coefficient = t.coefficient.multiply(-1);
             newTerms.push(t);
         }
 
@@ -81,31 +83,35 @@ Expression.prototype.subtract = function(a) {
 };
 
 Expression.prototype.multiply = function(a) {
-    var copy = this.copy();
+    if (a instanceof Fraction || isInt(a)) {
+        var copy = this.copy();
 
-    copy.constant = copy.constant.multiply(a);
+        copy.constant = copy.constant.multiply(a);
 
-    for (i = 0; i < copy.terms.length; i++) {
-        copy.terms[i].coefficient = copy.terms[i].coefficient.multiply(a);
+        for (i = 0; i < copy.terms.length; i++) {
+            copy.terms[i].coefficient = copy.terms[i].coefficient.multiply(a);
+        }
+
+        return copy;
     }
-
-    return copy;
 };
 
 Expression.prototype.divide = function(a) {
-    if (a == 0) {
-        return;
+    if (a instanceof Fraction || isInt(a)) {
+        if (a == 0) {
+            return;
+        }
+
+        var copy = this.copy();
+
+        copy.constant = copy.constant.divide(a);
+
+        for (i = 0; i < copy.terms.length; i++) {
+            copy.terms[i].coefficient = copy.terms[i].coefficient.divide(a);
+        }
+
+        return copy;
     }
-
-    var copy = this.copy();
-
-    copy.constant = copy.constant.divide(a);
-
-    for (i = 0; i < copy.terms.length; i++) {
-        copy.terms[i].coefficient = copy.terms[i].coefficient.divide(a);
-    }
-
-    return copy;
 };
 
 Expression.prototype.evaluateAt = function(values) {
