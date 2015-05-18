@@ -121,7 +121,10 @@ Fraction.prototype.print = function() {
     if (this.numer == 0) {
         return "0";
     } else if (this.denom == 1) {
-        return this.numer;
+        return this.numer.toString();
+    } else if (this.denom == -1) {
+        var num = this.numer * -1;
+        return num.toString();
     } else {
         return this.numer + "/" + this.denom;
     }
@@ -131,7 +134,10 @@ Fraction.prototype.tex = function() {
     if (this.numer == 0) {
         return "0";
     } else if (this.denom == 1) {
-        return this.numer;
+        return this.numer.toString();
+    } else if (this.denom == -1) {
+        var num = this.numer * -1;
+        return num.toString();
     } else {
         return "\\frac{" + this.numer + "}{" + this.denom + "}";
     }
