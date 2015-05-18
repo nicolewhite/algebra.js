@@ -38,6 +38,8 @@ Fraction.prototype.add = function(f) {
     } else if (isInt(f)) {
         a = f;
         b = 1;
+    } else {
+        return;
     }
 
     var copy = this.copy();
@@ -82,6 +84,8 @@ Fraction.prototype.multiply = function(f) {
     } else if (f == 0) {
         a = 0;
         b = 1;
+    } else {
+        return;
     }
 
     var copy = this.copy();
