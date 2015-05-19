@@ -3,18 +3,19 @@ var Expression = require('./expressions');
 var isInt = require('./helper').isInt;
 
 var Equation = function(lhs, rhs) {
-    this.lhs = lhs;
-
-    if (rhs instanceof Expression) {
-        this.rhs = rhs;
-    } else if (rhs instanceof Fraction || isInt(rhs)) {
-        this.rhs = new Expression().multiply(0).add(rhs);
+    if (lhs instanceof Expression) {
+        this.lhs = lhs;
+        if (rhs instanceof Expression) {
+            this.rhs = rhs;
+        } else if (rhs instanceof Fraction || isInt(rhs)) {
+            this.rhs = new Expression().add(rhs);
+        }
     }
 };
 
 Equation.prototype.solveFor = function(variable) {
-    var newLhs = new Expression().multiply(0);
-    var newRhs = new Expression().multiply(0);
+    var newLhs = new Expression();
+    var newRhs = new Expression();
 
     for (i = 0; i < this.rhs.terms.length; i++) {
         var term = this.rhs.terms[i];
