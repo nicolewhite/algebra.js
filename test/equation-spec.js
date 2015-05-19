@@ -59,7 +59,6 @@ describe("An equation with multiple variables", function() {
 describe("An equation built with an expression and an integer or fraction", function() {
     var x = new Expression("x").add(4).divide(5);
     var eq = new Equation(x, new Fraction(3, 4));
-    console.log(eq);
 
     it("should initialize", function() {
         expect(eq).toBeDefined();
