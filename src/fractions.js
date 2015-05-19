@@ -111,8 +111,8 @@ Fraction.prototype.divide = function(f) {
 
 Fraction.prototype.abs = function() {
     var copy = this.copy();
-    copy = copy.reduce();
     copy.numer = Math.abs(copy.numer);
+    copy.denom = Math.abs(copy.denom);
     return copy;
 };
 
