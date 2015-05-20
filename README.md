@@ -123,3 +123,5 @@ console.log("z = " + eq.solveFor("z").print());
 1/9z - 4/9 = 0
 z = 4
 ```
+
+No decimals / floats allowed! Currently only supports linear expressions and equations.
