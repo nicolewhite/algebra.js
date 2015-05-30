@@ -1,11 +1,16 @@
 var isInt = require('./helper').isInt;
 var gcd = require('./helper').gcd;
 var lcm = require('./helper').lcm;
+var UserException = require('./exceptions').UserException;
 
 var Fraction = function(a, b) {
-    if (isInt(a) && isInt(b) && b) {
+    if (b == 0) {
+        throw new UserException("DivideByZero");
+    } else if (isInt(a) && isInt(b)) {
         this.numer = a;
         this.denom = b;
+    } else {
+        throw new UserException("NonIntegerArgument");
     }
 };
 
@@ -38,7 +43,7 @@ Fraction.prototype.add = function(f) {
         a = f;
         b = 1;
     } else {
-        return;
+        throw new UserException("NonIntegerArgument");
     }
 
     var copy = this.copy();
@@ -68,6 +73,8 @@ Fraction.prototype.subtract = function(f) {
         return copy.add(new Fraction(-f.numer, f.denom));
     } else if (isInt(f)) {
         return copy.add(new Fraction(-f, 1));
+    } else {
+        throw new UserException("NonIntegerArgument");
     }
 };
 
@@ -84,7 +91,7 @@ Fraction.prototype.multiply = function(f) {
         a = 0;
         b = 1;
     } else {
-        return;
+        throw new UserException("NonIntegerArgument");
     }
 
     var copy = this.copy();
@@ -97,7 +104,7 @@ Fraction.prototype.multiply = function(f) {
 
 Fraction.prototype.divide = function(f) {
     if (f == 0) {
-        return;
+        throw new UserException("DivideByZero");
     }
 
     var copy = this.copy();
@@ -106,6 +113,8 @@ Fraction.prototype.divide = function(f) {
         return copy.multiply(new Fraction(f.denom, f.numer));
     } else if (isInt(f)) {
         return copy.multiply(new Fraction(1, f));
+    } else {
+        throw new UserException("NonIntegerArgument");
     }
 };
 

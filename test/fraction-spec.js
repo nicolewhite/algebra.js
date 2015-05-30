@@ -1,34 +1,21 @@
 var Fraction = require('../src/fractions');
+var UserException = require('../src/exceptions').UserException;
 
 describe("An invalid fraction", function() {
-    it("should not initialize with a denominator of 0", function() {
-        var frac = new Fraction(1, 0);
-        expect(frac.numer).toBeUndefined();
-        expect(frac.denom).toBeUndefined();
-    });
-
-    it("should not initialize with a denominator of -0", function() {
-        var frac = new Fraction(1, -0);
-        expect(frac.numer).toBeUndefined();
-        expect(frac.denom).toBeUndefined();
+    it("should throw an exception with a denominator of 0", function() {
+        expect(function(){new Fraction(1, 0)}).toThrow(new UserException("DivideByZero"));
     });
 
     it("should not initialize with decimals in the numerator", function() {
-        var frac = new Fraction(0.25, 1);
-        expect(frac.numer).toBeUndefined();
-        expect(frac.denom).toBeUndefined();
+        expect(function(){new Fraction(0.25, 1)}).toThrow(new UserException("NonIntegerArgument"));
     });
 
     it("should not initialize with decimals in the denominator", function() {
-        var frac = new Fraction(1, 0.25);
-        expect(frac.numer).toBeUndefined();
-        expect(frac.denom).toBeUndefined();
+        expect(function(){new Fraction(1, 0.25)}).toThrow(new UserException("NonIntegerArgument"));
     });
 
     it("should not initialize with decimals in both the numerator and denominator", function() {
-        var frac = new Fraction(0.75, 0.25);
-        expect(frac.numer).toBeUndefined();
-        expect(frac.denom).toBeUndefined();
+        expect(function(){new Fraction(0.75, 0.25)}).toThrow(new UserException("NonIntegerArgument"));
     });
 });
 
@@ -36,7 +23,8 @@ describe("A valid, positive fraction", function() {
     var frac = new Fraction(1, 2);
 
     it("should initialize", function() {
-        expect(frac).toBeDefined();
+        expect(frac.numer).toBeDefined();
+        expect(frac.denom).toBeDefined();
     });
 
     it("should print to string properly", function() {
@@ -56,7 +44,8 @@ describe("A valid fraction with a negative numerator", function() {
     var frac = new Fraction(-1, 2);
 
     it("should initialize", function() {
-        expect(frac).toBeDefined();
+        expect(frac.numer).toBeDefined();
+        expect(frac.denom).toBeDefined();
     });
 
     it("should print to string properly", function() {
@@ -76,7 +65,8 @@ describe("A valid fraction with a negative denominator", function() {
     var frac = new Fraction(2, -4);
 
     it("should initialize", function() {
-        expect(frac).toBeDefined();
+        expect(frac.numer).toBeDefined();
+        expect(frac.denom).toBeDefined();
     });
 
     it("should print to string with a negative denominator", function() {
@@ -102,7 +92,8 @@ describe("Fractions with 1 in the denominator", function() {
     var frac = new Fraction(5, 1);
 
     it("should initialize", function() {
-        expect(frac).toBeDefined();
+        expect(frac.numer).toBeDefined();
+        expect(frac.denom).toBeDefined();
     });
 
     it("should print to string with positive integers", function() {
@@ -118,7 +109,8 @@ describe("Fractions with -1 in the denominator", function() {
     var frac = new Fraction(5, -1);
 
     it("should initialize", function() {
-        expect(frac).toBeDefined();
+        expect(frac.numer).toBeDefined();
+        expect(frac.denom).toBeDefined();
     });
 
     it("should print to string with negative integers", function() {
@@ -147,9 +139,7 @@ describe("Fraction addition", function() {
     });
 
     it("should not allow addition of floats", function() {
-        var answer = x.add(0.25);
-
-        expect(answer).toBeUndefined();
+        expect(function(){x.add(0.25)}).toThrow(new UserException("NonIntegerArgument"));
     });
 
     it("should return an unreduced version of the answer", function() {
@@ -184,9 +174,7 @@ describe("Fraction subtraction", function() {
     });
 
     it("should not allow subtraction of floats", function() {
-        var answer = x.subtract(0.25);
-
-        expect(answer).toBeUndefined();
+        expect(function(){x.subtract(0.25)}).toThrow(new UserException("NonIntegerArgument"));
     });
 
     it("should return an unreduced version of the answer", function() {
@@ -221,17 +209,7 @@ describe("Fraction multiplication", function() {
     });
 
     it("should not allow multiplication of floats", function() {
-        var answer = x.multiply(0.25);
-
-        expect(answer).toBeUndefined();
-    });
-
-    it("should get NaN if multiplying by an invalid fraction", function() {
-        var y = new Fraction(1, 0);
-        var answer = x.multiply(y);
-
-        expect(answer.numer).toBeNaN();
-        expect(answer.denom).toBeNaN();
+        expect(function(){x.multiply(0.25)}).toThrow(new UserException("NonIntegerArgument"));
     });
 });
 
@@ -252,16 +230,6 @@ describe("Fraction division", function() {
     });
 
     it("should not allow division of floats", function() {
-        var answer = x.divide(0.25);
-
-        expect(answer).toBeUndefined();
-    });
-
-    it("should get NaN if dividing by an invalid fraction", function() {
-        var y = new Fraction(1, 0);
-        var answer = x.divide(y);
-
-        expect(answer.numer).toBeNaN();
-        expect(answer.denom).toBeNaN();
+        expect(function(){x.divide(0.25)}).toThrow(new UserException("NonIntegerArgument"));
     });
 });
