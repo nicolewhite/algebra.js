@@ -1,19 +1,29 @@
 var Fraction = require('./fractions');
 var Expression = require('./expressions');
 var isInt = require('./helper').isInt;
+var UserException = require('./exceptions').UserException;
 
 var Equation = function(lhs, rhs) {
     if (lhs instanceof Expression) {
         this.lhs = lhs;
+
         if (rhs instanceof Expression) {
             this.rhs = rhs;
         } else if (rhs instanceof Fraction || isInt(rhs)) {
             this.rhs = new Expression().add(rhs);
+        } else {
+            throw new UserException("InvalidArgument");
         }
+    } else {
+        throw new UserException("InvalidArgument");
     }
 };
 
 Equation.prototype.solveFor = function(variable) {
+    if (!this.rhs._hasVariable(variable) && !this.lhs._hasVariable(variable)) {
+        throw new UserException("InvalidArgument");
+    }
+
     var newLhs = new Expression();
     var newRhs = new Expression();
 
