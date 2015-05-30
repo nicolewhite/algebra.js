@@ -36,8 +36,7 @@ describe("A valid, positive fraction", function() {
     var frac = new Fraction(1, 2);
 
     it("should initialize", function() {
-        expect(frac.numer).toEqual(1);
-        expect(frac.denom).toEqual(2);
+        expect(frac).toBeDefined();
     });
 
     it("should print to string properly", function() {
@@ -57,8 +56,7 @@ describe("A valid fraction with a negative numerator", function() {
     var frac = new Fraction(-1, 2);
 
     it("should initialize", function() {
-        expect(frac.numer).toEqual(-1);
-        expect(frac.denom).toEqual(2);
+        expect(frac).toBeDefined();
     });
 
     it("should print to string properly", function() {
@@ -76,6 +74,10 @@ describe("A valid fraction with a negative numerator", function() {
 
 describe("A valid fraction with a negative denominator", function() {
     var frac = new Fraction(2, -4);
+
+    it("should initialize", function() {
+        expect(frac).toBeDefined();
+    });
 
     it("should print to string with a negative denominator", function() {
         expect(frac.print()).toEqual("2/-4");
@@ -96,31 +98,42 @@ describe("A valid fraction with a negative denominator", function() {
     });
 });
 
-describe("Fractions with 1 or -1 in the denominator", function() {
+describe("Fractions with 1 in the denominator", function() {
+    var frac = new Fraction(5, 1);
+
+    it("should initialize", function() {
+        expect(frac).toBeDefined();
+    });
+
     it("should print to string with positive integers", function() {
-        var frac = new Fraction(5, 1);
         expect(frac.print()).toEqual("5");
     });
 
     it("should print to tex with positive integers", function() {
-        var frac = new Fraction(5, 1);
         expect(frac.tex()).toEqual("5");
+    });
+});
+
+describe("Fractions with -1 in the denominator", function() {
+    var frac = new Fraction(5, -1);
+
+    it("should initialize", function() {
+        expect(frac).toBeDefined();
     });
 
     it("should print to string with negative integers", function() {
-        var frac = new Fraction(5, -1);
         expect(frac.print()).toEqual("-5");
     });
 
     it("should print to tex with negative integers", function() {
-        var frac = new Fraction(5, -1);
         expect(frac.print()).toEqual("-5");
     });
 });
 
 describe("Fraction addition", function() {
+    var x = new Fraction(1, 3);
+
     it("should allow addition of other fractions", function() {
-        var x = new Fraction(1, 3);
         var y = new Fraction(1, 5);
         var answer = x.add(y);
 
@@ -128,30 +141,26 @@ describe("Fraction addition", function() {
     });
 
     it("should allow addition of integers", function() {
-        var x = new Fraction(1, 3);
         var answer = x.add(2);
 
         expect(answer.print()).toEqual("7/3");
     });
 
     it("should not allow addition of floats", function() {
-        var x = new Fraction(1, 3);
         var answer = x.add(0.25);
 
         expect(answer).toBeUndefined();
     });
 
     it("should return an unreduced version of the answer", function() {
-        var x = new Fraction(1, 2);
-        var y = new Fraction(1, 2);
+        var y = new Fraction(2, 3);
         var answer = x.add(y);
 
-        expect(answer.print()).toEqual("2/2");
+        expect(answer.print()).toEqual("3/3");
     });
 
     it("should allow an answer of 0", function() {
-        var x = new Fraction(1, 2);
-        var y = new Fraction(-1, 2);
+        var y = new Fraction(-1, 3);
         var answer = x.add(y);
 
         expect(answer.print()).toEqual("0");
@@ -159,8 +168,9 @@ describe("Fraction addition", function() {
 });
 
 describe("Fraction subtraction", function() {
+    var x = new Fraction(1, 3);
+
     it("should allow subtraction of other fractions", function() {
-        var x = new Fraction(1, 3);
         var y = new Fraction(1, 5);
         var answer = x.subtract(y);
 
@@ -168,30 +178,26 @@ describe("Fraction subtraction", function() {
     });
 
     it("should allow subtraction of integers", function() {
-        var x = new Fraction(1, 3);
         var answer = x.subtract(2);
 
         expect(answer.print()).toEqual("-5/3");
     });
 
     it("should not allow subtraction of floats", function() {
-        var x = new Fraction(1, 3);
         var answer = x.subtract(0.25);
 
         expect(answer).toBeUndefined();
     });
 
     it("should return an unreduced version of the answer", function() {
-        var x = new Fraction(4, 8);
-        var y = new Fraction(2, 8);
+        var y = new Fraction(4, 6);
         var answer = x.subtract(y);
 
-        expect(answer.print()).toEqual("2/8");
+        expect(answer.print()).toEqual("-2/6");
     });
 
     it("should allow an answer of 0", function() {
-        var x = new Fraction(4, 8);
-        var y = new Fraction(4, 8);
+        var y = new Fraction(1, 3);
         var answer = x.subtract(y);
 
         expect(answer.print()).toEqual("0");
@@ -199,8 +205,9 @@ describe("Fraction subtraction", function() {
 });
 
 describe("Fraction multiplication", function() {
+    var x = new Fraction(1, 2);
+
     it("should allow multplication of other fractions", function() {
-        var x = new Fraction(1, 2);
         var y = new Fraction(1, 2);
         var answer = x.multiply(y);
 
@@ -208,21 +215,18 @@ describe("Fraction multiplication", function() {
     });
 
     it("should allow multiplication of integers", function() {
-        var x = new Fraction(1, 2);
         var answer = x.multiply(5);
 
         expect(answer.print()).toEqual("5/2");
     });
 
     it("should not allow multiplication of floats", function() {
-        var x = new Fraction(1, 2);
         var answer = x.multiply(0.25);
 
         expect(answer).toBeUndefined();
     });
 
     it("should get NaN if multiplying by an invalid fraction", function() {
-        var x = new Fraction(1, 2);
         var y = new Fraction(1, 0);
         var answer = x.multiply(y);
 
@@ -232,8 +236,9 @@ describe("Fraction multiplication", function() {
 });
 
 describe("Fraction division", function() {
+    var x = new Fraction(1, 2);
+
     it("should allow division of other fractions", function() {
-        var x = new Fraction(1, 2);
         var y = new Fraction(1, 2);
         var answer = x.divide(y);
 
@@ -241,21 +246,18 @@ describe("Fraction division", function() {
     });
 
     it("should allow division of integers", function() {
-        var x = new Fraction(1, 2);
         var answer = x.divide(5);
 
         expect(answer.print()).toEqual("1/10");
     });
 
     it("should not allow division of floats", function() {
-        var x = new Fraction(1, 2);
         var answer = x.divide(0.25);
 
         expect(answer).toBeUndefined();
     });
 
     it("should get NaN if dividing by an invalid fraction", function() {
-        var x = new Fraction(1, 2);
         var y = new Fraction(1, 0);
         var answer = x.divide(y);
 
