@@ -9,7 +9,7 @@ because the final answer needed to be a fraction and not a decimal. The Line cla
 intersection with another Line; the Fraction class had methods for adding, subtracting, multiplying, and dividing other 
 Fractions; and so on.
 
-Long story short, I had a lot of fun writing that code so I decided to extend it into a full library called algebra.js.
+Long story short, I had a lot of fun writing that code so I decided to extend it a bit into a library called algebra.js.
 
 # Basics
 Numbers need to be either a fraction or an integer. Currently, only linear expressions and equations are supported. 
@@ -181,7 +181,7 @@ appendText("Now let's add " + n1 + " to this expression:");
 expr = expr.add(n1);
 appendLatex(expr.tex());
 
-appendText("Now let's divide the expression by " + n2 + ":");
+appendText("Now let's divide this expression by " + n2 + ":");
 expr = expr.divide(n2);
 appendLatex(expr.tex());
 
@@ -225,7 +225,7 @@ appendText("Now let's add " + n1 + " to this expression:");
 expr = expr.add(n1);
 appendLatex(expr.tex());
 
-appendText("Now let's divide the expression by " + n2 + ":");
+appendText("Now let's divide this expression by " + n2 + ":");
 expr = expr.divide(n2);
 appendLatex(expr.tex());
 
