@@ -121,15 +121,29 @@ Expression.prototype.divide = function(a) {
     }
 };
 
+Expression.prototype._removeTermWithVar = function(variable) {
+    var copy = this.copy();
+    var keep = [];
+
+    for (i = 0; i < this.terms.length; i++) {
+        if (this.terms[i].variable != variable) {
+            keep.push(this.terms[i]);
+        }
+    }
+
+    copy.terms = keep;
+    return copy;
+};
+
 Expression.prototype.evaluateAt = function(values) {
     var copy = this.copy();
     var vars = Object.keys(values);
 
-    for (i = 0; i < copy.terms.length; i++) {
-        for (j = 0; j < vars.length; j++) {
-            if (copy.terms[i].variable == vars[j]) {
-                copy.constant = copy.constant.add(copy.terms[i].coefficient.multiply(values[vars[j]]));
-                copy.terms.splice(i, 1);
+    for (var i = 0; i < this.terms.length; i++) {
+        for (var j = 0; j < vars.length; j++) {
+            if (this.terms[i].variable == vars[j]) {
+                copy.constant = copy.constant.add(this.terms[i].coefficient.multiply(values[vars[j]]));
+                copy = copy._removeTermWithVar(vars[j]);
             }
         }
     }

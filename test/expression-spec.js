@@ -239,4 +239,10 @@ describe("Expression evaluation with multiple variables", function() {
 
         expect(answer.print()).toEqual("7/2");
     });
+
+    it("should return a fraction when substituting variables out of order", function() {
+        var answer = z.evaluateAt({'y': new Fraction(1, 2), 'x': 3});
+
+        expect(answer.print()).toEqual("7/2");
+    });
 });
