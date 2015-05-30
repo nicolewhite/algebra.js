@@ -44,7 +44,7 @@ describe("A valid, positive fraction", function() {
         expect(frac.print()).toEqual("1/2");
     });
 
-    it("should print to latex properly", function() {
+    it("should print to tex properly", function() {
         expect(frac.tex()).toEqual("\\frac{1}{2}");
     });
 
@@ -53,7 +53,7 @@ describe("A valid, positive fraction", function() {
     });
 });
 
-describe("A valid, negative fraction", function() {
+describe("A valid fraction with a negative numerator", function() {
     var frac = new Fraction(-1, 2);
 
     it("should initialize", function() {
@@ -65,11 +65,11 @@ describe("A valid, negative fraction", function() {
         expect(frac.print()).toEqual("-1/2");
     });
 
-    it("should print to latex properly", function() {
-        expect(frac.tex()).toEqual("\\frac{-1}{2}");
+    it("should print to tex with the negative out in front", function() {
+        expect(frac.tex()).toEqual("-\\frac{1}{2}");
     });
 
-    it("should coerce to a number properly", function() {
+    it("should coerce to a decimal properly", function() {
         expect(frac.decimal()).toEqual(-0.5);
     })
 });
@@ -77,8 +77,12 @@ describe("A valid, negative fraction", function() {
 describe("A valid fraction with a negative denominator", function() {
     var frac = new Fraction(2, -4);
 
-    it("should print with a negative denominator", function() {
+    it("should print to string with a negative denominator", function() {
         expect(frac.print()).toEqual("2/-4");
+    });
+
+    it("should print to tex with a negative denominator", function() {
+        expect(frac.tex()).toEqual("\\frac{2}{-4}");
     });
 
     it("should bring the negative up to the numerator when reduced", function() {
@@ -87,18 +91,28 @@ describe("A valid fraction with a negative denominator", function() {
         expect(reduced.denom).toEqual(2);
     });
 
-    it("should coerce to a number properly", function() {
+    it("should coerce to a decimal properly", function() {
         expect(frac.decimal()).toEqual(-0.5);
     });
 });
 
 describe("Fractions with 1 or -1 in the denominator", function() {
-    it("should print positive integers", function() {
+    it("should print to string with positive integers", function() {
         var frac = new Fraction(5, 1);
         expect(frac.print()).toEqual("5");
     });
 
-    it("should print negative integers", function() {
+    it("should print to tex with positive integers", function() {
+        var frac = new Fraction(5, 1);
+        expect(frac.tex()).toEqual("5");
+    });
+
+    it("should print to string with negative integers", function() {
+        var frac = new Fraction(5, -1);
+        expect(frac.print()).toEqual("-5");
+    });
+
+    it("should print to tex with negative integers", function() {
         var frac = new Fraction(5, -1);
         expect(frac.print()).toEqual("-5");
     });

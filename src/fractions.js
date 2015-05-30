@@ -140,7 +140,15 @@ Fraction.prototype.tex = function() {
     } else if (this.denom == -1) {
         return (-this.numer).toString();
     } else {
-        return "\\frac{" + this.numer + "}{" + this.denom + "}";
+        var str = "";
+        var top = this.numer;
+
+        if (Math.sign(this.numer) == -1 && Math.sign(this.denom) == 1) {
+            str = "-";
+            top = Math.abs(top);
+        }
+
+        return str + "\\frac{" + top + "}{" + this.denom + "}";
     }
 };
 
