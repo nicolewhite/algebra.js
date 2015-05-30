@@ -6,5 +6,5 @@ test:
 bundle:
 	./node_modules/.bin/browserify algebra.js --standalone algebra > build/algebra.js
 
-sync:
-	git checkout gh-pages
+minify: bundle
+	./node_modules/.bin/uglifyjs --mangle --beautify ascii_only=true,beautify=false build/algebra.js > build/algebra.min.js
