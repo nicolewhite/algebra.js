@@ -10,15 +10,15 @@ var algebra = require('algebra');
 
 ## Fractions
 
-Add, subtract, multiply, and divide fractions by either integers or other fractions.
+Add, subtract, multiply, and divide fractions by either integers or other fractions. Fractions are not automatically 
+reduced; the idea is that you'd use this library for building tutorials, so it would be desirable in some cases to 
+be able to build fractions and display their unreduced form.
 
-```javascript
-var Fraction = algebra.Fraction;
-
+```js
 var frac = new Fraction(1, 2);
 console.log(frac.print());
 
-frac = frac.add(4);
+frac = frac.subtract(5);
 console.log(frac.print());
 
 frac = frac.multiply(new Fraction(6, 7));
@@ -30,9 +30,9 @@ console.log(frac.print());
 
 ```
 1/2
-9/2
-54/14
-27/7
+-9/2
+-54/14
+-27/7
 ```
 
 ## Expressions
@@ -40,9 +40,7 @@ console.log(frac.print());
 Initialize expressions with a variable name. Add integers, fractions, or other expressions to expressions.
 Multiply and divide expressions by either integers or fractions.
 
-```javascript
-var Expression = algebra.Expression;
-
+```js
 var x = new Expression("x");
 x = x.add(5);
 x = x.divide(4);
@@ -69,11 +67,11 @@ console.log(x.print())
 
 Build an equation by setting an expression equal to another expression or to an integer or fraction.
 
+### Multiple Variables
+
 If the equation contains more than one variable, solving for a variable will return an expression.
 
-```javascript
-var Equation = algebra.Equation;
-
+```js
 var x = new Expression("x").add(5).divide(4);
 var y = new Expression("y").subtract(new Fraction(4, 5)).multiply(3);
 
@@ -91,9 +89,11 @@ x = 12y - 73/5
 y = 1/12x + 73/60
 ```
 
+### Single Variable
+
 If the equation only has one variable, solving for that variable will return a fraction object.
 
-```javascript
+```js
 var x1 = new Expression("x").add(new Fraction(2, 3)).divide(5);
 var x2 = new Expression("x").divide(7).add(4);
 
@@ -108,20 +108,27 @@ console.log(eq.solveFor("x").print());
 x = 203/3
 ```
 
+### Right Hand Side Options
+
 You can also specify an integer or fraction as the right hand side of the equation.
 
-```javascript
+```js
 var z = new Expression("z").subtract(4).divide(9);
 
-var eq = new Equation(z, 0);
+var eq1 = new Equation(z, 0);
 
-console.log(eq.print());
-console.log("z = " + eq.solveFor("z").print());
+console.log(eq1.print());
+console.log("z = " + eq1.solveFor("z").print());
+
+var eq2 = new Equation(z, new Fraction(1, 4));
+
+console.log(eq2.print());
+console.log("z = " + eq2.solveFor("z").print());
 ```
 
 ```
 1/9z - 4/9 = 0
 z = 4
+1/9z - 4/9 = 1/4
+z = 25/4
 ```
-
-No decimals / floats allowed! Currently only supports linear expressions and equations.
