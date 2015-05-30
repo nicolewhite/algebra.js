@@ -32,7 +32,7 @@ Term.prototype.print = function() {
     }
 };
 
-Term.prototype.tex = function(type) {
+Term.prototype.tex = function() {
     var coefficient = this.coefficient.reduce();
 
     if (coefficient.numer == 0) {
