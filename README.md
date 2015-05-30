@@ -38,7 +38,8 @@ console.log(frac.print());
 ## Expressions
 
 Initialize expressions with a variable name. Add integers, fractions, or other expressions to expressions.
-Multiply and divide expressions by either integers or fractions.
+Multiply and divide expressions by either integers or fractions. Evaluate expressions by substituting in fractions or 
+integers for variables.
 
 ```js
 var x = new Expression("x");
@@ -53,14 +54,22 @@ y = y.multiply(3);
 
 console.log(y.print());
 
-x = x.add(y)
-console.log(x.print())
+x = x.add(y);
+console.log(x.print());
+
+var eval1 = x.evaluateAt({'y': 3});
+console.log(eval1.print());
+
+var eval2 = x.evaluateAt({'y': 3, 'x': new Fraction(1, 2)});
+console.log(eval2.print());
 ```
 
 ```
 1/4x + 5/4
 3y - 12/5
 1/4x + 3y - 23/20
+1/4x + 157/20
+319/40
 ```
 
 ## Equations
