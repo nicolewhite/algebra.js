@@ -25,7 +25,7 @@ var Equation = algebra.Equation;
 
 Add, subtract, multiply, and divide fractions by either integers or other fractions.
 
-```javascript
+```js
 var frac = new Fraction(1, 2);
 console.log(frac.print());
 
@@ -51,7 +51,7 @@ console.log(frac.print());
 Initialize expressions with a variable name. Add integers, fractions, or other expressions to expressions.
 Multiply and divide expressions by either integers or fractions.
 
-```javascript
+```js
 var x = new Expression("x");
 x = x.add(5);
 x = x.divide(4);
@@ -82,7 +82,7 @@ Build an equation by setting an expression equal to another expression or to an 
 
 If the equation contains more than one variable, solving for a variable will return an expression.
 
-```javascript
+```js
 var x = new Expression("x").add(5).divide(4);
 var y = new Expression("y").subtract(new Fraction(4, 5)).multiply(3);
 
@@ -104,7 +104,7 @@ y = 1/12x + 73/60
 
 If the equation only has one variable, solving for that variable will return a fraction object.
 
-```javascript
+```js
 var x1 = new Expression("x").add(new Fraction(2, 3)).divide(5);
 var x2 = new Expression("x").divide(7).add(4);
 
@@ -123,7 +123,7 @@ x = 203/3
 
 You can also specify an integer or fraction as the right hand side of the equation.
 
-```javascript
+```js
 var z = new Expression("z").subtract(4).divide(9);
 
 var eq1 = new Equation(z, 0);
