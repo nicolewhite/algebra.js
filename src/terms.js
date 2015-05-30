@@ -1,4 +1,5 @@
 var Fraction = require('./fractions');
+var GREEK_LETTERS = require('./helper').GREEK_LETTERS;
 
 var Term = function(variable) {
     this.variable = variable;
@@ -38,7 +39,9 @@ Term.prototype.tex = function() {
     if (coefficient.numer == 0) {
         return "";
     } else {
-        return ([1, -1].indexOf(coefficient.decimal()) > -1 ? "" : coefficient.abs().tex()) + this.variable;
+        return ([1, -1].indexOf(coefficient.decimal()) > -1 ? "" : coefficient.abs().tex()) +
+               (GREEK_LETTERS.indexOf(this.variable) > -1 ? "\\" : "") +
+                this.variable;
     }
 };
 

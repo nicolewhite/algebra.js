@@ -1,7 +1,7 @@
 var Fraction = require('../src/fractions');
 var Expression = require('../src/expressions');
 
-describe("An expression initialized with a variable name", function() {
+describe("An expression initialized with an alphabetic variable name", function() {
     var x = new Expression("x");
 
     it("initializes", function() {
@@ -14,6 +14,24 @@ describe("An expression initialized with a variable name", function() {
 
     it("is initalized with one term", function() {
         expect(x.terms.length).toEqual(1);
+    });
+});
+
+describe("An expression initialized with a greek letter variable name", function() {
+    var lambda = new Expression("lambda");
+    lambda = lambda.add(3);
+    lambda = lambda.multiply(5);
+
+    it("initializes", function() {
+        expect(lambda).toBeDefined();
+    });
+
+    it("converts to tex properly", function() {
+        expect(lambda.tex()).toEqual("5\\lambda + 15");
+    });
+
+    it("converts to string properly, even though it looks weird", function() {
+        expect(lambda.print()).toEqual("5lambda + 15");
     });
 });
 
