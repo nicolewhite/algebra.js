@@ -147,7 +147,9 @@ z = 25/4
 # LaTeX
 
 Make things pretty with LaTeX. All classes have a `.tex()` method for rendering LaTeX. Combining this with
- [KaTeX](https://github.com/Khan/KaTeX), for example, is easy:
+ [KaTeX](https://github.com/Khan/KaTeX), for example, is easy.
+
+## Tutorial-Like Example
 
 ```html
 <div id="latex"></div>
@@ -236,3 +238,45 @@ appendLatex(eq.tex());
 appendText("...we can solve for " + letter + ":");
 appendLatex(letter + " = " + eq.solveFor(letter).tex());
 </script>
+
+## Greek Letters
+
+Also supports Greek letters, obviously!
+
+```html
+<div>
+    <div id="lambda"></div>
+    <div id="Phi"></div>
+</div>
+
+<script>
+var div1 = document.getElementById("lambda");
+var div2 = document.getElementById("Phi");
+
+var lambda = new Expression("lambda").add(3).divide(4);
+var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
+
+katex.render(lambda.tex(), div1);
+katex.render(Phi.tex(), div2);
+</script>
+```
+
+<div>
+    <div id="lambda"></div>
+    <div id="Phi"></div>
+</div>
+
+<script>
+var div1 = document.getElementById("lambda");
+var div2 = document.getElementById("Phi");
+
+var lambda = new Expression("lambda").add(3).divide(4);
+var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
+
+katex.render(lambda.tex(), div1);
+katex.render(Phi.tex(), div2);
+</script>
+
+<br>
+See [here](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters) for a full list of 
+all the Greek letters available.
