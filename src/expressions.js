@@ -187,4 +187,14 @@ Expression.prototype.tex = function() {
     return str;
 };
 
+Expression.prototype._hasVariable = function(variable) {
+    for (i = 0; i < this.terms.length; i++) {
+        if (variable == this.terms[i].variable) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
 module.exports = Expression;
