@@ -1,6 +1,7 @@
 var Fraction = require('./fractions');
 var Term = require('./terms');
 var isInt = require('./helper').isInt;
+var UserException = require('./exceptions').UserException;
 
 // The constant of the expression is maintained on the Expression object itself.
 // Anything else is held in an array of Term objects.
@@ -48,7 +49,7 @@ Expression.prototype.add = function(a) {
     } else if (isInt(a) || a instanceof Fraction) {
         copy.constant = copy.constant.add(a);
     } else {
-        return;
+        throw new UserException("NonIntegerArgument");
     }
 
     return copy;
@@ -77,6 +78,8 @@ Expression.prototype.subtract = function(a) {
         inverse = -a;
     } else if (a instanceof Fraction) {
         inverse = a.multiply(-1);
+    } else {
+        throw new UserException("NonIntegerArgument");
     }
 
     return copy.add(inverse);
@@ -93,6 +96,8 @@ Expression.prototype.multiply = function(a) {
         }
 
         return copy;
+    } else {
+        throw new UserException("NonIntegerArgument");
     }
 };
 
@@ -111,6 +116,8 @@ Expression.prototype.divide = function(a) {
         }
 
         return copy;
+    } else {
+        throw new UserException("NonIntegerArgument");
     }
 };
 

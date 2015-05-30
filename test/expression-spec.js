@@ -1,5 +1,6 @@
 var Fraction = require('../src/fractions');
 var Expression = require('../src/expressions');
+var UserException = require('../src/exceptions').UserException;
 
 describe("An expression initialized with an alphabetic variable name", function() {
     var x = new Expression("x");
@@ -52,150 +53,128 @@ describe("An expression initialized with nothing", function() {
 });
 
 describe("Expression addition", function() {
-    it("should allow adding other expressions", function() {
-        var x = new Expression("x");
-        var y = new Expression("y");
-        x = x.add(y);
+    var x = new Expression("x");
+    var y = new Expression("y");
 
-        expect(x.print()).toEqual("x + y");
+    it("should allow adding other expressions", function() {
+        var answer = x.add(y);
+
+        expect(answer.print()).toEqual("x + y");
     });
 
     it("should properly combine the constant of two expressions", function() {
-        var x = new Expression("x");
-        var y = new Expression("y");
-        x = x.add(3);                  // x + 3
-        y = y.add(new Fraction(1, 4)); // y + 1/4
-        x = x.add(y);                  // x + 3 + y + 1/4 => x + y + 13/4
+        var newx = x.add(3);                  // x + 3
+        var newy = y.add(new Fraction(1, 4)); // y + 1/4
+        var answer = newx.add(newy);          // x + 3 + y + 1/4 => x + y + 13/4
 
-        expect(x.print()).toEqual("x + y + 13/4");
+        expect(answer.print()).toEqual("x + y + 13/4");
     });
 
     it("should properly combine the terms of two expressions", function() {
-        var x = new Expression("x");
-        var y = new Expression("y");
-        y = y.add(x); // y + x
-        x = x.add(y); // x + y + x => 2x + y
+        var newy = y.add(x); // y + x
+        var answer = x.add(newy); // x + y + x => 2x + y
 
-        expect(x.print()).toEqual("2x + y");
+        expect(answer.print()).toEqual("2x + y");
     });
 
     it("should allow adding fractions", function() {
-        var x = new Expression("x");
-        x = x.add(new Fraction(1, 3));
+        var answer = x.add(new Fraction(1, 3));
 
-        expect(x.print()).toEqual("x + 1/3");
+        expect(answer.print()).toEqual("x + 1/3");
     });
 
     it("should allow adding integers", function() {
-        var x = new Expression("x");
-        x = x.add(3);
+        var answer = x.add(3);
 
-        expect(x.print()).toEqual("x + 3");
+        expect(answer.print()).toEqual("x + 3");
     });
 
     it("should not allow adding floats", function() {
-        var x = new Expression("x");
-        x = x.add(0.25);
-
-        expect(x).toBeUndefined();
+        expect(function(){x.add(0.25)}).toThrow(new UserException("NonIntegerArgument"));
     });
 });
 
 describe("Expression subtraction", function() {
-    it("should allow subtracting other expressions", function() {
-        var x = new Expression("x");
-        var y = new Expression("y");
-        x = x.subtract(y);
+    var x = new Expression("x");
+    var y = new Expression("y");
 
-        expect(x.print()).toEqual("x - y");
+    it("should allow subtracting other expressions", function() {
+        var answer = x.subtract(y);
+
+        expect(answer.print()).toEqual("x - y");
     });
 
     it("should properly combine the constant of two expressions", function() {
-        var x = new Expression("x");
-        var y = new Expression("y");
-        x = x.subtract(3);                  // x - 3
-        y = y.subtract(new Fraction(1, 4)); // y - 1/4
-        x = x.subtract(y);                  // x - 3 - y - (-1/4) => x - y - 12/4 + 1/4 => x - y - 11/4
+        var newx = x.subtract(3);                  // x - 3
+        var newy = y.subtract(new Fraction(1, 4)); // y - 1/4
+        var answer = newx.subtract(newy);          // x - 3 - y - (-1/4) => x - y - 12/4 + 1/4 => x - y - 11/4
 
-        expect(x.print()).toEqual("x - y - 11/4")
+        expect(answer.print()).toEqual("x - y - 11/4")
     });
 
     it("should properly combine the terms of two expressions", function() {
-        var x = new Expression("x");
-        var y = new Expression("y");
-        y = y.subtract(x); // y - x
-        x = x.subtract(y); // x - (y - x) => x - y + x => 2x - y
+        var newy = y.subtract(x); // y - x
+        var answer = x.subtract(newy); // x - (y - x) => x - y + x => 2x - y
 
-        expect(x.print()).toEqual("2x - y");
+        expect(answer.print()).toEqual("2x - y");
     });
 
     it("should allow subtracting fractions", function() {
-        var x = new Expression("x");
-        x = x.subtract(new Fraction(1, 3));
+        var answer = x.subtract(new Fraction(1, 3));
 
-        expect(x.print()).toEqual("x - 1/3");
+        expect(answer.print()).toEqual("x - 1/3");
     });
 
     it("should allow subtracting integers", function() {
-        var x = new Expression("x");
-        x = x.subtract(3);
+        var answer = x.subtract(3);
 
-        expect(x.print()).toEqual("x - 3");
+        expect(answer.print()).toEqual("x - 3");
     });
 
     it("should not allow subtracting floats", function() {
-        var x = new Expression("x");
-        x = x.subtract(0.25);
-
-        expect(x).toBeUndefined();
+        expect(function(){x.subtract(0.25)}).toThrow(new UserException("NonIntegerArgument"));
     });
 });
 
 describe("Expression multiplication", function() {
-    it("should allow multiplying by a fraction", function() {
-        var x = new Expression("x");
-        x = x.multiply(new Fraction(1, 3));
+    var x = new Expression("x");
+    var y = new Expression("y");
 
-        expect(x.print()).toEqual("1/3x");
+    it("should allow multiplying by a fraction", function() {
+        var answer = x.multiply(new Fraction(1, 3));
+
+        expect(answer.print()).toEqual("1/3x");
     });
 
     it("should allow multiplying by an integer", function() {
-        var x = new Expression("x");
-        x = x.multiply(5);
+        var answer = x.multiply(5);
 
-        expect(x.print()).toEqual("5x");
+        expect(answer.print()).toEqual("5x");
     });
 
     it("should not allow multiplying by another expression", function() {
-        var x = new Expression("x");
-        var y = new Expression("y");
-        x = x.multiply(y);
-
-        expect(x).toBeUndefined();
+        expect(function(){x.multiply(y)}).toThrow(new UserException("NonIntegerArgument"));
     });
 });
 
 describe("Expression division", function() {
-    it("should allow dividing by a fraction", function() {
-        var x = new Expression("x");
-        x = x.divide(new Fraction(1, 3));
+    var x = new Expression("x");
+    var y = new Expression("y");
 
-        expect(x.print()).toEqual("3x");
+    it("should allow dividing by a fraction", function() {
+        var answer = x.divide(new Fraction(1, 3));
+
+        expect(answer.print()).toEqual("3x");
     });
 
     it("should allow dividing by an integer", function() {
-        var x = new Expression("x");
-        x = x.divide(5);
+        var answer = x.divide(5);
 
-        expect(x.print()).toEqual("1/5x");
+        expect(answer.print()).toEqual("1/5x");
     });
 
     it("should not allow dividing by another expression", function() {
-        var x = new Expression("x");
-        var y = new Expression("y");
-        x = x.divide(y);
-
-        expect(x).toBeUndefined();
+        expect(function(){x.divide(y)}).toThrow(new UserException("NonIntegerArgument"));
     });
 });
 
@@ -218,11 +197,46 @@ describe("Expression printing", function() {
         expect(x.print()).toEqual("x + y - z + 5");
     });
 
-    it("should omit the constant of it's 0", function() {
+    it("should omit the constant if it's 0", function() {
         var x = new Expression("x");
         x = x.add(3);
         x = x.subtract(3);
 
         expect(x.print()).toEqual("x");
+    });
+});
+
+describe("Expression evaluation with one variable", function() {
+    var x = new Expression("x");
+    x = x.add(3);
+
+    it("should allow evaluating at integers", function() {
+        var answer = x.evaluateAt({'x': 2});
+
+        expect(answer.print()).toEqual("5");
+    });
+
+    it("should allow evaluating at fractions", function() {
+        var answer = x.evaluateAt({'x': new Fraction(1, 5)});
+
+        expect(answer.print()).toEqual("16/5");
+    });
+});
+
+describe("Expression evaluation with multiple variables", function() {
+    var x = new Expression("x");
+    var y = new Expression("y");
+    var z = x.add(y); // x + y
+
+    it("should return an expression when not substituting all the variables", function() {
+        var answer = z.evaluateAt({'x': 3});
+
+        expect(answer.print()).toEqual("y + 3");
+    });
+
+    it("should return a fraction when substituting all the variables", function() {
+        var answer = z.evaluateAt({'x': 3, 'y': new Fraction(1, 2)});
+
+        expect(answer.print()).toEqual("7/2");
     });
 });
