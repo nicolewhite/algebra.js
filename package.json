@@ -4,11 +4,20 @@
   "description": "fractions, expressions, and equations",
   "main": "algebra.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:nicolewhite/algebra.js.git"
+    "url": "https://github.com/nicolewhite/algebra.js.git"
+  },
+  "files": [
+    "algebra.js",
+    "src/"
+  ],
+  "devDependencies": {
+    "jasmine-node": "1.14.5",
+    "browserify": "10.2.1",
+    "uglifyjs": "2.4.10"
   },
   "keywords": [
     "algebra"
@@ -18,5 +27,7 @@
   "bugs": {
     "url": "https://github.com/nicolewhite/algebra.js/issues"
   },
-  "homepage": "https://github.com/nicolewhite/algebra.js"
+  "homepage": "http://nicolewhite.github.io/algebra.js"
 }
+
+
