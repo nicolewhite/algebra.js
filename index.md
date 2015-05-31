@@ -21,8 +21,8 @@ Long story short, I had a lot of fun writing that code so I decided to extend it
         - [Multiple Variables](#expressions-multiple-variables)
         - [Evaluate](#expressions-evaluate)
     - [Equations](#equations)
-        - [Single Variable](#equations-single-variable)
-        - [Multiple Variables](#equations-multiple-variables)
+        - [Solve with Single Variable](#equations-single-variable)
+        - [Solve with Multiple Variables](#equations-multiple-variables)
         - [Right Hand Side Options](#equations-right-hand-side-options)
 - [LaTeX](#latex)
     - [Tutorial-Like Example](#latex-tutorial-like-example)
@@ -150,9 +150,10 @@ console.log(eval2.print());
 
 ## <a name="equations"></a> Equations
 
-Build an equation by setting an expression equal to another expression or to an integer or fraction.
+Build an equation by setting an expression equal to another expression or to an integer or fraction. Solve for
+a variable with `Equation.solveFor(variable)`.
 
-### <a name="equations-single-variable"></a> Single Variable
+### <a name="equations-single-variable"></a> Solve with Single Variable
 
 If the equation only has one variable, solving for that variable will return a reduced fraction object.
 
@@ -173,7 +174,7 @@ console.log("x = " + answer.print());
 x = 203/3
 ```
 
-### <a name="equations-multiple-variables"></a> Multiple Variables
+### <a name="equations-multiple-variables"></a> Solve with Multiple Variables
 
 If the equation contains more than one variable, solving for a variable will return an expression.
 
