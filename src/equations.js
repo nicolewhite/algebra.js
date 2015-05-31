@@ -27,7 +27,7 @@ Equation.prototype.solveFor = function(variable) {
     var newLhs = new Expression();
     var newRhs = new Expression();
 
-    for (i = 0; i < this.rhs.terms.length; i++) {
+    for (var i = 0; i < this.rhs.terms.length; i++) {
         var term = this.rhs.terms[i];
 
         if (term.variable == variable) {
@@ -37,7 +37,7 @@ Equation.prototype.solveFor = function(variable) {
         }
     }
 
-    for (i = 0; i < this.lhs.terms.length; i++) {
+    for (var i = 0; i < this.lhs.terms.length; i++) {
         var term = this.lhs.terms[i];
 
         if (term.variable == variable) {
