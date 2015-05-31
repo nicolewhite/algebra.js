@@ -200,18 +200,18 @@ Make things pretty with LaTeX. All classes have a `.tex()` method for rendering 
 ## <a name="latex-tutorial-like-example"></a> Tutorial-Like Example
 
 ```html
-<div id="latex"></div>
+<div id="tutorial"></div>
 
 <script>
 appendLatex = function(latex) {
-    var div = document.getElementById("latex");
+    var div = document.getElementById("tutorial");
     var newDiv = document.createElement("div");
     div.appendChild(newDiv);
     katex.render(latex, newDiv);
 }
 
 appendText = function(text) {
-    var div = document.getElementById("latex");
+    var div = document.getElementById("tutorial");
     var newDiv = document.createElement("div");
     div.appendChild(newDiv);
     newDiv.innerHTML = text;
@@ -244,18 +244,18 @@ appendLatex(letter + " = " + eq.solveFor(letter).tex());
 </script>
 ```
 
-<div id="latex"></div>
+<div id="tutorial"></div>
 
 <script>
 appendLatex = function(latex) {
-    var div = document.getElementById("latex");
+    var div = document.getElementById("tutorial");
     var newDiv = document.createElement("div");
     div.appendChild(newDiv);
     katex.render(latex, newDiv);
 }
 
 appendText = function(text) {
-    var div = document.getElementById("latex");
+    var div = document.getElementById("tutorial");
     var newDiv = document.createElement("div");
     div.appendChild(newDiv);
     newDiv.innerHTML = text;
