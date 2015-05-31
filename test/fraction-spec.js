@@ -7,15 +7,15 @@ describe("An invalid fraction", function() {
     });
 
     it("should not initialize with decimals in the numerator", function() {
-        expect(function(){new Fraction(0.25, 1)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){new Fraction(0.25, 1)}).toThrow(new UserException("InvalidArgument"));
     });
 
     it("should not initialize with decimals in the denominator", function() {
-        expect(function(){new Fraction(1, 0.25)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){new Fraction(1, 0.25)}).toThrow(new UserException("InvalidArgument"));
     });
 
     it("should not initialize with decimals in both the numerator and denominator", function() {
-        expect(function(){new Fraction(0.75, 0.25)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){new Fraction(0.75, 0.25)}).toThrow(new UserException("InvalidArgument"));
     });
 });
 
@@ -139,7 +139,7 @@ describe("Fraction addition", function() {
     });
 
     it("should not allow addition of floats", function() {
-        expect(function(){x.add(0.25)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){x.add(0.25)}).toThrow(new UserException("InvalidArgument"));
     });
 
     it("should return an unreduced version of the answer", function() {
@@ -174,7 +174,7 @@ describe("Fraction subtraction", function() {
     });
 
     it("should not allow subtraction of floats", function() {
-        expect(function(){x.subtract(0.25)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){x.subtract(0.25)}).toThrow(new UserException("InvalidArgument"));
     });
 
     it("should return an unreduced version of the answer", function() {
@@ -209,7 +209,7 @@ describe("Fraction multiplication", function() {
     });
 
     it("should not allow multiplication of floats", function() {
-        expect(function(){x.multiply(0.25)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){x.multiply(0.25)}).toThrow(new UserException("InvalidArgument"));
     });
 });
 
@@ -230,6 +230,6 @@ describe("Fraction division", function() {
     });
 
     it("should not allow division of floats", function() {
-        expect(function(){x.divide(0.25)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){x.divide(0.25)}).toThrow(new UserException("InvalidArgument"));
     });
 });

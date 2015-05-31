@@ -10,7 +10,7 @@ var Fraction = function(a, b) {
         this.numer = a;
         this.denom = b;
     } else {
-        throw new UserException("NonIntegerArgument");
+        throw new UserException("InvalidArgument");
     }
 };
 
@@ -43,7 +43,7 @@ Fraction.prototype.add = function(f) {
         a = f;
         b = 1;
     } else {
-        throw new UserException("NonIntegerArgument");
+        throw new UserException("InvalidArgument");
     }
 
     var copy = this.copy();
@@ -74,7 +74,7 @@ Fraction.prototype.subtract = function(f) {
     } else if (isInt(f)) {
         return copy.add(new Fraction(-f, 1));
     } else {
-        throw new UserException("NonIntegerArgument");
+        throw new UserException("InvalidArgument");
     }
 };
 
@@ -91,7 +91,7 @@ Fraction.prototype.multiply = function(f) {
         a = 0;
         b = 1;
     } else {
-        throw new UserException("NonIntegerArgument");
+        throw new UserException("InvalidArgument");
     }
 
     var copy = this.copy();
@@ -114,7 +114,7 @@ Fraction.prototype.divide = function(f) {
     } else if (isInt(f)) {
         return copy.multiply(new Fraction(1, f));
     } else {
-        throw new UserException("NonIntegerArgument");
+        throw new UserException("InvalidArgument");
     }
 };
 

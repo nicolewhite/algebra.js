@@ -49,7 +49,7 @@ Expression.prototype.add = function(a) {
     } else if (isInt(a) || a instanceof Fraction) {
         copy.constant = copy.constant.add(a);
     } else {
-        throw new UserException("NonIntegerArgument");
+        throw new UserException("InvalidArgument");
     }
 
     return copy;
@@ -79,7 +79,7 @@ Expression.prototype.subtract = function(a) {
     } else if (a instanceof Fraction) {
         inverse = a.multiply(-1);
     } else {
-        throw new UserException("NonIntegerArgument");
+        throw new UserException("InvalidArgument");
     }
 
     return copy.add(inverse);
@@ -97,7 +97,7 @@ Expression.prototype.multiply = function(a) {
 
         return copy;
     } else {
-        throw new UserException("NonIntegerArgument");
+        throw new UserException("InvalidArgument");
     }
 };
 
@@ -117,7 +117,7 @@ Expression.prototype.divide = function(a) {
 
         return copy;
     } else {
-        throw new UserException("NonIntegerArgument");
+        throw new UserException("InvalidArgument");
     }
 };
 

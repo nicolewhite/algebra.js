@@ -93,7 +93,7 @@ describe("Expression addition", function() {
     });
 
     it("should not allow adding floats", function() {
-        expect(function(){x.add(0.25)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){x.add(0.25)}).toThrow(new UserException("InvalidArgument"));
     });
 });
 
@@ -135,7 +135,7 @@ describe("Expression subtraction", function() {
     });
 
     it("should not allow subtracting floats", function() {
-        expect(function(){x.subtract(0.25)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){x.subtract(0.25)}).toThrow(new UserException("InvalidArgument"));
     });
 });
 
@@ -156,7 +156,7 @@ describe("Expression multiplication", function() {
     });
 
     it("should not allow multiplying by another expression", function() {
-        expect(function(){x.multiply(y)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){x.multiply(y)}).toThrow(new UserException("InvalidArgument"));
     });
 });
 
@@ -177,7 +177,7 @@ describe("Expression division", function() {
     });
 
     it("should not allow dividing by another expression", function() {
-        expect(function(){x.divide(y)}).toThrow(new UserException("NonIntegerArgument"));
+        expect(function(){x.divide(y)}).toThrow(new UserException("InvalidArgument"));
     });
 
     it("should throw an exception if dividing by zero", function() {
