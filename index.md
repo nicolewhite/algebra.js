@@ -91,6 +91,8 @@ console.log(x.print());
 
 ### <a name="expressions-multiple-variables"></a> Multiple Variables
 
+Expressions can have multiple variables.
+
 ```js
 var expr = new Expression("x").subtract(new Expression("y")).add(3);
 console.log(expr.print());
@@ -98,6 +100,30 @@ console.log(expr.print());
 
 ```
 x - y + 3
+```
+
+When adding / subtracting an expression to / from another expression, any like-terms will be combined.
+
+```js
+var a = new Expression("a");
+var b = new Expression("b");
+var c = new Expression("c");
+
+var expr1 = a.add(b).add(c);
+var expr2 = c.subtract(b);
+
+console.log(expr1.print());
+console.log(expr2.print());
+
+var expr3 = expr1.add(expr2);
+
+console.log(expr3.print());
+```
+
+```
+a + b + c
+c - b
+a + 2c
 ```
 
 ### <a name="expressions-evaluate"></a> Evaluate
@@ -137,7 +163,9 @@ var x2 = new Expression("x").divide(7).add(4);
 var eq = new Equation(x1, x2);
 console.log(eq.print());
 
-console.log("x = " + eq.solveFor("x").print());
+var answer = eq.solveFor("x");
+
+console.log("x = " + answer.print());
 ```
 
 ```
@@ -157,8 +185,11 @@ var eq = new Equation(x, y);
 
 console.log(eq.print());
 
-console.log("x = " + eq.solveFor("x").print());
-console.log("y = " + eq.solveFor("y").print());
+var xAnswer = eq.solveFor("x");
+var yAnswer = eq.solveFor("y");
+
+console.log("x = " + xAnswer.print());
+console.log("y = " + yAnswer.print());
 ```
 
 ```
@@ -217,30 +248,31 @@ appendText = function(text) {
     newDiv.innerHTML = text;
 }
 
-var letter = "x";
-var n1 = 3;
-var n2 = 4;
-var n3 = new Fraction(5, 7);
+var LETTER = "x";
+var SLOPE1 = 3;
+var SLOPE2 = 4;
+var CONSTANT1 = 5
+var CONSTANT2 = new Fraction(5, 7);
 
-var expr = new Expression(letter);
+var expr1 = new Expression(LETTER).multiply(SLOPE1).add(CONSTANT1);
+var expr2 = new Expression(LETTER).multiply(SLOPE2).add(CONSTANT2);
 
-appendText("Let's start with an expression of a single variable " + letter + ":");
-appendLatex(expr.tex());
+appendText("Let's say we have the equations of two lines:");
+appendLatex("y = " + expr1.tex());
+appendLatex("y = " + expr2.tex());
 
-appendText("Now let's add " + n1 + " to this expression:");
-expr = expr.add(n1);
-appendLatex(expr.tex());
+appendText("If we want to find where these two lines intersect, we need to solve for " + LETTER + ":");
 
-appendText("Now let's divide this expression by " + n2 + ":");
-expr = expr.divide(n2);
-appendLatex(expr.tex());
-
-appendText("If we set this expression equal to " + n3.print() + "...");
-var eq = new Equation(expr, n3);
+var eq = new Equation(expr1, expr2);
 appendLatex(eq.tex());
 
-appendText("...we can solve for " + letter + ":");
-appendLatex(letter + " = " + eq.solveFor(letter).tex());
+var xIntercept = eq.solveFor(LETTER);
+appendLatex(LETTER + " = " + xIntercept.tex());
+
+appendText("Now we need to plug " + xIntercept.print() + " into one of the original expressions to find the y-intercept:");
+
+var yIntercept = expr1.evaluateAt({'x': xIntercept});
+appendLatex("y = " + yIntercept.tex());
 </script>
 ```
 
@@ -261,30 +293,31 @@ appendText = function(text) {
     newDiv.innerHTML = text;
 }
 
-var letter = "x";
-var n1 = 3;
-var n2 = 4;
-var n3 = new Fraction(5, 7);
+var LETTER = "x";
+var SLOPE1 = 3;
+var SLOPE2 = 4;
+var CONSTANT1 = 5
+var CONSTANT2 = new Fraction(5, 7);
 
-var expr = new Expression(letter);
+var expr1 = new Expression(LETTER).multiply(SLOPE1).add(CONSTANT1);
+var expr2 = new Expression(LETTER).multiply(SLOPE2).add(CONSTANT2);
 
-appendText("Let's start with an expression of a single variable " + letter + ":");
-appendLatex(expr.tex());
+appendText("Let's say we have the equations of two lines:");
+appendLatex("y = " + expr1.tex());
+appendLatex("y = " + expr2.tex());
 
-appendText("Now let's add " + n1 + " to this expression:");
-expr = expr.add(n1);
-appendLatex(expr.tex());
+appendText("If we want to find where these two lines intersect, we need to solve for " + LETTER + ":");
 
-appendText("Now let's divide this expression by " + n2 + ":");
-expr = expr.divide(n2);
-appendLatex(expr.tex());
-
-appendText("If we set this expression equal to " + n3.print() + "...");
-var eq = new Equation(expr, n3);
+var eq = new Equation(expr1, expr2);
 appendLatex(eq.tex());
 
-appendText("...we can solve for " + letter + ":");
-appendLatex(letter + " = " + eq.solveFor(letter).tex());
+var xIntercept = eq.solveFor(LETTER);
+appendLatex(LETTER + " = " + xIntercept.tex());
+
+appendText("Now we need to plug " + xIntercept.print() + " into one of the original expressions to find the y-intercept:");
+
+var yIntercept = expr1.evaluateAt({'x': xIntercept});
+appendLatex("y = " + yIntercept.tex());
 </script>
 
 ## <a name="latex-greek-letters"></a> Greek Letters
