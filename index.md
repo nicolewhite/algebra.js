@@ -11,7 +11,24 @@ Fractions; and so on.
 
 Long story short, I had a lot of fun writing that code so I decided to extend it a bit into a library called algebra.js.
 
-# Basics
+# Contents
+
+- [Basics](#basics)
+    - [Fractions](#fractions)
+    - [Expressions](#expressions)
+        - [Single Variable](#expressions-single-variable)
+        - [Multiple Variables](#expressions-multiple-variables)
+        - [Evaluate](#expressions-evaluate)
+    - [Equations](#equations)
+        - [Single Variable](#equations-single-variable)
+        - [Multiple Variables](#equations-multiple-variables)
+        - [Right Hand Side Options](#equations-right-hand-side-options)
+- [LaTeX](#latex)
+    - [Tutorial-Like Example](#latex-tutorial-like-example)
+    - [Greek Letters](#latex-greek-letters)
+
+# <a name="basics"></a> Basics 
+
 Numbers need to be either a fraction or an integer. Currently, only linear expressions and equations are supported. 
 The main classes available are Fraction, Expression, and Equation.
 
@@ -21,7 +38,7 @@ var Expression = algebra.Expression;
 var Equation = algebra.Equation;
 ```
 
-## Fractions
+## <a name="fractions"></a> Fractions 
 
 Add, subtract, multiply, and divide fractions by either integers or other fractions. Fractions are not automatically 
 reduced; the idea is that you'd use this library for building tutorials, so it would be desirable in some cases to 
@@ -48,11 +65,13 @@ console.log(frac.print());
 -27/7
 ```
 
-## Expressions
+## <a name="expressions"></a> Expressions 
 
 Initialize expressions with a variable name. Add integers, fractions, or other expressions to expressions.
 Multiply and divide expressions by either integers or fractions. Evaluate expressions by substituting in fractions or 
 integers for variables.
+
+### <a name="expressions-single-variable"></a> Single Variable
 
 ```js
 var x = new Expression("x");
@@ -60,36 +79,70 @@ x = x.add(5);
 x = x.divide(4);
 
 console.log(x.print());
-
-var y = new Expression("y");
-y = y.subtract(new Fraction(4, 5));
-y = y.multiply(3);
-
-console.log(y.print());
-
-x = x.add(y);
-console.log(x.print());
-
-var eval1 = x.evaluateAt({'y': 3});
-console.log(eval1.print());
-
-var eval2 = x.evaluateAt({'y': 3, 'x': new Fraction(1, 2)});
-console.log(eval2.print());
 ```
 
 ```
 1/4x + 5/4
-3y - 12/5
-1/4x + 3y - 23/20
-1/4x + 157/20
-319/40
 ```
 
-## Equations
+### <a name="expressions-multiple-variables"></a> Multiple Variables
+
+```js
+var expr = new Expression("x").subtract(new Expression("y")).add(3);
+console.log(expr.print());
+```
+
+```
+x - y + 3
+```
+
+### <a name="expressions-evaluate"></a> Evaluate
+
+Evaluating an expression for all of its variables returns a fraction object. Evaluating for only some of its variables 
+returns an expression object.
+
+```js
+var expr = new Expression("x").divide(6)
+expr = expr.add(new Expression("y").multiply(2));
+console.log(expr.print());
+
+var eval1 = expr.evaluateAt({'y': 3});
+console.log(eval1.print());
+
+var eval2 = expr.evaluateAt({'y': 3, 'x': new Fraction(1, 2)});
+console.log(eval2.print());
+```
+
+```
+1/6x + 2y
+1/6x + 6
+73/12
+```
+
+## <a name="equations"></a> Equations
 
 Build an equation by setting an expression equal to another expression or to an integer or fraction.
 
-### Multiple Variables
+### <a name="equations-single-variable"></a> Single Variable
+
+If the equation only has one variable, solving for that variable will return a fraction object.
+
+```js
+var x1 = new Expression("x").add(new Fraction(2, 3)).divide(5);
+var x2 = new Expression("x").divide(7).add(4);
+
+var eq = new Equation(x1, x2);
+console.log(eq.print());
+
+console.log(eq.solveFor("x").print());
+```
+
+```
+1/5x + 2/15 = 1/7x + 4
+x = 203/3
+```
+
+### <a name="equations-multiple-variables"></a> Multiple Variables
 
 If the equation contains more than one variable, solving for a variable will return an expression.
 
@@ -111,26 +164,7 @@ x = 12y - 73/5
 y = 1/12x + 73/60
 ```
 
-### Single Variable
-
-If the equation only has one variable, solving for that variable will return a fraction object.
-
-```js
-var x1 = new Expression("x").add(new Fraction(2, 3)).divide(5);
-var x2 = new Expression("x").divide(7).add(4);
-
-var eq = new Equation(x1, x2);
-console.log(eq.print());
-
-console.log(eq.solveFor("x").print());
-```
-
-```
-1/5x + 2/15 = 1/7x + 4
-x = 203/3
-```
-
-### Right Hand Side Options
+### <a name="equations-right-hand-side-options"></a> Right Hand Side Options
 
 You can also specify an integer or fraction as the right hand side of the equation.
 
@@ -155,12 +189,12 @@ z = 4
 z = 25/4
 ```
 
-# LaTeX
+# <a name="latex"></a> LaTeX
 
 Make things pretty with LaTeX. All classes have a `.tex()` method for rendering LaTeX. Combining this with
  [KaTeX](https://github.com/Khan/KaTeX), for example, is easy.
 
-## Tutorial-Like Example
+## <a name="latex-tutorial-like-example"></a> Tutorial-Like Example
 
 ```html
 <div id="latex"></div>
@@ -250,19 +284,19 @@ appendText("...we can solve for " + letter + ":");
 appendLatex(letter + " = " + eq.solveFor(letter).tex());
 </script>
 
-## Greek Letters
+## <a name="latex-greek-letters"></a> Greek Letters
 
 Also supports Greek letters, obviously!
 
 ```html
 <div>
-    <div id="lambda"></div>
-    <div id="Phi"></div>
+    <div id="div1"></div>
+    <div id="div2"></div>
 </div>
 
 <script>
-var div1 = document.getElementById("lambda");
-var div2 = document.getElementById("Phi");
+var div1 = document.getElementById("div1");
+var div2 = document.getElementById("div2");
 
 var lambda = new Expression("lambda").add(3).divide(4);
 var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
@@ -273,13 +307,13 @@ katex.render(Phi.tex(), div2);
 ```
 
 <div>
-    <div id="lambda"></div>
-    <div id="Phi"></div>
+    <div id="div1"></div>
+    <div id="div2"></div>
 </div>
 
 <script>
-var div1 = document.getElementById("lambda");
-var div2 = document.getElementById("Phi");
+var div1 = document.getElementById("div1");
+var div2 = document.getElementById("div2");
 
 var lambda = new Expression("lambda").add(3).divide(4);
 var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
@@ -291,3 +325,41 @@ katex.render(Phi.tex(), div2);
 <br>
 See [here](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters) for a full list of 
 all the Greek letters available.
+
+# Usage
+
+Clone the repository.
+
+```
+$ git clone https://github.com/nicolewhite/algebra.js.git
+$ cd algebra
+```
+
+## In Node
+
+```js
+var algebra = require('./algebra');
+```
+
+## In the Browser
+
+```
+$ npm install
+$ make minify
+```
+
+This will create a file `algebra.min.js` in the `build` directory. Include this like you would any other script:
+
+```html
+<script src="algebra.min.js"></script>
+```
+
+Access the Fraction, Expression, and Equation objects:
+
+```html
+<script>
+  var Fraction = algebra.Fraction;
+  var Expression = algebra.Expression;
+  var Equation = algebra.Equation;
+</script>
+```
