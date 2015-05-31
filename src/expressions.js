@@ -31,10 +31,10 @@ Expression.prototype.add = function(a) {
         copy.constant = copy.constant.add(a.constant);
         var newTerms = a.copy().terms;
 
-        for (i = 0; i < copy.terms.length; i++) {
+        for (var i = 0; i < copy.terms.length; i++) {
             var thisTerm = copy.terms[i];
 
-            for (j = 0; j < newTerms.length; j++) {
+            for (var j = 0; j < newTerms.length; j++) {
                 var thatTerm = newTerms[j];
 
                 if (thisTerm.hasTheSameVariableAs(thatTerm)) {
@@ -65,7 +65,7 @@ Expression.prototype.subtract = function(a) {
     } else if (a instanceof Expression) {
         var newTerms = [];
 
-        for (i = 0; i < a.terms.length; i++) {
+        for (var i = 0; i < a.terms.length; i++) {
             var t = a.terms[i].copy();
             t.coefficient = t.coefficient.multiply(-1);
             newTerms.push(t);
@@ -91,7 +91,7 @@ Expression.prototype.multiply = function(a) {
 
         copy.constant = copy.constant.multiply(a);
 
-        for (i = 0; i < copy.terms.length; i++) {
+        for (var i = 0; i < copy.terms.length; i++) {
             copy.terms[i].coefficient = copy.terms[i].coefficient.multiply(a);
         }
 
@@ -111,7 +111,7 @@ Expression.prototype.divide = function(a) {
 
         copy.constant = copy.constant.divide(a);
 
-        for (i = 0; i < copy.terms.length; i++) {
+        for (var i = 0; i < copy.terms.length; i++) {
             copy.terms[i].coefficient = copy.terms[i].coefficient.divide(a);
         }
 
@@ -122,17 +122,16 @@ Expression.prototype.divide = function(a) {
 };
 
 Expression.prototype._removeTermWithVar = function(variable) {
-    var copy = this.copy();
     var keep = [];
 
-    for (i = 0; i < this.terms.length; i++) {
+    for (var i = 0; i < this.terms.length; i++) {
         if (this.terms[i].variable != variable) {
             keep.push(this.terms[i]);
         }
     }
 
-    copy.terms = keep;
-    return copy;
+    this.terms = keep;
+    return this;
 };
 
 Expression.prototype.evaluateAt = function(values) {
@@ -143,7 +142,7 @@ Expression.prototype.evaluateAt = function(values) {
         for (var j = 0; j < vars.length; j++) {
             if (this.terms[i].variable == vars[j]) {
                 copy.constant = copy.constant.add(this.terms[i].coefficient.multiply(values[vars[j]]));
-                copy = copy._removeTermWithVar(vars[j]);
+                copy._removeTermWithVar(vars[j]);
             }
         }
     }
@@ -163,7 +162,7 @@ Expression.prototype.print = function() {
     var firstTermCoefficient = this.terms[0].coefficient.reduce();
     var str = (firstTermCoefficient.numer < 0 ? "-": "") + this.terms[0].print();
 
-    for (i = 1; i < this.terms.length; i++) {
+    for (var i = 1; i < this.terms.length; i++) {
         var coefficient = this.terms[i].coefficient.reduce();
 
         str += (coefficient.numer < 0 ? " - " : " + ") + this.terms[i].print();
@@ -186,7 +185,7 @@ Expression.prototype.tex = function() {
     var firstTermCoefficient = this.terms[0].coefficient.reduce();
     var str = (firstTermCoefficient.numer < 0 ? "-": "") + this.terms[0].tex();
 
-    for (i = 1; i < this.terms.length; i++) {
+    for (var i = 1; i < this.terms.length; i++) {
         var coefficient = this.terms[i].coefficient.reduce();
 
         str += (coefficient.numer < 0 ? " - " : " + ") + this.terms[i].tex();
@@ -202,7 +201,7 @@ Expression.prototype.tex = function() {
 };
 
 Expression.prototype._hasVariable = function(variable) {
-    for (i = 0; i < this.terms.length; i++) {
+    for (var i = 0; i < this.terms.length; i++) {
         if (variable == this.terms[i].variable) {
             return true;
         }
