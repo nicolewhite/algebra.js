@@ -3,7 +3,7 @@ layout: default
 ---
 
 # Inspiration
-I was completing the Intersecting Lines challenge on [CoderByte](http://coderbyte.com/). You're given two sets of points 
+I was completing the Intersecting Lines challenge on CoderByte. You're given two pairs of points 
 and you need to determine where the lines defined by these points intersect. This challenge isn't timed, so I got a 
 little carried away. I ended up making classes for Point, Line, and Fraction, where the last was necessary because the 
 final answer needed to be a fraction and not a decimal. The Line class was initialized with two Points and had a method 
@@ -251,11 +251,11 @@ appendText = function(text) {
 var LETTER = "x";
 var SLOPE1 = 3;
 var SLOPE2 = 4;
-var CONSTANT1 = 5
-var CONSTANT2 = new Fraction(5, 7);
+var INTERCEPT1 = 5
+var INTERCEPT2 = new Fraction(5, 7);
 
-var expr1 = new Expression(LETTER).multiply(SLOPE1).add(CONSTANT1);
-var expr2 = new Expression(LETTER).multiply(SLOPE2).add(CONSTANT2);
+var expr1 = new Expression(LETTER).multiply(SLOPE1).add(INTERCEPT1);
+var expr2 = new Expression(LETTER).multiply(SLOPE2).add(INTERCEPT2);
 
 appendText("Let's say we have the equations of two lines:");
 appendLatex("y = " + expr1.tex());
@@ -266,13 +266,13 @@ appendText("If we want to find where these two lines intersect, we need to solve
 var eq = new Equation(expr1, expr2);
 appendLatex(eq.tex());
 
-var xIntercept = eq.solveFor(LETTER);
-appendLatex(LETTER + " = " + xIntercept.tex());
+var x = eq.solveFor(LETTER);
+appendLatex(LETTER + " = " + x.tex());
 
-appendText("Now we need to plug " + xIntercept.print() + " into one of the original expressions to find the y-intercept:");
+appendText("Now we need to plug " + x.print() + " into one of the original expressions to find y:");
 
-var yIntercept = expr1.evaluateAt({'x': xIntercept});
-appendLatex("y = " + yIntercept.tex());
+var y = expr1.evaluateAt({'x': x});
+appendLatex("y = " + y.tex());
 </script>
 ```
 
@@ -296,11 +296,11 @@ appendText = function(text) {
 var LETTER = "x";
 var SLOPE1 = 3;
 var SLOPE2 = 4;
-var CONSTANT1 = 5
-var CONSTANT2 = new Fraction(5, 7);
+var INTERCEPT1 = 5
+var INTERCEPT2 = new Fraction(5, 7);
 
-var expr1 = new Expression(LETTER).multiply(SLOPE1).add(CONSTANT1);
-var expr2 = new Expression(LETTER).multiply(SLOPE2).add(CONSTANT2);
+var expr1 = new Expression(LETTER).multiply(SLOPE1).add(INTERCEPT1);
+var expr2 = new Expression(LETTER).multiply(SLOPE2).add(INTERCEPT2);
 
 appendText("Let's say we have the equations of two lines:");
 appendLatex("y = " + expr1.tex());
@@ -311,13 +311,13 @@ appendText("If we want to find where these two lines intersect, we need to solve
 var eq = new Equation(expr1, expr2);
 appendLatex(eq.tex());
 
-var xIntercept = eq.solveFor(LETTER);
-appendLatex(LETTER + " = " + xIntercept.tex());
+var x = eq.solveFor(LETTER);
+appendLatex(LETTER + " = " + x.tex());
 
-appendText("Now we need to plug " + xIntercept.print() + " into one of the original expressions to find the y-intercept:");
+appendText("Now we need to plug " + x.print() + " into one of the original expressions to find y:");
 
-var yIntercept = expr1.evaluateAt({'x': xIntercept});
-appendLatex("y = " + yIntercept.tex());
+var y = expr1.evaluateAt({'x': x});
+appendLatex("y = " + y.tex());
 </script>
 
 ## <a name="latex-greek-letters"></a> Greek Letters
