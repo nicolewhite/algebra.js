@@ -52,6 +52,7 @@ Expression.prototype.add = function(a) {
         throw new UserException("InvalidArgument");
     }
 
+    copy._removeTermsWithCoefficientZero();
     return copy;
 };
 
@@ -121,11 +122,26 @@ Expression.prototype.divide = function(a) {
     }
 };
 
-Expression.prototype._removeTermWithVar = function(variable) {
+Expression.prototype._removeTermsWithVar = function(variable) {
     var keep = [];
 
     for (var i = 0; i < this.terms.length; i++) {
         if (this.terms[i].variable != variable) {
+            keep.push(this.terms[i]);
+        }
+    }
+
+    this.terms = keep;
+    return this;
+};
+
+Expression.prototype._removeTermsWithCoefficientZero = function() {
+    var keep = [];
+
+    for (var i = 0; i < this.terms.length; i++) {
+        var coefficient = this.terms[i].coefficient.reduce();
+
+        if (coefficient.numer != 0) {
             keep.push(this.terms[i]);
         }
     }
@@ -142,7 +158,7 @@ Expression.prototype.evaluateAt = function(values) {
         for (var j = 0; j < vars.length; j++) {
             if (this.terms[i].variable == vars[j]) {
                 copy.constant = copy.constant.add(this.terms[i].coefficient.multiply(values[vars[j]]));
-                copy._removeTermWithVar(vars[j]);
+                copy._removeTermsWithVar(vars[j]);
             }
         }
     }

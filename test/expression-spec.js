@@ -80,6 +80,15 @@ describe("Expression addition", function() {
         expect(answer.print()).toEqual("x + 2y + 2z");
     });
 
+    it("should properly remove terms when canceled out", function() {
+        var expr1 = x.add(y).add(z); // x + y + z
+        var expr2 = z.subtract(y); // z - y
+
+        var answer = expr1.add(expr2); // x + y + z + z - y = x + 2z
+
+        expect(answer.print()).toEqual("x + 2z");
+    });
+
     it("should allow adding fractions", function() {
         var answer = x.add(new Fraction(1, 3));
 
@@ -100,6 +109,7 @@ describe("Expression addition", function() {
 describe("Expression subtraction", function() {
     var x = new Expression("x");
     var y = new Expression("y");
+    var z = new Expression("z");
 
     it("should allow subtracting other expressions", function() {
         var answer = x.subtract(y);
@@ -120,6 +130,15 @@ describe("Expression subtraction", function() {
         var answer = x.subtract(newy); // x - (y - x) => x - y + x => 2x - y
 
         expect(answer.print()).toEqual("2x - y");
+    });
+
+    it("should properly remove terms when canceled out", function() {
+        var expr1 = x.subtract(y).subtract(z); // x - y - z
+        var expr2 = z.subtract(y);             // z - y
+
+        var answer = expr1.subtract(expr2);    // x - y - z - (z - y) = x - 2z
+
+        expect(answer.print()).toEqual("x - 2z");
     });
 
     it("should allow subtracting fractions", function() {
@@ -185,7 +204,7 @@ describe("Expression division", function() {
     })
 });
 
-describe("Expression printing", function() {
+describe("Expression printing to string", function() {
     it("should put a negative sign on the first term if it's negative", function() {
         var x = new Expression("x");
         x = x.multiply(-1);
@@ -210,6 +229,58 @@ describe("Expression printing", function() {
         x = x.subtract(3);
 
         expect(x.print()).toEqual("x");
+    });
+
+    it("should only print the constant if all the other terms have been canceled out", function() {
+        var x = new Expression("x");
+        var y = new Expression("y");
+
+        var expr1 = x.add(y).subtract(3);   // x + y - 3
+        var expr2 = x.add(y);               // x + y
+
+        var answer = expr1.subtract(expr2); // x + y - 3 - (x + y) = -3
+
+        expect(answer.print()).toEqual("-3");
+    });
+});
+
+describe("Expression printing to tek", function() {
+    it("should put a negative sign on the first term if it's negative", function() {
+        var x = new Expression("x");
+        x = x.multiply(-1);
+        x = x.add(3);
+
+        expect(x.tex()).toEqual("-x + 3");
+    });
+
+    it("should get the signs right", function() {
+        var x = new Expression("x");
+        var y = new Expression("y");
+        var z = new Expression("z");
+
+        x = x.add(y).subtract(z).add(5);
+
+        expect(x.tex()).toEqual("x + y - z + 5");
+    });
+
+    it("should omit the constant if it's 0", function() {
+        var x = new Expression("x");
+        x = x.add(3);
+        x = x.subtract(3);
+
+        expect(x.tex()).toEqual("x");
+    });
+
+    it("should only print the constant if all the other terms have been canceled out", function() {
+        var x = new Expression("x");
+        var y = new Expression("y");
+
+        var expr1 = x.add(y).subtract(3);   // x + y - 3
+        var expr2 = x.add(y);               // x + y
+
+        var answer = expr1.subtract(expr2); // x + y - 3 - (x + y) = -3
+
+        expect(answer.tex()).toEqual("-3");
     });
 });
 
