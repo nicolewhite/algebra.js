@@ -3,13 +3,14 @@ layout: default
 ---
 
 # Inspiration
-I was completing the Intersecting Lines challenge on [CoderByte](http://coderbyte.com/). This challenge isn't timed, 
-so I got a little carried away. I ended up making classes for Point, Line, and Fraction, where the last was necessary 
-because the final answer needed to be a fraction and not a decimal. The Line class had a method for finding its 
-intersection with another Line; the Fraction class had methods for adding, subtracting, multiplying, and dividing other 
-Fractions; and so on.
+I was completing the Intersecting Lines challenge on [CoderByte](http://coderbyte.com/). You're given two sets of points 
+and you need to determine where the lines defined by these points intersect. This challenge isn't timed, so I got a 
+little carried away. I ended up making classes for Point, Line, and Fraction, where the last was necessary because the 
+final answer needed to be a fraction and not a decimal. The Line class was initialized with two Points and had a method 
+for finding its intersection with another Line; the Fraction class had methods for adding, subtracting, multiplying, 
+and dividing other Fractions; and so on.
 
-Long story short, I had a lot of fun writing that code so I decided to extend it a bit into a library called algebra.js.
+Long story short, I had a lot of fun writing that code so I decided to extend it a bit into a library called `algebra.js`.
 
 # Contents
 
@@ -44,8 +45,8 @@ var Equation = algebra.Equation;
 ## <a name="fractions"></a> Fractions 
 
 Add, subtract, multiply, and divide fractions by either integers or other fractions. Fractions are not automatically 
-reduced; the idea is that you'd use this library for building tutorials, so it would be desirable in some cases to 
-be able to build fractions and display their unreduced form.
+reduced; the idea is that this library will be used for teaching math in some way, so it would be desirable in some 
+cases to be able to build fractions and display their unreduced form.
 
 ```js
 var frac = new Fraction(1, 2);
@@ -101,8 +102,8 @@ x - y + 3
 
 ### <a name="expressions-evaluate"></a> Evaluate
 
-Evaluating an expression for all of its variables returns a fraction object. Evaluating for only some of its variables 
-returns an expression object.
+Evaluating an expression for all of its variables returns a reduced fraction object. Evaluating for only some of its 
+variables returns an expression object.
 
 ```js
 var expr = new Expression("x").divide(6).add(new Expression("y").multiply(2));
@@ -127,7 +128,7 @@ Build an equation by setting an expression equal to another expression or to an 
 
 ### <a name="equations-single-variable"></a> Single Variable
 
-If the equation only has one variable, solving for that variable will return a fraction object.
+If the equation only has one variable, solving for that variable will return a reduced fraction object.
 
 ```js
 var x1 = new Expression("x").add(new Fraction(2, 3)).divide(5);
@@ -324,7 +325,6 @@ katex.render(lambda.tex(), div1);
 katex.render(Phi.tex(), div2);
 </script>
 
-<br>
 See [here](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters) for a full list of 
 all the Greek letters available.
 
