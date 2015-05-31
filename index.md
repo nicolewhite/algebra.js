@@ -137,7 +137,7 @@ var x2 = new Expression("x").divide(7).add(4);
 var eq = new Equation(x1, x2);
 console.log(eq.print());
 
-console.log(eq.solveFor("x").print());
+console.log("x = " + eq.solveFor("x").print());
 ```
 
 ```
