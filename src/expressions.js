@@ -104,7 +104,7 @@ Expression.prototype.multiply = function(a) {
 Expression.prototype.divide = function(a) {
     if (a instanceof Fraction || isInt(a)) {
         if (a == 0) {
-            return;
+            throw new UserException("DivideByZero");
         }
 
         var copy = this.copy();

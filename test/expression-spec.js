@@ -179,6 +179,10 @@ describe("Expression division", function() {
     it("should not allow dividing by another expression", function() {
         expect(function(){x.divide(y)}).toThrow(new UserException("NonIntegerArgument"));
     });
+
+    it("should throw an exception if dividing by zero", function() {
+        expect(function(){x.divide(0)}).toThrow(new UserException("DivideByZero"));
+    })
 });
 
 describe("Expression printing", function() {
