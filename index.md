@@ -353,13 +353,3 @@ This will create a file `algebra.min.js` in the `build` directory. Include this 
 ```html
 <script src="algebra.min.js"></script>
 ```
-
-Access the Fraction, Expression, and Equation objects:
-
-```html
-<script>
-  var Fraction = algebra.Fraction;
-  var Expression = algebra.Expression;
-  var Equation = algebra.Equation;
-</script>
-```
