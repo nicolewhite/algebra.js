@@ -55,6 +55,7 @@ describe("An expression initialized with nothing", function() {
 describe("Expression addition", function() {
     var x = new Expression("x");
     var y = new Expression("y");
+    var z = new Expression("z");
 
     it("should allow adding other expressions", function() {
         var answer = x.add(y);
@@ -71,10 +72,12 @@ describe("Expression addition", function() {
     });
 
     it("should properly combine the terms of two expressions", function() {
-        var newy = y.add(x); // y + x
-        var answer = x.add(newy); // x + y + x => 2x + y
+        var expr1 = x.add(y).add(z); // x + y + z
+        var expr2 = z.add(y); // z + y
 
-        expect(answer.print()).toEqual("2x + y");
+        var answer = expr1.add(expr2); // x + y + z + z + y = x + 2y + 2z
+
+        expect(answer.print()).toEqual("x + 2y + 2z");
     });
 
     it("should allow adding fractions", function() {
