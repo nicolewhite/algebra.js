@@ -12,7 +12,7 @@ var Expression = function(variable) {
 };
 
 Expression.prototype.copy = function() {
-    var copy = new Expression('');
+    var copy = new Expression();
     copy.constant = this.constant.copy();
 
     var terms = [];
