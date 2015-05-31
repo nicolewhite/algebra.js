@@ -4,7 +4,7 @@ layout: default
 
 # Inspiration
 I was completing the Intersecting Lines challenge on [CoderByte](http://coderbyte.com/). This challenge isn't timed, 
-so I got a little carried away. I ended up making classes for Point, Line, and Fraction, where the latter was necessary 
+so I got a little carried away. I ended up making classes for Point, Line, and Fraction, where the last was necessary 
 because the final answer needed to be a fraction and not a decimal. The Line class had a method for finding its 
 intersection with another Line; the Fraction class had methods for adding, subtracting, multiplying, and dividing other 
 Fractions; and so on.
