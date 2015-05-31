@@ -15,9 +15,9 @@ Expression.prototype.copy = function() {
     var copy = new Expression();
     copy.constant = this.constant.copy();
 
-    var terms = [];
-    this.terms.forEach(function(t) {terms.push(t.copy());} );
-    copy.terms = terms;
+    copy.terms = [];
+    this.terms.forEach(function(t) {copy.terms.push(t.copy());} );
+
     return copy;
 };
 
