@@ -26,6 +26,9 @@ Long story short, I had a lot of fun writing that code so I decided to extend it
 - [LaTeX](#latex)
     - [Tutorial-Like Example](#latex-tutorial-like-example)
     - [Greek Letters](#latex-greek-letters)
+- [Usage](#usage)
+    - [In Node](#usage-in-node)
+    - [In the Browser](#usage-in-browser)
 
 # <a name="basics"></a> Basics 
 
@@ -102,8 +105,7 @@ Evaluating an expression for all of its variables returns a fraction object. Eva
 returns an expression object.
 
 ```js
-var expr = new Expression("x").divide(6)
-expr = expr.add(new Expression("y").multiply(2));
+var expr = new Expression("x").divide(6).add(new Expression("y").multiply(2));
 console.log(expr.print());
 
 var eval1 = expr.evaluateAt({'y': 3});
@@ -326,7 +328,7 @@ katex.render(Phi.tex(), div2);
 See [here](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters) for a full list of 
 all the Greek letters available.
 
-# Usage
+# <a name="usage"></a> Usage
 
 Clone the repository.
 
@@ -335,13 +337,13 @@ $ git clone https://github.com/nicolewhite/algebra.js.git
 $ cd algebra
 ```
 
-## In Node
+## <a name="usage-in-node"></a> In Node
 
 ```js
 var algebra = require('./algebra');
 ```
 
-## In the Browser
+## <a name="usage-in-browser"></a> In the Browser
 
 ```
 $ npm install
