@@ -1,6 +1,6 @@
 # algebra.js
 
-[Algebra with JavaScript](algebra.js.org)!
+[Algebra with JavaScript](http://algebra.js.org)!
 
 ## Usage
 
