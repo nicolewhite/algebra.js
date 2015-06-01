@@ -10,7 +10,7 @@ final answer needed to be a fraction and not a decimal. The Line class was initi
 for finding its intersection with another Line; the Fraction class had methods for adding, subtracting, multiplying, 
 and dividing other Fractions; and so on.
 
-Long story short, I had a lot of fun writing that code so I decided to extend it a bit into a library called `algebra.js`.
+Long story short, I had a lot of fun writing that code so I decided to extend it into a library called `algebra.js`.
 
 # Contents
 
@@ -274,6 +274,9 @@ appendText("Now we need to plug " + x.print() + " into one of the original expre
 
 var y = expr1.evaluateAt({'x': x});
 appendLatex("y = " + y.tex());
+
+appendText("Thus, these lines intersect at the point:");
+appendLatex("(" + x.tex() + "," + y.tex() + ")");
 </script>
 ```
 
@@ -319,6 +322,9 @@ appendText("Now we need to plug " + x.print() + " into one of the original expre
 
 var y = expr1.evaluateAt({'x': x});
 appendLatex("y = " + y.tex());
+
+appendText("Thus, these lines intersect at the point:");
+appendLatex("(" + x.tex() + "," + y.tex() + ")");
 </script>
 
 ## <a name="latex-greek-letters"></a> Greek Letters
