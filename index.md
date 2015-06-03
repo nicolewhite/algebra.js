@@ -370,14 +370,13 @@ all the Greek letters available.
 
 # <a name="usage"></a> Usage
 
-Clone the repository.
+## <a name="usage-in-node"></a> In Node
 
 ```
 $ git clone https://github.com/nicolewhite/algebra.js.git
 $ cd algebra
+$ node
 ```
-
-## <a name="usage-in-node"></a> In Node
 
 ```js
 var algebra = require('./algebra');
@@ -385,12 +384,7 @@ var algebra = require('./algebra');
 
 ## <a name="usage-in-browser"></a> In the Browser
 
-```
-$ npm install
-$ make minify
-```
-
-This will create a file `algebra.min.js` in the `build` directory. Include this like you would any other script:
+Download `algebra.min.js` <a href="javascripts/algebra.min.js" download>here</a>.
 
 ```html
 <script src="algebra.min.js"></script>
