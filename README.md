@@ -1,4 +1,4 @@
-# algebra.js
+# algebra.js [![Build Status](https://travis-ci.org/nicolewhite/algebra.js.svg?branch=master)](https://travis-ci.org/nicolewhite/algebra.js)
 
 - [Basics](#basics)
     - [Fractions](#fractions)
