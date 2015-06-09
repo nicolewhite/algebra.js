@@ -1,5 +1,5 @@
 {
-  "name": "algebra",
+  "name": "algebrajs",
   "version": "0.1.0",
   "description": "fractions, expressions, and equations",
   "main": "algebra.js",
