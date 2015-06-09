@@ -20,7 +20,11 @@
     "uglifyjs": "2.4.10"
   },
   "keywords": [
-    "algebra"
+    "algebra",
+    "math",
+    "fractions",
+    "equations",
+    "latex"
   ],
   "author": "Nicole White",
   "license": "MIT",
