@@ -310,7 +310,7 @@ var algebra = require('./algebra');
 
 ## <a name="usage-in-browser"></a> In the Browser
 
-Download `algebra.min.js` <a href="http://algebra.js.org/javascripts/algebra.min.js" download>here</a>.
+Download `algebra.min.js` from <a href="http://algebra.js.org">here</a>.
 
 ```html
 <script src="algebra.min.js"></script>
