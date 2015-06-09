@@ -4,7 +4,10 @@ layout: default
 
 # Contents
 
-- [Basics](#basics)
+- [Usage](#usage)
+    - [In Node](#usage-in-node)
+    - [In the Browser](#usage-in-browser)
+- [Getting Started](#getting-started)
     - [Fractions](#fractions)
     - [Expressions](#expressions)
         - [Single Variable](#expressions-single-variable)
@@ -17,14 +20,31 @@ layout: default
 - [LaTeX](#latex)
     - [Tutorial-Like Example](#latex-tutorial-like-example)
     - [Greek Letters](#latex-greek-letters)
-- [Usage](#usage)
-    - [In Node](#usage-in-node)
-    - [In the Browser](#usage-in-browser)
 
-# <a name="basics"></a> Basics 
+# <a name="usage"></a> Usage
+
+## <a name="usage-in-node"></a> In Node
+
+```
+$ npm install algebrajs
+```
+
+```js
+var algebra = require('algebrajs');
+```
+
+## <a name="usage-in-browser"></a> In the Browser
+
+Download <a href="javascripts/algebra.min.js" download><u>`algebra.min.js`</u></a>.
+
+```html
+<script src="algebra.min.js"></script>
+```
+
+# <a name="getting-started"></a> Getting Started 
 
 Numbers need to be either a fraction or an integer. Currently, only linear expressions and equations are supported. 
-The main classes available are Fraction, Expression, and Equation.
+The main objects available are Fraction, Expression, and Equation.
 
 ```js
 var Fraction = algebra.Fraction;
@@ -35,8 +55,7 @@ var Equation = algebra.Equation;
 ## <a name="fractions"></a> Fractions 
 
 Add, subtract, multiply, and divide fractions by either integers or other fractions. Fractions are not automatically 
-reduced; the idea is that this library will be used for teaching math in some way, so it would be desirable in some 
-cases to be able to build fractions and display their unreduced form.
+reduced.
 
 ```js
 var frac = new Fraction(1, 2);
@@ -357,23 +376,3 @@ katex.render(Phi.tex(), div2);
 
 See [here](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters) for a full list of 
 all the Greek letters available.
-
-# <a name="usage"></a> Usage
-
-## <a name="usage-in-node"></a> In Node
-
-```
-$ npm install algebrajs
-```
-
-```js
-var algebra = require('algebrajs');
-```
-
-## <a name="usage-in-browser"></a> In the Browser
-
-Download `algebra.min.js` <a href="javascripts/algebra.min.js" download>here</a>.
-
-```html
-<script src="algebra.min.js"></script>
-```
