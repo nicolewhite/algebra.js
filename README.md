@@ -20,7 +20,7 @@
 # <a name="basics"></a> Basics 
 
 Numbers need to be either a fraction or an integer. Currently, only linear expressions and equations are supported. 
-The main classes available are Fraction, Expression, and Equation.
+The main objects available are Fraction, Expression, and Equation.
 
 ```js
 var Fraction = algebra.Fraction;
