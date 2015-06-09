@@ -31,8 +31,7 @@ var Equation = algebra.Equation;
 ## <a name="fractions"></a> Fractions 
 
 Add, subtract, multiply, and divide fractions by either integers or other fractions. Fractions are not automatically 
-reduced; the idea is that this library will be used for teaching math in some way, so it would be desirable in some 
-cases to be able to build fractions and display their unreduced form.
+reduced.
 
 ```js
 var frac = new Fraction(1, 2);
@@ -266,7 +265,7 @@ appendLatex("(" + x.tex() + "," + y.tex() + ")");
 </script>
 ```
 
-<img src="latex1.png">
+<img src="screenshots/latex1.png">
 
 ## <a name="latex-greek-letters"></a> Greek Letters
 
@@ -290,7 +289,7 @@ katex.render(Phi.tex(), div2);
 </script>
 ```
 
-<img src="latex2.png">
+<img src="screenshots/latex2.png">
 
 See [here](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters) for a full list of 
 all the Greek letters available.
