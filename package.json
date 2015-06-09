@@ -1,6 +1,6 @@
 {
   "name": "algebra",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "fractions, expressions, and equations",
   "main": "algebra.js",
   "scripts": {
