@@ -1,6 +1,9 @@
 # algebra.js [![Build Status](https://travis-ci.org/nicolewhite/algebra.js.svg?branch=master)](https://travis-ci.org/nicolewhite/algebra.js)
 
-- [Basics](#basics)
+- [Usage](#usage)
+    - [In Node](#usage-in-node)
+    - [In the Browser](#usage-in-browser)
+- [Getting Started](#getting-started)
     - [Fractions](#fractions)
     - [Expressions](#expressions)
         - [Single Variable](#expressions-single-variable)
@@ -13,11 +16,28 @@
 - [LaTeX](#latex)
     - [Tutorial-Like Example](#latex-tutorial-like-example)
     - [Greek Letters](#latex-greek-letters)
-- [Usage](#usage)
-    - [In Node](#usage-in-node)
-    - [In the Browser](#usage-in-browser)
 
-# <a name="basics"></a> Basics 
+# <a name="usage"></a> Usage
+
+## <a name="usage-in-node"></a> In Node
+
+```
+$ npm install algebrajs
+```
+
+```js
+var algebra = require('algebrajs');
+```
+
+## <a name="usage-in-browser"></a> In the Browser
+
+Download `algebra.min.js` from <a href="http://algebra.js.org">here</a>.
+
+```html
+<script src="algebra.min.js"></script>
+```
+
+# <a name="getting-started"></a> Getting Started 
 
 Numbers need to be either a fraction or an integer. Currently, only linear expressions and equations are supported. 
 The main objects available are Fraction, Expression, and Equation.
@@ -293,23 +313,3 @@ katex.render(Phi.tex(), div2);
 
 See [here](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters) for a full list of 
 all the Greek letters available.
-
-# <a name="usage"></a> Usage
-
-## <a name="usage-in-node"></a> In Node
-
-```
-$ npm install algebrajs
-```
-
-```js
-var algebra = require('algebrajs');
-```
-
-## <a name="usage-in-browser"></a> In the Browser
-
-Download `algebra.min.js` from <a href="http://algebra.js.org">here</a>.
-
-```html
-<script src="algebra.min.js"></script>
-```
