@@ -224,7 +224,7 @@ appendLatex = function(latex) {
     var div = document.getElementById("tutorial");
     var newDiv = document.createElement("div");
     div.appendChild(newDiv);
-    katex.render(latex, newDiv);
+    katex.render(latex, newDiv, {displayMode: true});
 }
 
 appendText = function(text) {
@@ -261,7 +261,7 @@ var y = expr1.evaluateAt({'x': x});
 appendLatex("y = " + y.tex());
 
 appendText("Thus, these lines intersect at the point:");
-appendLatex("(" + x.tex() + "," + y.tex() + ")");
+appendLatex("\\left(" + x.tex() + "," + y.tex() + "\\right)");
 </script>
 ```
 
