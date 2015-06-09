@@ -299,11 +299,11 @@ all the Greek letters available.
 ## <a name="usage-in-node"></a> In Node
 
 ```
-$ npm install https://github.com/nicolewhite/algebra.js/tarball/master
+$ npm install algebrajs
 ```
 
 ```js
-var algebra = require('algebra');
+var algebra = require('algebrajs');
 ```
 
 ## <a name="usage-in-browser"></a> In the Browser
