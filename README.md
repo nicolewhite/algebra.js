@@ -1,5 +1,7 @@
 # algebra.js [![Build Status](https://travis-ci.org/nicolewhite/algebra.js.svg?branch=master)](https://travis-ci.org/nicolewhite/algebra.js)
 
+Build, display, and solve rational equations.
+
 - [Usage](#usage)
     - [In Node](#usage-in-node)
     - [In the Browser](#usage-in-browser)
@@ -22,11 +24,11 @@
 ## <a name="usage-in-node"></a> In Node
 
 ```
-$ npm install algebrajs
+$ npm install algebra.js
 ```
 
 ```js
-var algebra = require('algebrajs');
+var algebra = require('algebra.js');
 ```
 
 ## <a name="usage-in-browser"></a> In the Browser
