@@ -1,6 +1,6 @@
 # algebra.js [![Build Status](https://travis-ci.org/nicolewhite/algebra.js.svg?branch=master)](https://travis-ci.org/nicolewhite/algebra.js)
 
-Build, display, and solve rational equations.
+Build, display, and solve algebraic equations.
 
 - [Usage](#usage)
     - [In Node](#usage-in-node)
