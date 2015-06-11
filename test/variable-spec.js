@@ -21,30 +21,6 @@ describe("A variable", function() {
     });
 });
 
-describe("Variable comparisons", function() {
-    var x1 = new Variable("x");
-    var x2 = new Variable("x");
-
-    var y = new Variable("y");
-
-    it("should return true if variable and degree are the same", function() {
-        expect(x1.hasTheSameVariableAndDegreeAs(x2)).toBe(true);
-    });
-
-    it("should return false if variable and degree are not the same", function() {
-        x2.degree = 2;
-        expect(x1.hasTheSameVariableAndDegreeAs(x2)).toBe(false);
-    });
-
-    it("should return true if variables are the same", function() {
-        expect(x1.hasTheSameVariableAs(x2)).toBe(true);
-    });
-
-    it("should return false if variables are not the same", function() {
-        expect(x1.hasTheSameVariableAs(y)).toBe(false);
-    })
-});
-
 describe("Variable printing to string", function() {
     var x = new Variable("x");
 

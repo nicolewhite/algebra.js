@@ -55,7 +55,7 @@ Term.prototype.multiply = function(term) {
 
         for (var i = 0; i < thisVars.length; i++) {
             for (var j = 0; j < thatVars.length; j++) {
-                if (thisVars[i].hasTheSameVariableAs(thatVars[j])) {
+                if (thisVars[i].variable === thatVars[j].variable) {
                     thisVars[i].degree += thatVars[j].degree;
                     thatVars[j].throwaway = true;
                 }
@@ -106,7 +106,7 @@ Term.prototype.canBeCombinedWith = function(term) {
 
         for(var i = 0; i < thisVars.length; i++) {
             for(var j = 0; j < thatVars.length; j++) {
-                if(thisVars[i].hasTheSameVariableAndDegreeAs(thatVars[j])) {
+                if(thisVars[i].variable === thatVars[j].variable && thisVars[i].degree === thatVars[j].degree) {
                     matches += 1;
                 }
             }

@@ -15,26 +15,6 @@ Variable.prototype.copy = function() {
     return copy;
 };
 
-Variable.prototype.hasTheSameVariableAndDegreeAs = function(variable) {
-    if (variable instanceof Variable) {
-        if (this.variable === variable.variable && this.degree === variable.degree) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-Variable.prototype.hasTheSameVariableAs = function(variable) {
-    if(variable instanceof Variable) {
-        if(this.variable === variable.variable) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
 Variable.prototype.print = function() {
     var degree = this.degree;
     var variable = this.variable;
