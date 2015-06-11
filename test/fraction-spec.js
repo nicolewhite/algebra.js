@@ -233,3 +233,17 @@ describe("Fraction division", function() {
         expect(function(){x.divide(0.25)}).toThrow(new UserException("InvalidArgument"));
     });
 });
+
+describe("Fraction equality", function() {
+    var x = new Fraction(1, 2);
+
+    it("should be true when the fractions are equal", function() {
+        var y = new Fraction(2, 4);
+        expect(x.equalTo(y)).toBe(true);
+    });
+
+    it("should be false when the fractions are not equal", function() {
+        var y = new Fraction(2, 3);
+        expect(x.equalTo(y)).toBe(false);
+    })
+});
