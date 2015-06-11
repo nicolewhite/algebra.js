@@ -26,11 +26,11 @@ layout: default
 ## <a name="usage-in-node"></a> In Node
 
 ```
-$ npm install algebrajs
+$ npm install algebra.js
 ```
 
 ```js
-var algebra = require('algebrajs');
+var algebra = require('algebra.js');
 ```
 
 ## <a name="usage-in-browser"></a> In the Browser
