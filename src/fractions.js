@@ -33,6 +33,19 @@ Fraction.prototype.reduce = function() {
     return copy;
 };
 
+Fraction.prototype.equalTo = function(fraction) {
+    if(fraction instanceof Fraction) {
+        var thisReduced = this.reduce();
+        var thatReduced = fraction.reduce();
+
+        if(thisReduced.numer === thatReduced.numer && thisReduced.denom === thatReduced.denom) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
 Fraction.prototype.add = function(f) {
     var a, b;
 
