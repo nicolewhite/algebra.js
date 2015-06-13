@@ -1,5 +1,6 @@
 var Fraction = require('./fractions');
 var Variable = require('./variables');
+var isInt = require('./helper').isInt;
 
 Term = function(variable) {
     if (variable instanceof Variable) {
@@ -45,10 +46,11 @@ Term.prototype.subtract = function(term) {
     }
 };
 
-Term.prototype.multiply = function(term) {
-    if (term instanceof Term) {
-        var thisTerm = this.copy();
-        var thatTerm = term.copy();
+Term.prototype.multiply = function(a) {
+    var thisTerm = this.copy();
+
+    if (a instanceof Term) {
+        var thatTerm = a.copy();
 
         var thisVars = thisTerm.variables;
         var thatVars = thatTerm.variables;
@@ -69,25 +71,20 @@ Term.prototype.multiply = function(term) {
         }
 
         thisTerm.coefficient = thisTerm.coefficient.multiply(thatTerm.coefficient);
-        return thisTerm;
+    } else if(isInt(a) || a instanceof Fraction) {
+        thisTerm.coefficient = thisTerm.coefficient.multiply(a);
     } else {
         throw "InvalidArgument";
     }
+
+    return thisTerm;
 };
 
-Term.prototype.divide = function(term) {
-    if(term instanceof Term) {
+Term.prototype.divide = function(a) {
+    if(isInt(a) || a instanceof Fraction) {
         var thisTerm = this.copy();
-        var thatTerm = term.copy();
-        var thatVars = thatTerm.variables;
-
-        for(var i = 0; i < thatVars.length; i++) {
-            thatVars[i].degree *= -1;
-        }
-
-        thatTerm.coefficient = thatTerm.coefficient.multiply(-1);
-
-        return thisTerm.multiply(thatTerm);
+        thisTerm.coefficient = thisTerm.coefficient.divide(a);
+        return thisTerm;
     } else {
         throw "InvalidArgument";
     }

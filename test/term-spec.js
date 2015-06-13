@@ -113,31 +113,45 @@ describe("Term multiplication", function() {
         answer = t1.multiply(t2);
         expect(answer.print()).toEqual("6xy")
     });
+
+    it("allows multiplication of integers", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+
+        answer = t.multiply(2);
+        expect(answer.print()).toEqual("2x");
+    });
+
+    it("allows multiplication of fractions", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+
+        answer = t.multiply(new Fraction(2, 3));
+        expect(answer.print()).toEqual("2/3x");
+    });
+
+    it("doesn't allow multiplication of floats", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+
+        expect(function(){t.multiply(.5)}).toThrow("InvalidArgument");
+    });
 });
 
 describe("Term division", function() {
-    it("combines coefficients correctly", function() {
+    it("allows division of integers", function() {
         var x = new Variable("x");
-        x.degree = 2;
-        var t1 = new Term(x);
-        x.degree = 1;
-        var t2 = new Term(x);
+        var t = new Term(x);
 
-        t1.coefficient = new Fraction(2, 1);
-        t2.coefficient = new Fraction(3, 1);
-
-        answer = t1.divide(t2);
-        expect(answer.print()).toEqual("6x");
+        answer = t.divide(3);
+        expect(answer.print()).toEqual("1/3x");
     });
 
-    it("combines degrees correctly", function() {
+    it("allows division of fractions", function() {
         var x = new Variable("x");
-        x.degree = 4;
-        var t1 = new Term(x);
-        x.degree = 2;
-        var t2 = new Term(x);
+        var t = new Term(x);
 
-        answer = t1.divide(t2);
-        expect(answer.print()).toEqual("x^2");
+        answer = t.divide(new Fraction(2, 3));
+        expect(answer.print()).toEqual("3/2x")
     });
 });
