@@ -247,3 +247,25 @@ describe("Fraction equality", function() {
         expect(x.equalTo(y)).toBe(false);
     })
 });
+
+describe("Fraction exponentiation", function() {
+    var x = new Fraction(1, 2);
+
+    it("should return 1/1 if n = 0", function() {
+        answer = x.pow(0);
+
+        expect(answer.equalTo(new Fraction(1, 1))).toBe(true);
+    });
+
+    it("should return itself if n = 1", function() {
+        answer = x.pow(1);
+
+        expect(answer.equalTo(new Fraction(1, 2))).toBe(true);
+    });
+
+    it("should work with n > 1", function() {
+        answer = x.pow(3);
+
+        expect(answer.equalTo(new Fraction(1, 8))).toBe(true);
+    });
+});

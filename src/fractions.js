@@ -131,6 +131,19 @@ Fraction.prototype.divide = function(f) {
     }
 };
 
+Fraction.prototype.pow = function(n) {
+    if (isInt(n)) {
+        var copy = this.copy();
+        if (n === 0) {
+            return new Fraction(1, 1);
+        }
+        for (var i = 0; i < n - 1; i++) {
+            copy = copy.multiply(this);
+        }
+        return copy;
+    }
+};
+
 Fraction.prototype.abs = function() {
     var copy = this.copy();
     copy.numer = Math.abs(copy.numer);
