@@ -90,6 +90,62 @@ Term.prototype.divide = function(a) {
     }
 };
 
+Term.prototype.evaluateAt = function(values) {
+    var thisTerm = this.copy();
+    var varMap = Object.keys(values);
+    var keepVars = [];
+
+    for (var i = 0; i < this.variables.length; i++) {
+        var thisVar = this.variables[i];
+        var keep = true;
+
+        for (var j = 0; j < varMap.length; j++) {
+            if (thisVar.variable === varMap[j]) {
+                var eval = values[varMap[j]];
+
+                if (eval instanceof Fraction) {
+                    eval = eval.pow(thisVar.degree);
+                } else if (isInt(eval)) {
+                    eval = Math.pow(eval, thisVar.degree);
+                } else {
+                    throw "InvalidArgument";
+                }
+
+                thisTerm.coefficient = thisTerm.coefficient.multiply(eval);
+                keep = false;
+            }
+        }
+
+        if (keep) {
+            keepVars.push(thisVar);
+        }
+    }
+
+    thisTerm.variables = keepVars;
+    return thisTerm;
+};
+
+Term.prototype.hasVariable = function(variable) {
+    for (var i = 0; i < this.variables.length; i++) {
+        if (this.variables[i].variable === variable) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+Term.prototype.maxDegree = function() {
+    max = 1;
+    for(var i = 0; i < this.variables.length; i++) {
+        if(this.variables[i].degree > max) {
+            max = this.variables[i].degree;
+        }
+    }
+
+    return max;
+};
+
 Term.prototype.canBeCombinedWith = function(term) {
     if(term instanceof Term) {
         var thisVars = this.variables;
