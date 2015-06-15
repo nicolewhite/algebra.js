@@ -133,14 +133,19 @@ Fraction.prototype.divide = function(f) {
 
 Fraction.prototype.pow = function(n) {
     if (isInt(n)) {
-        var copy = this.copy();
         if (n === 0) {
             return new Fraction(1, 1);
+        } else {
+            var copy = this.copy();
+
+            for (var i = 0; i < n - 1; i++) {
+                copy = copy.multiply(this);
+            }
+
+            return copy;
         }
-        for (var i = 0; i < n - 1; i++) {
-            copy = copy.multiply(this);
-        }
-        return copy;
+    } else {
+        throw "InvalidArgument";
     }
 };
 

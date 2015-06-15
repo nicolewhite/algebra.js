@@ -268,4 +268,8 @@ describe("Fraction exponentiation", function() {
 
         expect(answer.equalTo(new Fraction(1, 8))).toBe(true);
     });
+
+    it("should throw exception with invalid n", function() {
+        expect(function(){x.pow(0.25)}).toThrow("InvalidArgument");
+    });
 });
