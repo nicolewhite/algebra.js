@@ -1,14 +1,18 @@
 var Fraction = require('./fractions');
 var Term = require('./terms');
 var isInt = require('./helper').isInt;
-var UserException = require('./exceptions').UserException;
-
-// The constant of the expression is maintained on the Expression object itself.
-// Anything else is held in an array of Term objects.
+var Variable = require('./variables');
 
 var Expression = function(variable) {
     this.constant = new Fraction(0, 1);
-    this.terms = (variable ? [new Term(variable)] : []);
+
+    if(typeof(variable) === "string") {
+        var v = new Variable(variable);
+        var t = new Term(v);
+        this.terms = [t];
+    } else if(typeof(variable) === "undefined") {
+        this.terms = [];
+    }
 };
 
 Expression.prototype.copy = function() {
@@ -22,90 +26,115 @@ Expression.prototype.copy = function() {
 };
 
 Expression.prototype.add = function(a) {
-    var copy = this.copy();
+    var thisExp = this.copy();
 
     if (a instanceof Term) {
-        var exp = new Expression(a.variable).multiply(a.coefficient);
-        return copy.add(exp);
+        var exp = new Expression();
+        exp.terms = [a.copy()];
+        return thisExp.add(exp);
     } else if (a instanceof Expression) {
-        copy.constant = copy.constant.add(a.constant);
-        var newTerms = a.copy().terms;
+        thisExp.constant = thisExp.constant.add(a.constant);
+        var keepTerms = a.copy().terms;
 
-        for (var i = 0; i < copy.terms.length; i++) {
-            var thisTerm = copy.terms[i];
+        for (var i = 0; i < thisExp.terms.length; i++) {
+            var thisTerm = thisExp.terms[i];
 
-            for (var j = 0; j < newTerms.length; j++) {
-                var thatTerm = newTerms[j];
+            for (var j = 0; j < keepTerms.length; j++) {
+                var thatTerm = keepTerms[j];
 
-                if (thisTerm.hasTheSameVariableAs(thatTerm)) {
-                    thisTerm.coefficient = thisTerm.coefficient.add(thatTerm.coefficient);
-                    newTerms.splice(j, 1);
+                if (thisTerm.canBeCombinedWith(thatTerm)) {
+                    thisExp.terms[i] = thisTerm.add(thatTerm);
+                    keepTerms.splice(j, 1);
                 }
             }
         }
 
-        copy.terms = copy.terms.concat(newTerms);
+        thisExp.terms = thisExp.terms.concat(keepTerms);
 
     } else if (isInt(a) || a instanceof Fraction) {
-        copy.constant = copy.constant.add(a);
+        thisExp.constant = thisExp.constant.add(a);
     } else {
-        throw new UserException("InvalidArgument");
+        throw "InvalidArgument";
     }
 
-    copy._removeTermsWithCoefficientZero();
-    return copy;
+    thisExp._removeTermsWithCoefficientZero();
+    return thisExp;
 };
 
 Expression.prototype.subtract = function(a) {
-    var copy = this.copy();
+    var thisExp = this.copy();
     var inverse;
 
     if (a instanceof Term) {
-        var exp = new Expression(a.variable).multiply(a.coefficient).multiply(-1);
-        return copy.add(exp);
+        inverse = new Expression();
+        inverse.terms = [a.copy().multiply(-1)];
     } else if (a instanceof Expression) {
-        var newTerms = [];
-
-        for (var i = 0; i < a.terms.length; i++) {
-            var t = a.terms[i].copy();
-            t.coefficient = t.coefficient.multiply(-1);
-            newTerms.push(t);
-        }
-
         inverse = a.copy();
         inverse.constant = inverse.constant.multiply(-1);
-        inverse.terms = newTerms;
+
+        for (var i = 0; i < inverse.terms.length; i++) {
+            inverse.terms[i] = inverse.terms[i].multiply(-1);
+        }
     } else if (isInt(a)) {
         inverse = -a;
     } else if (a instanceof Fraction) {
         inverse = a.multiply(-1);
     } else {
-        throw new UserException("InvalidArgument");
+        throw "InvalidArgument";
     }
 
-    return copy.add(inverse);
+    return thisExp.add(inverse);
 };
 
 Expression.prototype.multiply = function(a) {
-    if (a instanceof Fraction || isInt(a)) {
-        var copy = this.copy();
+    var thisExp = this.copy();
 
-        copy.constant = copy.constant.multiply(a);
+    if (a instanceof Term) {
+        var exp = new Expression();
+        exp.terms = [a.copy()];
+        return thisExp.multiply(exp);
+    } else if (a instanceof Expression) {
+        var thatExp = a.copy();
+        var newTerms = [];
 
-        for (var i = 0; i < copy.terms.length; i++) {
-            copy.terms[i].coefficient = copy.terms[i].coefficient.multiply(a);
+        for (var i = 0; i < thisExp.terms.length; i++) {
+            var thisTerm = thisExp.terms[i];
+
+            for (var j = 0; j < thatExp.terms.length; j++) {
+                var thatTerm = thatExp.terms[j];
+                newTerms.push(thisTerm.multiply(thatTerm));
+            }
+
+            newTerms.push(thisTerm.multiply(thatExp.constant));
         }
 
-        return copy;
+        for (var i = 0; i < thatExp.terms.length; i++) {
+            var thatTerm = thatExp.terms[i];
+            newTerms.push(thatTerm.multiply(thisExp.constant));
+        }
+
+        thisExp.constant = thisExp.constant.multiply(thatExp.constant);
+        thisExp.terms = newTerms;
+        thisExp._combineLikeTerms();
+        thisExp._removeTermsWithCoefficientZero();
+        thisExp._sortByDegree();
+    } else if (a instanceof Fraction || isInt(a)) {
+        thisExp.constant = thisExp.constant.multiply(a);
+
+        for (var i = 0; i < thisExp.terms.length; i++) {
+            thisExp.terms[i].coefficient = thisExp.terms[i].coefficient.multiply(a);
+        }
     } else {
-        throw new UserException("InvalidArgument");
+        throw "InvalidArgument";
     }
+
+    return thisExp;
 };
 
 Expression.prototype.divide = function(a) {
     if (a instanceof Fraction || isInt(a)) {
         if (a == 0) {
-            throw new UserException("DivideByZero");
+            throw "DivideByZero";
         }
 
         var copy = this.copy();
@@ -118,55 +147,29 @@ Expression.prototype.divide = function(a) {
 
         return copy;
     } else {
-        throw new UserException("InvalidArgument");
+        throw "InvalidArgument";
     }
-};
-
-Expression.prototype._removeTermsWithVar = function(variable) {
-    var keep = [];
-
-    for (var i = 0; i < this.terms.length; i++) {
-        if (this.terms[i].variable != variable) {
-            keep.push(this.terms[i]);
-        }
-    }
-
-    this.terms = keep;
-    return this;
-};
-
-Expression.prototype._removeTermsWithCoefficientZero = function() {
-    var keep = [];
-
-    for (var i = 0; i < this.terms.length; i++) {
-        var coefficient = this.terms[i].coefficient.reduce();
-
-        if (coefficient.numer != 0) {
-            keep.push(this.terms[i]);
-        }
-    }
-
-    this.terms = keep;
-    return this;
 };
 
 Expression.prototype.evaluateAt = function(values) {
     var copy = this.copy();
-    var vars = Object.keys(values);
+    var keepTerms = [];
 
-    for (var i = 0; i < this.terms.length; i++) {
-        for (var j = 0; j < vars.length; j++) {
-            if (this.terms[i].variable == vars[j]) {
-                copy.constant = copy.constant.add(this.terms[i].coefficient.multiply(values[vars[j]]));
-                copy._removeTermsWithVar(vars[j]);
-            }
+    for (var i = 0; i < copy.terms.length; i++) {
+        copy.terms[i] = copy.terms[i].evaluateAt(values);
+
+        if (copy.terms[i].variables.length === 0) {
+            copy.constant = copy.constant.add(copy.terms[i].coefficient);
+        } else {
+            keepTerms.push(copy.terms[i]);
         }
     }
 
-    if (copy.terms.length == 0) {
-        return copy.constant;
+    if (keepTerms.length === 0) {
+        return copy.constant.reduce();
     }
 
+    copy.terms = keepTerms;
     return copy;
 };
 
@@ -216,9 +219,60 @@ Expression.prototype.tex = function() {
     return str;
 };
 
+Expression.prototype._removeTermsWithVar = function(variable) {
+    var keep = [];
+
+    for (var i = 0; i < this.terms.length; i++) {
+        if (this.terms[i].variable != variable) {
+            keep.push(this.terms[i]);
+        }
+    }
+
+    this.terms = keep;
+    return this;
+};
+
+Expression.prototype._removeTermsWithCoefficientZero = function() {
+    var keep = [];
+
+    for (var i = 0; i < this.terms.length; i++) {
+        var coefficient = this.terms[i].coefficient.reduce();
+
+        if (coefficient.numer != 0) {
+            keep.push(this.terms[i]);
+        }
+    }
+
+    this.terms = keep;
+    return this;
+};
+
+Expression.prototype._combineLikeTerms = function() {
+    for (var i = 0; i < this.terms.length; i++) {
+        var thisTerm = this.terms[i];
+
+        for (var j = i + 1; j < this.terms.length; j++) {
+            var thatTerm = this.terms[j];
+
+            if (thisTerm.canBeCombinedWith(thatTerm)) {
+                thisTerm = thisTerm.add(thatTerm);
+                this.terms[i] = thisTerm;
+                this.terms.splice(j, 1);
+            }
+        }
+    }
+
+    return this;
+};
+
+Expression.prototype._sortByDegree = function() {
+    this.terms = this.terms.sort(function(a, b) {return b.maxDegree() - a.maxDegree()});
+    return this;
+};
+
 Expression.prototype._hasVariable = function(variable) {
     for (var i = 0; i < this.terms.length; i++) {
-        if (variable == this.terms[i].variable) {
+        if (this.terms[i].hasVariable(variable)) {
             return true;
         }
     }

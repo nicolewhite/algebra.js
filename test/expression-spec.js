@@ -71,13 +71,31 @@ describe("Expression addition", function() {
         expect(answer.print()).toEqual("x + y + 13/4");
     });
 
-    it("should properly combine the terms of two expressions", function() {
+    it("should properly combine the terms of two expressions - linear", function() {
         var expr1 = x.add(y).add(z); // x + y + z
         var expr2 = z.add(y); // z + y
 
         var answer = expr1.add(expr2); // x + y + z + z + y = x + 2y + 2z
 
         expect(answer.print()).toEqual("x + 2y + 2z");
+    });
+
+    it("should properly combine the terms of two expressions - nonlinear", function() {
+        var expr1 = x.multiply(x);               // x^2
+        var expr2 = x.multiply(x).add(y).add(2); // x^2 + y + 2
+
+        var answer = expr1.add(expr2); // x^2 + (x^2 + y + 2) = 2x^2 + y + 2
+
+        expect(answer.print()).toEqual("2x^2 + y + 2");
+    });
+
+    it("should properly combine the terms of two expressions - crossproducts", function() {
+        var expr1 = x.multiply(y); // xy
+        var expr2 = y.multiply(x).add(x).add(2); // yx + x + 2
+
+        var answer = expr1.add(expr2); // xy + (yx + x + 2) = 2xy + x + 2
+
+        expect(answer.print()).toEqual("2xy + x + 2");
     });
 
     it("should properly remove terms when canceled out", function() {
@@ -117,19 +135,32 @@ describe("Expression subtraction", function() {
         expect(answer.print()).toEqual("x - y");
     });
 
-    it("should properly combine the constant of two expressions", function() {
+    it("should properly combine the constant of two expressions - linear", function() {
         var newx = x.subtract(3);                  // x - 3
         var newy = y.subtract(new Fraction(1, 4)); // y - 1/4
+
         var answer = newx.subtract(newy);          // x - 3 - y - (-1/4) => x - y - 12/4 + 1/4 => x - y - 11/4
 
         expect(answer.print()).toEqual("x - y - 11/4")
     });
 
-    it("should properly combine the terms of two expressions", function() {
-        var newy = y.subtract(x); // y - x
-        var answer = x.subtract(newy); // x - (y - x) => x - y + x => 2x - y
+    it("should properly combine the terms of two expressions - nonlinear", function() {
+        var expr1 = x.multiply(x);   // x^2
+        var expr2 = x.multiply(x);
+        expr2 = expr2.add(y).add(2); // x^2 + y + 2
 
-        expect(answer.print()).toEqual("2x - y");
+        var answer = expr1.subtract(expr2); // x^2 - (x^2 + y + 2) = -y - 2
+
+        expect(answer.print()).toEqual("-y - 2");
+    });
+
+    it("should properly combine the terms of two expressions - crossproducts", function() {
+        var expr1 = x.multiply(y); // xy
+        var expr2 = y.multiply(x).add(x).add(2); // yx + x + 2
+
+        var answer = expr1.subtract(expr2); // xy - (yx + x + 2) = -x - 2
+
+        expect(answer.print()).toEqual("-x - 2");
     });
 
     it("should properly remove terms when canceled out", function() {
@@ -174,8 +205,36 @@ describe("Expression multiplication", function() {
         expect(answer.print()).toEqual("5x");
     });
 
-    it("should not allow multiplying by another expression", function() {
-        expect(function(){x.multiply(y)}).toThrow(new UserException("InvalidArgument"));
+    it("should allow multiplying by another expression", function() {
+        var newX = x.add(y); // x + y
+        var newY = y.add(x); // y + x
+
+        answer = newX.multiply(newY); // (x + y) * (y + x) = x^2 + xy + xy + y^2 = x^2 + y^2 + 2xy
+        expect(answer.print()).toEqual("x^2 + y^2 + 2xy");
+    });
+
+    it("should combine like terms correctly after multiplying by another expression", function() {
+        var newX = x.add(3); // x + 3
+
+        var newY = y.add(4); // y + 4
+        newY = newY.add(newX);  // y + x + 7
+
+        var answer = newX.multiply(newY); // (x + 3) * (y + x + 7) =
+                                          // xy + x^2 + 7x + 3y + 3x + 21 =
+                                          // x^2 + xy + 10x + 3y + 21
+
+        expect(answer.print()).toEqual("x^2 + xy + 10x + 3y + 21");
+    });
+
+    it("should remove terms that cancel out", function() {
+        var newX = x.add(y); // x + y
+        var newY = x.subtract(y); // x - y
+
+        var answer = newX.multiply(newY); // (x + y) * (x - y) =
+                                          // x^2 - xy + xy - y^2 =
+                                          // x^2 - y^2
+
+        expect(answer.print()).toEqual("x^2 - y^2")
     });
 });
 
@@ -196,11 +255,11 @@ describe("Expression division", function() {
     });
 
     it("should not allow dividing by another expression", function() {
-        expect(function(){x.divide(y)}).toThrow(new UserException("InvalidArgument"));
+        expect(function(){x.divide(y)}).toThrow("InvalidArgument");
     });
 
     it("should throw an exception if dividing by zero", function() {
-        expect(function(){x.divide(0)}).toThrow(new UserException("DivideByZero"));
+        expect(function(){x.divide(0)}).toThrow("DivideByZero");
     })
 });
 
@@ -284,7 +343,7 @@ describe("Expression printing to tek", function() {
     });
 });
 
-describe("Expression evaluation with one variable", function() {
+describe("Expression evaluation with one variable - linear", function() {
     var x = new Expression("x");
     x = x.add(3);
 
@@ -301,26 +360,93 @@ describe("Expression evaluation with one variable", function() {
     });
 });
 
-describe("Expression evaluation with multiple variables", function() {
+describe("Expression evaluation with one variable - nonlinear", function() {
+    var x = new Expression("x");
+    var x2 = x.multiply(x).add(x).add(3); // x^2 + x + 3
+
+    it("should allow evaluating at integers", function() {
+        var answer = x2.evaluateAt({x: 2}); // 2^2 + 2 + 3 = 9
+
+        expect(answer.print()).toEqual("9");
+    });
+
+    it("should allow evaluating at fractions", function() {
+        var answer = x2.evaluateAt({x: new Fraction(1, 5)}); // (1/5)^2 + 1/5 + 3 = 81/25
+
+        expect(answer.print()).toEqual("81/25");
+    });
+});
+
+describe("Expression evaluation with multiple variables - linear", function() {
     var x = new Expression("x");
     var y = new Expression("y");
     var z = x.add(y); // x + y
 
     it("should return an expression when not substituting all the variables", function() {
-        var answer = z.evaluateAt({'x': 3});
+        var answer = z.evaluateAt({x: 3});
 
         expect(answer.print()).toEqual("y + 3");
     });
 
     it("should return a fraction when substituting all the variables", function() {
-        var answer = z.evaluateAt({'x': 3, 'y': new Fraction(1, 2)});
+        var answer = z.evaluateAt({x: 3, y: new Fraction(1, 2)});
 
         expect(answer.print()).toEqual("7/2");
     });
 
     it("should return a fraction when substituting variables out of order", function() {
-        var answer = z.evaluateAt({'y': new Fraction(1, 2), 'x': 3});
+        var answer = z.evaluateAt({y: new Fraction(1, 2), 'x': 3});
 
         expect(answer.print()).toEqual("7/2");
+    });
+});
+
+describe("Expression evaluation with multiple variables - nonlinear", function() {
+    var x = new Expression("x");
+    var y = new Expression("y");
+
+    it("should return an expression when not substituting all the variables", function() {
+        var x1 = x.multiply(x).add(x).subtract(y); // x^2 + x - y
+
+        var answer = x1.evaluateAt({x:3}); // 3^2 + 3 - y = -y + 12
+
+        expect(answer.print()).toEqual("-y + 12");
+    });
+
+    it("should return a fraction when substituting all the variables", function() {
+        var x1 = x.multiply(x).add(x).subtract(y); // x^2 + x - y
+
+        var answer = x1.evaluateAt({x: 3, y: new Fraction(1, 2)}); // 3^2 + 3 - 1/2 = 23/2
+
+        expect(answer.print()).toEqual("23/2");
+    });
+
+    it("should return a fraction when substituting variables out of order", function() {
+        var x1 = x.multiply(x).add(x).subtract(y); // x^2 + x - y
+
+        var answer = x1.evaluateAt({y: new Fraction(1, 2), x: 3});
+
+        expect(answer.print()).toEqual("23/2");
+    });
+});
+
+describe("Expression evaluation with multiple variables - crossproducts", function() {
+    var x = new Expression("x");
+    var y = new Expression("y");
+
+    it("should return an expression when not substituting all the variables", function() {
+        var x1 = x.multiply(x).multiply(y).add(x); // x^2y + x
+
+        var answer = x1.evaluateAt({x:3}); // 3^2y + 3 = 9y + 3
+
+        expect(answer.print()).toEqual("9y + 3");
+    });
+
+    it("should return a reduced fraction when substituting all the variables", function() {
+        var x1 = x.multiply(x).multiply(y).add(x); // x^2y + x
+
+        var answer = x1.evaluateAt({y: new Fraction(1, 2), x:3}); // 3^2 * (1/2) + 3 = 15/2
+
+        expect(answer.print()).toEqual("15/2");
     });
 });
