@@ -1,5 +1,7 @@
 var Fraction = require('./fractions');
 var Expression = require('./expressions');
+var Variable = require('./variables');
+var Term = require('./terms');
 var isInt = require('./helper').isInt;
 
 var Equation = function(lhs, rhs) {
@@ -23,13 +25,14 @@ Equation.prototype.solveFor = function(variable) {
         throw "InvalidArgument";
     }
 
+    var solvingFor = new Term(new Variable(variable));
     var newLhs = new Expression();
     var newRhs = new Expression();
 
     for (var i = 0; i < this.rhs.terms.length; i++) {
         var term = this.rhs.terms[i];
 
-        if (term.variable == variable) {
+        if (term.canBeCombinedWith(solvingFor)) {
             newLhs = newLhs.subtract(term);
         } else {
             newRhs = newRhs.add(term);
@@ -39,7 +42,7 @@ Equation.prototype.solveFor = function(variable) {
     for (var i = 0; i < this.lhs.terms.length; i++) {
         var term = this.lhs.terms[i];
 
-        if (term.variable == variable) {
+        if (term.canBeCombinedWith(solvingFor)) {
             newLhs = newLhs.add(term);
         } else {
             newRhs = newRhs.subtract(term);
