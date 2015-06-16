@@ -110,7 +110,7 @@ console.log(x.print());
 x
 ```
 
-## <a name="expressions-add-subtract"></a> Add / Subtract
+### <a name="expressions-add-subtract"></a> Add / Subtract
 
 Add integers, fractions, or other expressions to expressions.
 
@@ -157,7 +157,7 @@ c - b
 a + 2c
 ```
 
-## <a name="expressions-multiply"></a> Multiply
+### <a name="expressions-multiply"></a> Multiply
 
 Multiply expressions by integers, fractions, or other expressions.
 
@@ -182,7 +182,7 @@ console.log(exp3.print());
 5/3x^2 + 1/3y^2 + 2xy
 ```
 
-## <a name="expressions-divide"></a> Divide
+### <a name="expressions-divide"></a> Divide
 
 Divide expressions by either integers or fractions.
 
