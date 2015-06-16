@@ -7,11 +7,13 @@ layout: default
 - [Usage](#usage)
     - [In Node](#usage-in-node)
     - [In the Browser](#usage-in-browser)
+    - [Right Now](#usage-right-now)
 - [Getting Started](#getting-started)
     - [Fractions](#fractions)
     - [Expressions](#expressions)
-        - [Single Variable](#expressions-single-variable)
-        - [Multiple Variables](#expressions-multiple-variables)
+        - [Add / Subtract](#expressions-add-subtract)
+        - [Multiply](#expressions-multiply)
+        - [Divide](#expressions-divide)
         - [Evaluate](#expressions-evaluate)
     - [Equations](#equations)
         - [Solve with Single Variable](#equations-single-variable)
@@ -41,9 +43,15 @@ Download <a href="javascripts/algebra.min.js" download><u>`algebra.min.js`</u></
 <script src="algebra.min.js"></script>
 ```
 
+## <a name"usage-right-now"></a> Right Now
+
+Chrome / OSX: Cmd + Shift + J
+Chrome / Windows: Ctrl + Shift + J
+Firefox / OSX: Cmd + Option + K
+Firefox / Windows: Ctrl + Shift + K
+
 # <a name="getting-started"></a> Getting Started 
 
-Numbers need to be either a fraction or an integer. Currently, only linear expressions and equations are supported. 
 The main objects available are Fraction, Expression, and Equation.
 
 ```js
@@ -61,10 +69,16 @@ reduced.
 var frac = new Fraction(1, 2);
 console.log(frac.print());
 
+frac = frac.add(new Fraction(3, 4));
+console.log(frac.print());
+
 frac = frac.subtract(5);
 console.log(frac.print());
 
 frac = frac.multiply(new Fraction(6, 7));
+console.log(frac.print());
+
+frac = frac.divide(5);
 console.log(frac.print());
 
 frac = frac.reduce();
@@ -73,42 +87,47 @@ console.log(frac.print());
 
 ```
 1/2
--9/2
--54/14
--27/7
+5/4
+-15/4
+-90/28
+-90/140
+-9/14
 ```
 
 ## <a name="expressions"></a> Expressions 
 
-Initialize expressions with a variable name. Add integers, fractions, or other expressions to expressions.
-Multiply and divide expressions by either integers or fractions. Evaluate expressions by substituting in fractions or 
-integers for variables.
-
-### <a name="expressions-single-variable"></a> Single Variable
+Initialize expressions with a variable name. 
 
 ```js
 var x = new Expression("x");
-x = x.add(5);
-x = x.divide(4);
-
 console.log(x.print());
 ```
 
 ```
-1/4x + 5/4
+x
 ```
 
-### <a name="expressions-multiple-variables"></a> Multiple Variables
+## <a name="expressions-add-subtract"></a> Add / Subtract
 
-Expressions can have multiple variables.
+Add integers, fractions, or other expressions to expressions.
 
 ```js
-var expr = new Expression("x").subtract(new Expression("y")).add(3);
-console.log(expr.print());
+var x = new Expression("x");
+
+x = x.add(3);
+console.log(x.print());
+
+x = x.subtract(new Fraction(1, 3));
+console.log(x.print());
+
+x = x.add(new Expression("y"));
+console.log(x.print());
 ```
 
 ```
-x - y + 3
+x + 3
+x + 8/3
+x + y + 8/3
 ```
 
 When adding / subtracting an expression to / from another expression, any like-terms will be combined.
@@ -135,26 +154,66 @@ c - b
 a + 2c
 ```
 
-### <a name="expressions-evaluate"></a> Evaluate
+## <a name="expressions-multiply"></a> Multiply
 
-Evaluating an expression for all of its variables returns a reduced fraction object. Evaluating for only some of its 
-variables returns an expression object.
+Multiply expressions by integers, fractions, or other expressions.
 
 ```js
-var expr = new Expression("x").divide(6).add(new Expression("y").multiply(2));
-console.log(expr.print());
+var x = new Expression("x");
+var y = new Expression("y");
 
-var eval1 = expr.evaluateAt({'y': 3});
-console.log(eval1.print());
+var exp1 = x.multiply(5).add(y);
+var exp2 = y.add(x).multiply(new Fraction(1, 3));
 
-var eval2 = expr.evaluateAt({'y': 3, 'x': new Fraction(1, 2)});
-console.log(eval2.print());
+console.log(exp1.print());
+console.log(exp2.print());
+
+var exp3 = exp1.multiply(exp2);
+
+console.log(exp3.print());
 ```
 
 ```
-1/6x + 2y
-1/6x + 6
-73/12
+5x + y
+1/3y + 1/3x
+5/3x^2 + 1/3y^2 + 2xy
+```
+
+## <a name="expressions-divide"></a> Divide
+
+Divide expressions by either integers or fractions.
+
+```js
+var x = new Expression("x").divide(2).divide(new Fraction(1, 5));
+console.log(x.print());
+```
+
+```
+5/2x
+```
+
+### <a name="expressions-evaluate"></a> Evaluate
+
+Evaluate expressions by substituting in fractions or integers for variables. Evaluating for only some of its variables returns an expression object. Evaluating an expression for all of its variables returns a reduced fraction object.
+
+```js
+var x = new Expression("x");
+var y = new Expression("y");
+
+var exp = x.multiply(2).multiply(x).add(y).add(new Fraction(1, 3));
+console.log(exp.print());
+
+var exp1 = exp.evaluateAt({x:2});
+var exp2 = exp.evaluateAt({x:2, y:new Fraction(3, 4)});
+
+console.log(exp1.print());
+console.log(exp2.print());
+```
+
+```
+2x^2 + y + 1/3
+y + 25/3
+109/12
 ```
 
 ## <a name="equations"></a> Equations
