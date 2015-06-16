@@ -46,8 +46,11 @@ Download <a href="javascripts/algebra.min.js" download><u>`algebra.min.js`</u></
 ## <a name="usage-right-now"></a> Right Now
 
 Chrome / OSX: Cmd + Shift + J
+
 Chrome / Windows: Ctrl + Shift + J
+
 Firefox / OSX: Cmd + Option + K
+
 Firefox / Windows: Ctrl + Shift + K
 
 # <a name="getting-started"></a> Getting Started 
