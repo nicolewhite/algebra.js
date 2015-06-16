@@ -1,7 +1,6 @@
 var Fraction = require('../src/fractions');
 var Expression = require('../src/expressions');
 var Equation = require('../src/equations');
-var UserException = require('../src/exceptions').UserException;
 
 describe("An equation with one variable", function() {
     var x1 = new Expression("x").add(4).divide(5);             // 1/5x + 4/5
@@ -22,7 +21,7 @@ describe("An equation with one variable", function() {
     });
 
     it("should throw an exception when solving for a variable that isn't there", function() {
-        expect(function(){eq.solveFor("y")}).toThrow(new UserException("InvalidArgument"));
+        expect(function(){eq.solveFor("y")}).toThrow("InvalidArgument");
     });
 
     it("should get the right answer", function() {
@@ -56,7 +55,7 @@ describe("An equation with multiple variables", function() {
     });
 
     it("should throw an exception when solving for a variable that isn't there", function() {
-        expect(function(){eq.solveFor("y")}).toThrow(new UserException("InvalidArgument"));
+        expect(function(){eq.solveFor("y")}).toThrow("InvalidArgument");
     });
 
     it("should get the right answer", function() {
@@ -82,14 +81,14 @@ describe("An invalid expression", function() {
     var x = new Expression("x");
 
     it("should throw an exception with a float on the lhs", function() {
-        expect(function(){new Equation(0.25, x)}).toThrow(new UserException("InvalidArgument"));
+        expect(function(){new Equation(0.25, x)}).toThrow("InvalidArgument");
     });
 
     it("should throw an exception with a float on the rhs", function() {
-        expect(function(){new Equation(x, 0.25)}).toThrow(new UserException("InvalidArgument"));
+        expect(function(){new Equation(x, 0.25)}).toThrow("InvalidArgument");
     });
 
     it("should throw an exception if neither args are expressions", function() {
-        expect(function(){new Equation(1, 2)}).toThrow(new UserException("InvalidArgument"));
+        expect(function(){new Equation(1, 2)}).toThrow("InvalidArgument");
     })
 });

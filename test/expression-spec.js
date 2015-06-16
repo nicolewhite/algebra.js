@@ -1,6 +1,5 @@
 var Fraction = require('../src/fractions');
 var Expression = require('../src/expressions');
-var UserException = require('../src/exceptions').UserException;
 
 describe("An expression initialized with an alphabetic variable name", function() {
     var x = new Expression("x");
@@ -120,7 +119,7 @@ describe("Expression addition", function() {
     });
 
     it("should not allow adding floats", function() {
-        expect(function(){x.add(0.25)}).toThrow(new UserException("InvalidArgument"));
+        expect(function(){x.add(0.25)}).toThrow("InvalidArgument");
     });
 });
 
@@ -185,7 +184,7 @@ describe("Expression subtraction", function() {
     });
 
     it("should not allow subtracting floats", function() {
-        expect(function(){x.subtract(0.25)}).toThrow(new UserException("InvalidArgument"));
+        expect(function(){x.subtract(0.25)}).toThrow("InvalidArgument");
     });
 });
 

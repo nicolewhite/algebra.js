@@ -1,7 +1,6 @@
 var Variable = require('../src/variables');
 var Term = require('../src/terms');
 var Fraction = require('../src/fractions');
-var InternalException = require('../src/exceptions');
 
 describe("Terms", function() {
     var x = new Variable("x");
