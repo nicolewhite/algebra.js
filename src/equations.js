@@ -68,4 +68,10 @@ Equation.prototype.tex = function() {
     return this.lhs.tex() + " = " + this.rhs.tex();
 };
 
+Equation.prototype._maxDegree = function() {
+    var lhsMax = lhs._maxDegree();
+    var rhsMax = rhs._maxDegree();
+    return Math.max(lhsMax, rhsMax)
+};
+
 module.exports = Equation;

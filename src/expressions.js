@@ -280,4 +280,22 @@ Expression.prototype._hasVariable = function(variable) {
     return false;
 };
 
+Expression.prototype._maxDegree = function() {
+    var max = 1;
+
+    for (var i = 0; i < this.terms.length; i++) {
+        var maxDegree = this.terms[i].maxDegree();
+
+        if (maxDegree > max) {
+            max = maxDegree
+        }
+    }
+
+    return max;
+};
+
+Expression.prototype._variableCount = function() {
+
+};
+
 module.exports = Expression;
