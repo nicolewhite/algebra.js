@@ -74,4 +74,8 @@ Equation.prototype._maxDegree = function() {
     return Math.max(lhsMax, rhsMax)
 };
 
+Equation.prototype._onlyHasVariable = function(variable) {
+    return this.lhs._onlyHasVariable(variable) && this.rhs._onlyHasVariable(variable);
+};
+
 module.exports = Equation;

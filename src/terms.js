@@ -174,6 +174,17 @@ Term.prototype.canBeCombinedWith = function(term) {
     return true;
 };
 
+Term.prototype.onlyHasVariable = function(variable) {
+    for (var i = 0; i < this.variables.length; i++) {
+        if (this.variables[i].variable != variable) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+
 Term.prototype.print = function() {
     var str;
     var coefficient = this.coefficient.reduce().abs();

@@ -280,6 +280,16 @@ Expression.prototype._hasVariable = function(variable) {
     return false;
 };
 
+Expression.prototype._onlyHasVariable = function(variable) {
+    for (var i = 0; i < this.terms.length; i++) {
+        if (!this.terms[i].onlyHasVariable(variable)) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
 Expression.prototype._maxDegree = function() {
     var max = 1;
 
@@ -292,10 +302,6 @@ Expression.prototype._maxDegree = function() {
     }
 
     return max;
-};
-
-Expression.prototype._variableCount = function() {
-
 };
 
 module.exports = Expression;
