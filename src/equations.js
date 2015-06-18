@@ -78,4 +78,12 @@ Equation.prototype._onlyHasVariable = function(variable) {
     return this.lhs._onlyHasVariable(variable) && this.rhs._onlyHasVariable(variable);
 };
 
+Equation.prototype._isLinear = function() {
+    return this._maxDegree() === 1;
+};
+
+Equation.prototype._isQuadratic = function(variable) {
+    return this._maxDegree() === 2 && this._onlyHasVariable(variable);
+};
+
 module.exports = Equation;
