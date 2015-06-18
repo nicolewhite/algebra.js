@@ -136,7 +136,8 @@ Term.prototype.hasVariable = function(variable) {
 };
 
 Term.prototype.maxDegree = function() {
-    max = 1;
+    var max = 1;
+
     for(var i = 0; i < this.variables.length; i++) {
         if(this.variables[i].degree > max) {
             max = this.variables[i].degree;
