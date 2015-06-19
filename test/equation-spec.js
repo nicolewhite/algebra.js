@@ -92,3 +92,23 @@ describe("An invalid equation", function() {
         expect(function(){new Equation(1, 2)}).toThrow("InvalidArgument");
     })
 });
+
+describe("Checking the type of an equation", function() {
+    var x = new Expression("x");
+    var y = new Expression("y");
+
+    it("should recognize a linear equation with one variable", function() {
+        var eq = new Equation(x, 0);
+        expect(eq._isLinear()).toBe(true);
+    });
+
+    it("should recognize a linear equation with multiple variables", function() {
+        var eq = new Equation(x.add(y), 0);
+        expect(eq._isLinear()).toBe(true);
+    });
+
+    it("should recognize a quadratic equation", function() {
+        var eq = new Equation(x.multiply(x).add(x).add(1), 0);
+        expect(eq._isQuadratic("x")).toBe(true);
+    });
+});
