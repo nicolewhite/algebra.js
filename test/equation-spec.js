@@ -77,7 +77,7 @@ describe("An equation built with an expression and an integer or fraction", func
     });
 });
 
-describe("An invalid expression", function() {
+describe("An invalid equation", function() {
     var x = new Expression("x");
 
     it("should throw an exception with a float on the lhs", function() {
