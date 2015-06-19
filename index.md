@@ -45,11 +45,11 @@ Download <a href="javascripts/algebra.min.js" download><u>`algebra.min.js`</u></
 
 ## <a name="usage-right-now"></a> Right Now
 
-Chrome / OSX: Cmd + Shift + J
+Chrome / OS X: Cmd + Option + J
 
 Chrome / Windows: Ctrl + Shift + J
 
-Firefox / OSX: Cmd + Option + K
+Firefox / OS X: Cmd + Option + K
 
 Firefox / Windows: Ctrl + Shift + K
 
