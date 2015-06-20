@@ -153,4 +153,11 @@ describe("Term division", function() {
         answer = t.divide(new Fraction(2, 3));
         expect(answer.print()).toEqual("3/2x")
     });
+
+    it("doesn't allow division of floats", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+
+        expect(function(){t.divide(.5)}).toThrow("InvalidArgument");
+    });
 });
