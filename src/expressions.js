@@ -304,4 +304,37 @@ Expression.prototype._maxDegree = function() {
     return max;
 };
 
+Expression.prototype._maxDegreeOfVariable = function(variable) {
+    var max = 1;
+
+    for (var i = 0; i < this.terms.length; i++) {
+        var maxDegreeOfVariable = this.terms[i].maxDegreeOfVariable(variable);
+
+        if (maxDegreeOfVariable > max) {
+            max = maxDegreeOfVariable;
+        }
+    }
+
+    return max;
+};
+
+Expression.prototype._quadraticCoefficients = function() {
+    // This function isn't used until everything has been moved to the LHS in Equation.solve.
+    var a, b, c;
+
+    for (var i = 0; i < this.terms.length; i++) {
+        var thisTerm = this.terms[i];
+
+        if (thisTerm.maxDegree() === 2) {
+            a = thisTerm.coefficient.copy();
+        } else if (thisTerm.maxDegree() === 1) {
+            b = thisTerm.coefficient.copy();
+        }
+    }
+
+    c = this.constant.copy();
+
+    return {a:a, b:b, c:c}
+};
+
 module.exports = Expression;
