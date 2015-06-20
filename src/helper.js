@@ -14,9 +14,18 @@ function lcm(x, y) {
 
 function isInt(thing) {
     if (typeof thing == "number") {
-        if (thing % 1 == 0) {
+        if (thing % 1 === 0) {
             return true;
         }
+    }
+
+    return false;
+}
+
+function isAPowerOfTwo(int) {
+    if (isInt(int)) {
+        var x = Math.log(int) / Math.log(2);
+        return x % 1 === 0;
     }
 
     return false;
@@ -66,4 +75,5 @@ GREEK_LETTERS = [
 exports.gcd = gcd;
 exports.lcm = lcm;
 exports.isInt = isInt;
+exports.isAPowerOfTwo = isAPowerOfTwo;
 exports.GREEK_LETTERS = GREEK_LETTERS;
