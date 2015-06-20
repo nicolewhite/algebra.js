@@ -22,15 +22,6 @@ function isInt(thing) {
     return false;
 }
 
-function isAPowerOfTwo(int) {
-    if (isInt(int)) {
-        var x = Math.log(int) / Math.log(2);
-        return x % 1 === 0;
-    }
-
-    return false;
-}
-
 GREEK_LETTERS = [
     'alpha',
     'beta',
@@ -75,5 +66,4 @@ GREEK_LETTERS = [
 exports.gcd = gcd;
 exports.lcm = lcm;
 exports.isInt = isInt;
-exports.isAPowerOfTwo = isAPowerOfTwo;
 exports.GREEK_LETTERS = GREEK_LETTERS;

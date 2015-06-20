@@ -1,7 +1,6 @@
 gcd = require('../src/helper').gcd;
 lcm = require('../src/helper').lcm;
 isInt = require('../src/helper').isInt;
-isAPowerOfTwo = require('../src/helper').isAPowerOfTwo;
 
 describe("Greatest common divisor", function() {
     it("returns 1 when the arguments are 1 and 1", function() {
@@ -45,26 +44,5 @@ describe("isInt", function() {
 
     it("should return true if it's an integer", function() {
         expect(isInt(4)).toBe(true);
-    });
-});
-
-describe("isAPowerOfTwo", function() {
-    it("should return true if the argument is 1", function() {
-        // 2^0 = 1
-        expect(isAPowerOfTwo(1)).toBe(true);
-    });
-
-    it("should return true if the argument is 2", function() {
-        // 2^1 = 2
-        expect(isAPowerOfTwo(2)).toBe(true);
-    });
-
-    it("should return true if the argument is 4", function() {
-        // 2^2 = 4
-        expect(isAPowerOfTwo(4)).toBe(true);
-    });
-
-    it("should return false if it's not a power of 2", function() {
-        expect(isAPowerOfTwo(3)).toBe(false);
     });
 });
