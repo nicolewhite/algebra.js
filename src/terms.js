@@ -147,6 +147,22 @@ Term.prototype.maxDegree = function() {
     return max;
 };
 
+Term.prototype.maxDegreeOfVariable = function(variable) {
+    var max = 1;
+
+    for (var i = 0; i < this.variables.length; i++) {
+        var thisVar = this.variables[i];
+
+        if (thisVar.variable === variable) {
+            if (thisVar.degree > max) {
+                max = thisVar.degree;
+            }
+        }
+    }
+
+    return max;
+};
+
 Term.prototype.canBeCombinedWith = function(term) {
     if(term instanceof Term) {
         var thisVars = this.variables;
