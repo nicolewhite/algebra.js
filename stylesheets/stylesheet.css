@@ -233,6 +233,12 @@ a:hover {
     padding: 2rem 1rem;
     font-size: 1rem; } }
 
+@media screen and (max-width: 580px) {
+  .main-content table {
+      display: block;
+  }
+}
+
 .site-footer {
   padding-top: 2rem;
   margin-top: 2rem;
