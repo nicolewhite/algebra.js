@@ -320,7 +320,9 @@ Expression.prototype._maxDegreeOfVariable = function(variable) {
 
 Expression.prototype._quadraticCoefficients = function() {
     // This function isn't used until everything has been moved to the LHS in Equation.solve.
-    var a, b, c;
+    var a;
+    var b = new Fraction(0, 1);
+    var c = this.constant.copy();
 
     for (var i = 0; i < this.terms.length; i++) {
         var thisTerm = this.terms[i];
@@ -331,8 +333,6 @@ Expression.prototype._quadraticCoefficients = function() {
             b = thisTerm.coefficient.copy();
         }
     }
-
-    c = this.constant.copy();
 
     return {a:a, b:b, c:c}
 };
