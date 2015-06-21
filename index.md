@@ -22,7 +22,7 @@ layout: default
 <script>
 function render() {
     var expression = document.getElementById("expression");
-    katex.render(e.tex(), expression, {displayMode: true});
+    katex.render(e.toTex(), expression, {displayMode: true});
 }
 
 var x = new Expression("x");
@@ -127,22 +127,22 @@ reduced.
 
 ```js
 var frac = new Fraction(1, 2);
-console.log(frac.print());
+console.log(frac.toString());
 
 frac = frac.add(new Fraction(3, 4));
-console.log(frac.print());
+console.log(frac.toString());
 
 frac = frac.subtract(5);
-console.log(frac.print());
+console.log(frac.toString());
 
 frac = frac.multiply(new Fraction(6, 7));
-console.log(frac.print());
+console.log(frac.toString());
 
 frac = frac.divide(5);
-console.log(frac.print());
+console.log(frac.toString());
 
 frac = frac.reduce();
-console.log(frac.print());
+console.log(frac.toString());
 ```
 
 ```
@@ -160,7 +160,7 @@ Initialize expressions with a variable name.
 
 ```js
 var x = new Expression("x");
-console.log(x.print());
+console.log(x.toString());
 ```
 
 ```
@@ -175,13 +175,13 @@ Add integers, fractions, or other expressions to expressions.
 var x = new Expression("x");
 
 x = x.add(3);
-console.log(x.print());
+console.log(x.toString());
 
 x = x.subtract(new Fraction(1, 3));
-console.log(x.print());
+console.log(x.toString());
 
 x = x.add(new Expression("y"));
-console.log(x.print());
+console.log(x.toString());
 ```
 
 ```
@@ -200,18 +200,11 @@ var c = new Expression("c");
 var expr1 = a.add(b).add(c);
 var expr2 = c.subtract(b);
 
-console.log(expr1.print());
-console.log(expr2.print());
-
-var expr3 = expr1.add(expr2);
-
-console.log(expr3.print());
+console.log(expr1.toString() + " + " + expr2.toString() + " = " + expr1.add(expr2).toString());
 ```
 
 ```
-a + b + c
-c - b
-a + 2c
+a + b + c + c - b = a + 2c
 ```
 
 ### <a name="expressions-multiply"></a> Multiply
@@ -222,21 +215,14 @@ Multiply expressions by integers, fractions, or other expressions.
 var x = new Expression("x");
 var y = new Expression("y");
 
-var exp1 = x.multiply(5).add(y);
-var exp2 = y.add(x).multiply(new Fraction(1, 3));
+var expr1 = x.multiply(5).add(y);
+var expr2 = y.add(x).multiply(new Fraction(1, 3));
 
-console.log(exp1.print());
-console.log(exp2.print());
-
-var exp3 = exp1.multiply(exp2);
-
-console.log(exp3.print());
+console.log("(" + expr1.toString() + ")(" + expr2.toString() + ") = " + expr1.multiply(expr2).toString());
 ```
 
 ```
-5x + y
-1/3y + 1/3x
-5/3x^2 + 1/3y^2 + 2xy
+(5x + y)(1/3y + 1/3x) = 5/3x^2 + 1/3y^2 + 2xy
 ```
 
 ### <a name="expressions-divide"></a> Divide
@@ -245,7 +231,7 @@ Divide expressions by either integers or fractions.
 
 ```js
 var x = new Expression("x").divide(2).divide(new Fraction(1, 5));
-console.log(x.print());
+console.log(x.toString());
 ```
 
 ```
@@ -260,20 +246,15 @@ Evaluate expressions by substituting in fractions or integers for variables. Eva
 var x = new Expression("x");
 var y = new Expression("y");
 
-var exp = x.multiply(2).multiply(x).add(y).add(new Fraction(1, 3));
-console.log(exp.print());
+var expr = x.multiply(2).multiply(x).add(y).add(new Fraction(1, 3));
 
-var exp1 = exp.evaluateAt({x:2});
-var exp2 = exp.evaluateAt({x:2, y:new Fraction(3, 4)});
-
-console.log(exp1.print());
-console.log(exp2.print());
+console.log("If x = 2, then " + expr.toString() + " = " + expr.evaluateAt({x:2}).toString());
+console.log("If x = 2 and y = 3/4, then " + expr.toString() + " = " + expr.evaluateAt({x:2, y:new Fraction(3, 4)}).toString());
 ```
 
 ```
-2x^2 + y + 1/3
-y + 25/3
-109/12
+If x = 2, then 2x^2 + y + 1/3 = y + 25/3
+If x = 2 and y = 3/4, then 2x^2 + y + 1/3 = 109/12
 ```
 
 ## <a name="equations"></a> Equations
@@ -290,11 +271,11 @@ var x1 = new Expression("x").add(new Fraction(2, 3)).divide(5);
 var x2 = new Expression("x").divide(7).add(4);
 
 var eq = new Equation(x1, x2);
-console.log(eq.print());
+console.log(eq.toString());
 
 var answer = eq.solveFor("x");
 
-console.log("x = " + answer.print());
+console.log("x = " + answer.toString());
 ```
 
 ```
@@ -312,13 +293,13 @@ var y = new Expression("y").subtract(new Fraction(4, 5)).multiply(3);
 
 var eq = new Equation(x, y);
 
-console.log(eq.print());
+console.log(eq.toString());
 
 var xAnswer = eq.solveFor("x");
 var yAnswer = eq.solveFor("y");
 
-console.log("x = " + xAnswer.print());
-console.log("y = " + yAnswer.print());
+console.log("x = " + xAnswer.toString());
+console.log("y = " + yAnswer.toString());
 ```
 
 ```
@@ -336,13 +317,13 @@ var z = new Expression("z").subtract(4).divide(9);
 
 var eq1 = new Equation(z, 0);
 
-console.log(eq1.print());
-console.log("z = " + eq1.solveFor("z").print());
+console.log(eq1.toString());
+console.log("z = " + eq1.solveFor("z").toString());
 
 var eq2 = new Equation(z, new Fraction(1, 4));
 
-console.log(eq2.print());
-console.log("z = " + eq2.solveFor("z").print());
+console.log(eq2.toString());
+console.log("z = " + eq2.solveFor("z").toString());
 ```
 
 ```
@@ -354,7 +335,7 @@ z = 25/4
 
 # <a name="latex"></a> LaTeX
 
-Make things pretty with LaTeX. All classes have a `.tex()` method for rendering LaTeX. Combining this with
+Make things pretty with LaTeX. All classes have a `.toTex()` method for rendering LaTeX. Combining this with
  [KaTeX](https://github.com/Khan/KaTeX), for example, is easy.
 
 ## <a name="latex-tutorial-like-example"></a> Tutorial-Like Example
@@ -387,24 +368,24 @@ var expr1 = new Expression(LETTER).multiply(SLOPE1).add(INTERCEPT1);
 var expr2 = new Expression(LETTER).multiply(SLOPE2).add(INTERCEPT2);
 
 appendText("Let's say we have the equations of two lines:");
-appendLatex("y = " + expr1.tex());
-appendLatex("y = " + expr2.tex());
+appendLatex("y = " + expr1.toTex());
+appendLatex("y = " + expr2.toTex());
 
 appendText("If we want to find where these two lines intersect, we need to solve for " + LETTER + ":");
 
 var eq = new Equation(expr1, expr2);
-appendLatex(eq.tex());
+appendLatex(eq.toTex());
 
 var x = eq.solveFor(LETTER);
-appendLatex(LETTER + " = " + x.tex());
+appendLatex(LETTER + " = " + x.toTex());
 
-appendText("Now we need to plug " + x.print() + " into one of the original expressions to find y:");
+appendText("Now we need to plug " + x.toString() + " into one of the original expressions to find y:");
 
-var y = expr1.evaluateAt({'x': x});
-appendLatex("y = " + y.tex());
+var y = expr1.evaluateAt({x: x});
+appendLatex("y = " + y.toTex());
 
 appendText("Thus, these lines intersect at the point:");
-appendLatex("\\left(" + x.tex() + "," + y.tex() + "\\right)");
+appendLatex("\\left(" + x.toTex() + "," + y.toTex() + "\\right)");
 </script>
 ```
 
@@ -435,24 +416,24 @@ var expr1 = new Expression(LETTER).multiply(SLOPE1).add(INTERCEPT1);
 var expr2 = new Expression(LETTER).multiply(SLOPE2).add(INTERCEPT2);
 
 appendText("Let's say we have the equations of two lines:");
-appendLatex("y = " + expr1.tex());
-appendLatex("y = " + expr2.tex());
+appendLatex("y = " + expr1.toTex());
+appendLatex("y = " + expr2.toTex());
 
 appendText("If we want to find where these two lines intersect, we need to solve for " + LETTER + ":");
 
 var eq = new Equation(expr1, expr2);
-appendLatex(eq.tex());
+appendLatex(eq.toTex());
 
 var x = eq.solveFor(LETTER);
-appendLatex(LETTER + " = " + x.tex());
+appendLatex(LETTER + " = " + x.toTex());
 
-appendText("Now we need to plug " + x.print() + " into one of the original expressions to find y:");
+appendText("Now we need to plug " + x.toString() + " into one of the original expressions to find y:");
 
-var y = expr1.evaluateAt({'x': x});
-appendLatex("y = " + y.tex());
+var y = expr1.evaluateAt({x: x});
+appendLatex("y = " + y.toTex());
 
 appendText("Thus, these lines intersect at the point:");
-appendLatex("\\left(" + x.tex() + "," + y.tex() + "\\right)");
+appendLatex("\\left(" + x.toTex() + "," + y.toTex() + "\\right)");
 </script>
 
 ## <a name="latex-greek-letters"></a> Greek Letters
@@ -472,8 +453,8 @@ var div2 = document.getElementById("div2");
 var lambda = new Expression("lambda").add(3).divide(4);
 var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
 
-katex.render(lambda.tex(), div1);
-katex.render(Phi.tex(), div2);
+katex.render(lambda.toTex(), div1);
+katex.render(Phi.toTex(), div2);
 </script>
 ```
 
@@ -489,8 +470,8 @@ var div2 = document.getElementById("div2");
 var lambda = new Expression("lambda").add(3).divide(4);
 var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
 
-katex.render(lambda.tex(), div1);
-katex.render(Phi.tex(), div2);
+katex.render(lambda.toTex(), div1);
+katex.render(Phi.toTex(), div2);
 </script>
 
 See [here](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters) for a full list of 
