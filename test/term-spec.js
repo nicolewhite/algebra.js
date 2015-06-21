@@ -43,7 +43,7 @@ describe("Term addition", function() {
         var t2 = new Term(x);
 
         answer = t1.add(t2);
-        expect(answer.print()).toEqual("2x")
+        expect(answer.toString()).toEqual("2x")
     });
 
     it("throws an error if trying to combine unlike terms", function() {
@@ -65,7 +65,7 @@ describe("Term subtraction", function() {
         t1.coefficient = new Fraction(2, 1);
 
         answer = t1.subtract(t2);
-        expect(answer.print()).toEqual("x")
+        expect(answer.toString()).toEqual("x")
     });
 
     it("throws an error if trying to combine unlike terms", function() {
@@ -86,7 +86,7 @@ describe("Term multiplication", function() {
         t2.coefficient = new Fraction(3, 1);
 
         answer = t1.multiply(t2);
-        expect(answer.print()).toEqual("6x^2");
+        expect(answer.toString()).toEqual("6x^2");
     });
 
     it("combines degrees correctly", function() {
@@ -97,7 +97,7 @@ describe("Term multiplication", function() {
         var t2 = new Term(x);
 
         answer = t1.multiply(t2);
-        expect(answer.print()).toEqual("x^5");
+        expect(answer.toString()).toEqual("x^5");
     });
 
     it("combines unlike terms correctly", function() {
@@ -110,7 +110,7 @@ describe("Term multiplication", function() {
         t2.coefficient = new Fraction(3, 1);
 
         answer = t1.multiply(t2);
-        expect(answer.print()).toEqual("6xy")
+        expect(answer.toString()).toEqual("6xy")
     });
 
     it("allows multiplication of integers", function() {
@@ -118,7 +118,7 @@ describe("Term multiplication", function() {
         var t = new Term(x);
 
         answer = t.multiply(2);
-        expect(answer.print()).toEqual("2x");
+        expect(answer.toString()).toEqual("2x");
     });
 
     it("allows multiplication of fractions", function() {
@@ -126,7 +126,7 @@ describe("Term multiplication", function() {
         var t = new Term(x);
 
         answer = t.multiply(new Fraction(2, 3));
-        expect(answer.print()).toEqual("2/3x");
+        expect(answer.toString()).toEqual("2/3x");
     });
 
     it("doesn't allow multiplication of floats", function() {
@@ -143,7 +143,7 @@ describe("Term division", function() {
         var t = new Term(x);
 
         answer = t.divide(3);
-        expect(answer.print()).toEqual("1/3x");
+        expect(answer.toString()).toEqual("1/3x");
     });
 
     it("allows division of fractions", function() {
@@ -151,7 +151,7 @@ describe("Term division", function() {
         var t = new Term(x);
 
         answer = t.divide(new Fraction(2, 3));
-        expect(answer.print()).toEqual("3/2x")
+        expect(answer.toString()).toEqual("3/2x")
     });
 
     it("doesn't allow division of floats", function() {

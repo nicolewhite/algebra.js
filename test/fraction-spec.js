@@ -27,15 +27,15 @@ describe("A valid, positive fraction", function() {
     });
 
     it("should print to string properly", function() {
-        expect(frac.print()).toEqual("1/2");
+        expect(frac.toString()).toEqual("1/2");
     });
 
     it("should print to tex properly", function() {
-        expect(frac.tex()).toEqual("\\frac{1}{2}");
+        expect(frac.toTex()).toEqual("\\frac{1}{2}");
     });
 
     it("should coerce to a number properly", function() {
-        expect(frac.decimal()).toEqual(0.5);
+        expect(frac.valueOf()).toEqual(0.5);
     });
 });
 
@@ -48,15 +48,15 @@ describe("A valid fraction with a negative numerator", function() {
     });
 
     it("should print to string properly", function() {
-        expect(frac.print()).toEqual("-1/2");
+        expect(frac.toString()).toEqual("-1/2");
     });
 
     it("should print to tex with the negative out in front", function() {
-        expect(frac.tex()).toEqual("-\\frac{1}{2}");
+        expect(frac.toTex()).toEqual("-\\frac{1}{2}");
     });
 
-    it("should coerce to a decimal properly", function() {
-        expect(frac.decimal()).toEqual(-0.5);
+    it("should coerce to a valueOf properly", function() {
+        expect(frac.valueOf()).toEqual(-0.5);
     })
 });
 
@@ -69,11 +69,11 @@ describe("A valid fraction with a negative denominator", function() {
     });
 
     it("should print to string with a negative denominator", function() {
-        expect(frac.print()).toEqual("2/-4");
+        expect(frac.toString()).toEqual("2/-4");
     });
 
     it("should print to tex with a negative denominator", function() {
-        expect(frac.tex()).toEqual("\\frac{2}{-4}");
+        expect(frac.toTex()).toEqual("\\frac{2}{-4}");
     });
 
     it("should bring the negative up to the numerator when reduced", function() {
@@ -82,8 +82,8 @@ describe("A valid fraction with a negative denominator", function() {
         expect(reduced.denom).toEqual(2);
     });
 
-    it("should coerce to a decimal properly", function() {
-        expect(frac.decimal()).toEqual(-0.5);
+    it("should coerce to a valueOf properly", function() {
+        expect(frac.valueOf()).toEqual(-0.5);
     });
 });
 
@@ -96,11 +96,11 @@ describe("Fractions with 1 in the denominator", function() {
     });
 
     it("should print to string with positive integers", function() {
-        expect(frac.print()).toEqual("5");
+        expect(frac.toString()).toEqual("5");
     });
 
     it("should print to tex with positive integers", function() {
-        expect(frac.tex()).toEqual("5");
+        expect(frac.toTex()).toEqual("5");
     });
 });
 
@@ -113,11 +113,11 @@ describe("Fractions with -1 in the denominator", function() {
     });
 
     it("should print to string with negative integers", function() {
-        expect(frac.print()).toEqual("-5");
+        expect(frac.toString()).toEqual("-5");
     });
 
     it("should print to tex with negative integers", function() {
-        expect(frac.print()).toEqual("-5");
+        expect(frac.toString()).toEqual("-5");
     });
 });
 
@@ -128,13 +128,13 @@ describe("Fraction addition", function() {
         var y = new Fraction(1, 5);
         var answer = x.add(y);
 
-        expect(answer.print()).toEqual("8/15");
+        expect(answer.toString()).toEqual("8/15");
     });
 
     it("should allow addition of integers", function() {
         var answer = x.add(2);
 
-        expect(answer.print()).toEqual("7/3");
+        expect(answer.toString()).toEqual("7/3");
     });
 
     it("should not allow addition of floats", function() {
@@ -145,14 +145,14 @@ describe("Fraction addition", function() {
         var y = new Fraction(2, 3);
         var answer = x.add(y);
 
-        expect(answer.print()).toEqual("3/3");
+        expect(answer.toString()).toEqual("3/3");
     });
 
     it("should allow an answer of 0", function() {
         var y = new Fraction(-1, 3);
         var answer = x.add(y);
 
-        expect(answer.print()).toEqual("0");
+        expect(answer.toString()).toEqual("0");
     });
 });
 
@@ -163,13 +163,13 @@ describe("Fraction subtraction", function() {
         var y = new Fraction(1, 5);
         var answer = x.subtract(y);
 
-        expect(answer.print()).toEqual("2/15");
+        expect(answer.toString()).toEqual("2/15");
     });
 
     it("should allow subtraction of integers", function() {
         var answer = x.subtract(2);
 
-        expect(answer.print()).toEqual("-5/3");
+        expect(answer.toString()).toEqual("-5/3");
     });
 
     it("should not allow subtraction of floats", function() {
@@ -180,14 +180,14 @@ describe("Fraction subtraction", function() {
         var y = new Fraction(4, 6);
         var answer = x.subtract(y);
 
-        expect(answer.print()).toEqual("-2/6");
+        expect(answer.toString()).toEqual("-2/6");
     });
 
     it("should allow an answer of 0", function() {
         var y = new Fraction(1, 3);
         var answer = x.subtract(y);
 
-        expect(answer.print()).toEqual("0");
+        expect(answer.toString()).toEqual("0");
     });
 });
 
@@ -198,13 +198,13 @@ describe("Fraction multiplication", function() {
         var y = new Fraction(1, 2);
         var answer = x.multiply(y);
 
-        expect(answer.print()).toEqual("1/4");
+        expect(answer.toString()).toEqual("1/4");
     });
 
     it("should allow multiplication of integers", function() {
         var answer = x.multiply(5);
 
-        expect(answer.print()).toEqual("5/2");
+        expect(answer.toString()).toEqual("5/2");
     });
 
     it("should not allow multiplication of floats", function() {
@@ -219,13 +219,13 @@ describe("Fraction division", function() {
         var y = new Fraction(1, 2);
         var answer = x.divide(y);
 
-        expect(answer.print()).toEqual("2/2");
+        expect(answer.toString()).toEqual("2/2");
     });
 
     it("should allow division of integers", function() {
         var answer = x.divide(5);
 
-        expect(answer.print()).toEqual("1/10");
+        expect(answer.toString()).toEqual("1/10");
     });
 
     it("should not allow division of floats", function() {

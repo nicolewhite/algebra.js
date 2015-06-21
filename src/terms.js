@@ -201,35 +201,35 @@ Term.prototype.onlyHasVariable = function(variable) {
 };
 
 
-Term.prototype.print = function() {
+Term.prototype.toString = function() {
     var str;
     var coefficient = this.coefficient.reduce().abs();
 
-    if(coefficient.decimal() === 1) {
+    if(coefficient.valueOf() === 1) {
         str = "";
     } else {
-        str = coefficient.print();
+        str = coefficient.toString();
     }
 
     for(var i = 0; i < this.variables.length; i++) {
-        str += this.variables[i].print();
+        str += this.variables[i].toString();
     }
 
     return str;
 };
 
-Term.prototype.tex = function() {
+Term.prototype.toTex = function() {
     var str;
     var coefficient = this.coefficient.reduce().abs();
 
-    if(coefficient.decimal() === 1) {
+    if(coefficient.valueOf() === 1) {
         str = "";
     } else {
-        str = coefficient.tex();
+        str = coefficient.toTex();
     }
 
     for(var i = 0; i < this.variables.length; i++) {
-        str += this.variables[i].tex();
+        str += this.variables[i].toTex();
     }
 
     return str;

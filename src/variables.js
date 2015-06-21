@@ -15,7 +15,7 @@ Variable.prototype.copy = function() {
     return copy;
 };
 
-Variable.prototype.print = function() {
+Variable.prototype.toString = function() {
     var degree = this.degree;
     var variable = this.variable;
 
@@ -28,7 +28,7 @@ Variable.prototype.print = function() {
     }
 };
 
-Variable.prototype.tex = function() {
+Variable.prototype.toTex = function() {
     var degree = this.degree;
     var variable = this.variable;
 

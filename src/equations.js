@@ -78,7 +78,7 @@ Equation.prototype.solveFor = function(variable) {
         var c = coefs.c;
 
         // Calculate the discriminant, b^2 - 4ac.
-        var discriminant = b.pow(2).subtract(a.multiply(c).multiply(4)).decimal();
+        var discriminant = b.pow(2).subtract(a.multiply(c).multiply(4)).valueOf();
 
         // If the discriminant is greater than or equal to 0, there is at least one real root.
         if (discriminant >= 0) {
@@ -99,13 +99,13 @@ Equation.prototype.solveFor = function(variable) {
                     return [root1.reduce(), root2.reduce()];
                 // If the answers will be irrational, return numbers.
                 } else {
-                    a = a.decimal();
-                    b = b.decimal();
-                    c = c.decimal();
+                    a = a.valueOf();
+                    b = b.valueOf();
+                    c = c.valueOf();
 
                     var root1 = (-b - squareRootDiscriminant) / 2*a;
                     var root2 = (-b + squareRootDiscriminant) / 2*a;
-                    return [root1, root2];
+                    return [new Number(root1), new Number(root2)];
                 }
             }
         // If the discriminant is negative, there are no real roots.
@@ -118,12 +118,12 @@ Equation.prototype.solveFor = function(variable) {
     }
 };
 
-Equation.prototype.print = function() {
-    return this.lhs.print() + " = " + this.rhs.print();
+Equation.prototype.toString = function() {
+    return this.lhs.toString() + " = " + this.rhs.toString();
 };
 
-Equation.prototype.tex = function() {
-    return this.lhs.tex() + " = " + this.rhs.tex();
+Equation.prototype.toTex = function() {
+    return this.lhs.toTex() + " = " + this.rhs.toTex();
 };
 
 Equation.prototype._maxDegree = function() {

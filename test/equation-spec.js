@@ -13,7 +13,7 @@ describe("A linear equation with one variable", function() {
     });
 
     it("should print properly", function() {
-        expect(eq.print()).toEqual("1/5x + 4/5 = x - 1/6");
+        expect(eq.toString()).toEqual("1/5x + 4/5 = x - 1/6");
     });
 
     it("should return a fraction when solving for the one variable", function() {
@@ -27,7 +27,7 @@ describe("A linear equation with one variable", function() {
 
     it("should get the right answer", function() {
         var answer = eq.solveFor("x");
-        expect(answer.print()).toEqual("29/24");
+        expect(answer.toString()).toEqual("29/24");
     });
 });
 
@@ -44,7 +44,7 @@ describe("An equation with multiple variables", function() {
     });
 
     it("should print properly", function() {
-        expect(eq.print()).toEqual("a + b = c + d");
+        expect(eq.toString()).toEqual("a + b = c + d");
     });
 
     it("should return an expression when solving for a variable", function() {
@@ -58,7 +58,7 @@ describe("An equation with multiple variables", function() {
 
     it("should get the right answer", function() {
         var answer = eq.solveFor("a"); // a = c + d - b
-        expect(answer.print()).toEqual("c + d - b");
+        expect(answer.toString()).toEqual("c + d - b");
     });
 
     it("should solve for variables that can be isolated", function() {
@@ -66,7 +66,7 @@ describe("An equation with multiple variables", function() {
 
         var answer = eq.solveFor("b");
 
-        expect(answer.print()).toEqual("-a^2 + c + d");
+        expect(answer.toString()).toEqual("-a^2 + c + d");
     });
 
     it("should return undefined when solving for a variable that can't be isolated", function() {
@@ -139,7 +139,7 @@ describe("An equation built with an expression and an integer or fraction", func
     });
 
     it("should print properly", function() {
-        expect(eq.print()).toEqual("1/5x + 4/5 = 3/4")
+        expect(eq.toString()).toEqual("1/5x + 4/5 = 3/4")
     });
 });
 

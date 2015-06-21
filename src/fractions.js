@@ -155,11 +155,11 @@ Fraction.prototype.abs = function() {
     return copy;
 };
 
-Fraction.prototype.decimal = function() {
+Fraction.prototype.valueOf = function() {
     return this.numer / this.denom;
 };
 
-Fraction.prototype.print = function() {
+Fraction.prototype.toString = function() {
     if (this.numer == 0) {
         return "0";
     } else if (this.denom == 1) {
@@ -171,7 +171,7 @@ Fraction.prototype.print = function() {
     }
 };
 
-Fraction.prototype.tex = function() {
+Fraction.prototype.toTex = function() {
     if (this.numer == 0) {
         return "0";
     } else if (this.denom == 1) {

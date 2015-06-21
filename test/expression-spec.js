@@ -27,11 +27,11 @@ describe("An expression initialized with a greek letter variable name", function
     });
 
     it("converts to tex properly", function() {
-        expect(lambda.tex()).toEqual("5\\lambda + 15");
+        expect(lambda.toTex()).toEqual("5\\lambda + 15");
     });
 
     it("converts to string properly, even though it looks weird", function() {
-        expect(lambda.print()).toEqual("5lambda + 15");
+        expect(lambda.toString()).toEqual("5lambda + 15");
     });
 });
 
@@ -59,7 +59,7 @@ describe("Expression addition", function() {
     it("should allow adding other expressions", function() {
         var answer = x.add(y);
 
-        expect(answer.print()).toEqual("x + y");
+        expect(answer.toString()).toEqual("x + y");
     });
 
     it("should properly combine the constant of two expressions", function() {
@@ -67,7 +67,7 @@ describe("Expression addition", function() {
         var newy = y.add(new Fraction(1, 4)); // y + 1/4
         var answer = newx.add(newy);          // x + 3 + y + 1/4 => x + y + 13/4
 
-        expect(answer.print()).toEqual("x + y + 13/4");
+        expect(answer.toString()).toEqual("x + y + 13/4");
     });
 
     it("should properly combine the terms of two expressions - linear", function() {
@@ -76,7 +76,7 @@ describe("Expression addition", function() {
 
         var answer = expr1.add(expr2); // x + y + z + z + y = x + 2y + 2z
 
-        expect(answer.print()).toEqual("x + 2y + 2z");
+        expect(answer.toString()).toEqual("x + 2y + 2z");
     });
 
     it("should properly combine the terms of two expressions - nonlinear", function() {
@@ -85,7 +85,7 @@ describe("Expression addition", function() {
 
         var answer = expr1.add(expr2); // x^2 + (x^2 + y + 2) = 2x^2 + y + 2
 
-        expect(answer.print()).toEqual("2x^2 + y + 2");
+        expect(answer.toString()).toEqual("2x^2 + y + 2");
     });
 
     it("should properly combine the terms of two expressions - crossproducts", function() {
@@ -94,7 +94,7 @@ describe("Expression addition", function() {
 
         var answer = expr1.add(expr2); // xy + (yx + x + 2) = 2xy + x + 2
 
-        expect(answer.print()).toEqual("2xy + x + 2");
+        expect(answer.toString()).toEqual("2xy + x + 2");
     });
 
     it("should properly remove terms when canceled out", function() {
@@ -103,19 +103,19 @@ describe("Expression addition", function() {
 
         var answer = expr1.add(expr2); // x + y + z + z - y = x + 2z
 
-        expect(answer.print()).toEqual("x + 2z");
+        expect(answer.toString()).toEqual("x + 2z");
     });
 
     it("should allow adding fractions", function() {
         var answer = x.add(new Fraction(1, 3));
 
-        expect(answer.print()).toEqual("x + 1/3");
+        expect(answer.toString()).toEqual("x + 1/3");
     });
 
     it("should allow adding integers", function() {
         var answer = x.add(3);
 
-        expect(answer.print()).toEqual("x + 3");
+        expect(answer.toString()).toEqual("x + 3");
     });
 
     it("should not allow adding floats", function() {
@@ -131,7 +131,7 @@ describe("Expression subtraction", function() {
     it("should allow subtracting other expressions", function() {
         var answer = x.subtract(y);
 
-        expect(answer.print()).toEqual("x - y");
+        expect(answer.toString()).toEqual("x - y");
     });
 
     it("should properly combine the constant of two expressions - linear", function() {
@@ -140,7 +140,7 @@ describe("Expression subtraction", function() {
 
         var answer = newx.subtract(newy);          // x - 3 - y - (-1/4) => x - y - 12/4 + 1/4 => x - y - 11/4
 
-        expect(answer.print()).toEqual("x - y - 11/4")
+        expect(answer.toString()).toEqual("x - y - 11/4")
     });
 
     it("should properly combine the terms of two expressions - nonlinear", function() {
@@ -150,7 +150,7 @@ describe("Expression subtraction", function() {
 
         var answer = expr1.subtract(expr2); // x^2 - (x^2 + y + 2) = -y - 2
 
-        expect(answer.print()).toEqual("-y - 2");
+        expect(answer.toString()).toEqual("-y - 2");
     });
 
     it("should properly combine the terms of two expressions - crossproducts", function() {
@@ -159,7 +159,7 @@ describe("Expression subtraction", function() {
 
         var answer = expr1.subtract(expr2); // xy - (yx + x + 2) = -x - 2
 
-        expect(answer.print()).toEqual("-x - 2");
+        expect(answer.toString()).toEqual("-x - 2");
     });
 
     it("should properly remove terms when canceled out", function() {
@@ -168,19 +168,19 @@ describe("Expression subtraction", function() {
 
         var answer = expr1.subtract(expr2);    // x - y - z - (z - y) = x - 2z
 
-        expect(answer.print()).toEqual("x - 2z");
+        expect(answer.toString()).toEqual("x - 2z");
     });
 
     it("should allow subtracting fractions", function() {
         var answer = x.subtract(new Fraction(1, 3));
 
-        expect(answer.print()).toEqual("x - 1/3");
+        expect(answer.toString()).toEqual("x - 1/3");
     });
 
     it("should allow subtracting integers", function() {
         var answer = x.subtract(3);
 
-        expect(answer.print()).toEqual("x - 3");
+        expect(answer.toString()).toEqual("x - 3");
     });
 
     it("should not allow subtracting floats", function() {
@@ -195,13 +195,13 @@ describe("Expression multiplication", function() {
     it("should allow multiplying by a fraction", function() {
         var answer = x.multiply(new Fraction(1, 3));
 
-        expect(answer.print()).toEqual("1/3x");
+        expect(answer.toString()).toEqual("1/3x");
     });
 
     it("should allow multiplying by an integer", function() {
         var answer = x.multiply(5);
 
-        expect(answer.print()).toEqual("5x");
+        expect(answer.toString()).toEqual("5x");
     });
 
     it("should allow multiplying by another expression", function() {
@@ -209,7 +209,7 @@ describe("Expression multiplication", function() {
         var newY = y.add(x); // y + x
 
         answer = newX.multiply(newY); // (x + y) * (y + x) = x^2 + xy + xy + y^2 = x^2 + y^2 + 2xy
-        expect(answer.print()).toEqual("x^2 + y^2 + 2xy");
+        expect(answer.toString()).toEqual("x^2 + y^2 + 2xy");
     });
 
     it("should combine like terms correctly after multiplying by another expression", function() {
@@ -222,7 +222,7 @@ describe("Expression multiplication", function() {
                                           // xy + x^2 + 7x + 3y + 3x + 21 =
                                           // x^2 + xy + 10x + 3y + 21
 
-        expect(answer.print()).toEqual("x^2 + xy + 10x + 3y + 21");
+        expect(answer.toString()).toEqual("x^2 + xy + 10x + 3y + 21");
     });
 
     it("should remove terms that cancel out", function() {
@@ -233,7 +233,7 @@ describe("Expression multiplication", function() {
                                           // x^2 - xy + xy - y^2 =
                                           // x^2 - y^2
 
-        expect(answer.print()).toEqual("x^2 - y^2")
+        expect(answer.toString()).toEqual("x^2 - y^2")
     });
 });
 
@@ -244,13 +244,13 @@ describe("Expression division", function() {
     it("should allow dividing by a fraction", function() {
         var answer = x.divide(new Fraction(1, 3));
 
-        expect(answer.print()).toEqual("3x");
+        expect(answer.toString()).toEqual("3x");
     });
 
     it("should allow dividing by an integer", function() {
         var answer = x.divide(5);
 
-        expect(answer.print()).toEqual("1/5x");
+        expect(answer.toString()).toEqual("1/5x");
     });
 
     it("should not allow dividing by another expression", function() {
@@ -268,7 +268,7 @@ describe("Expression printing to string", function() {
         x = x.multiply(-1);
         x = x.add(3);
 
-        expect(x.print()).toEqual("-x + 3");
+        expect(x.toString()).toEqual("-x + 3");
     });
 
     it("should get the signs right", function() {
@@ -278,7 +278,7 @@ describe("Expression printing to string", function() {
 
         x = x.add(y).subtract(z).add(5);
 
-        expect(x.print()).toEqual("x + y - z + 5");
+        expect(x.toString()).toEqual("x + y - z + 5");
     });
 
     it("should omit the constant if it's 0", function() {
@@ -286,7 +286,7 @@ describe("Expression printing to string", function() {
         x = x.add(3);
         x = x.subtract(3);
 
-        expect(x.print()).toEqual("x");
+        expect(x.toString()).toEqual("x");
     });
 
     it("should only print the constant if all the other terms have been canceled out", function() {
@@ -298,7 +298,7 @@ describe("Expression printing to string", function() {
 
         var answer = expr1.subtract(expr2); // x + y - 3 - (x + y) = -3
 
-        expect(answer.print()).toEqual("-3");
+        expect(answer.toString()).toEqual("-3");
     });
 });
 
@@ -308,7 +308,7 @@ describe("Expression printing to tek", function() {
         x = x.multiply(-1);
         x = x.add(3);
 
-        expect(x.tex()).toEqual("-x + 3");
+        expect(x.toTex()).toEqual("-x + 3");
     });
 
     it("should get the signs right", function() {
@@ -318,7 +318,7 @@ describe("Expression printing to tek", function() {
 
         x = x.add(y).subtract(z).add(5);
 
-        expect(x.tex()).toEqual("x + y - z + 5");
+        expect(x.toTex()).toEqual("x + y - z + 5");
     });
 
     it("should omit the constant if it's 0", function() {
@@ -326,7 +326,7 @@ describe("Expression printing to tek", function() {
         x = x.add(3);
         x = x.subtract(3);
 
-        expect(x.tex()).toEqual("x");
+        expect(x.toTex()).toEqual("x");
     });
 
     it("should only print the constant if all the other terms have been canceled out", function() {
@@ -338,7 +338,7 @@ describe("Expression printing to tek", function() {
 
         var answer = expr1.subtract(expr2); // x + y - 3 - (x + y) = -3
 
-        expect(answer.tex()).toEqual("-3");
+        expect(answer.toTex()).toEqual("-3");
     });
 });
 
@@ -349,13 +349,13 @@ describe("Expression evaluation with one variable - linear", function() {
     it("should allow evaluating at integers", function() {
         var answer = x.evaluateAt({'x': 2});
 
-        expect(answer.print()).toEqual("5");
+        expect(answer.toString()).toEqual("5");
     });
 
     it("should allow evaluating at fractions", function() {
         var answer = x.evaluateAt({'x': new Fraction(1, 5)});
 
-        expect(answer.print()).toEqual("16/5");
+        expect(answer.toString()).toEqual("16/5");
     });
 });
 
@@ -366,13 +366,13 @@ describe("Expression evaluation with one variable - nonlinear", function() {
     it("should allow evaluating at integers", function() {
         var answer = x2.evaluateAt({x: 2}); // 2^2 + 2 + 3 = 9
 
-        expect(answer.print()).toEqual("9");
+        expect(answer.toString()).toEqual("9");
     });
 
     it("should allow evaluating at fractions", function() {
         var answer = x2.evaluateAt({x: new Fraction(1, 5)}); // (1/5)^2 + 1/5 + 3 = 81/25
 
-        expect(answer.print()).toEqual("81/25");
+        expect(answer.toString()).toEqual("81/25");
     });
 });
 
@@ -384,19 +384,19 @@ describe("Expression evaluation with multiple variables - linear", function() {
     it("should return an expression when not substituting all the variables", function() {
         var answer = z.evaluateAt({x: 3});
 
-        expect(answer.print()).toEqual("y + 3");
+        expect(answer.toString()).toEqual("y + 3");
     });
 
     it("should return a fraction when substituting all the variables", function() {
         var answer = z.evaluateAt({x: 3, y: new Fraction(1, 2)});
 
-        expect(answer.print()).toEqual("7/2");
+        expect(answer.toString()).toEqual("7/2");
     });
 
     it("should return a fraction when substituting variables out of order", function() {
         var answer = z.evaluateAt({y: new Fraction(1, 2), 'x': 3});
 
-        expect(answer.print()).toEqual("7/2");
+        expect(answer.toString()).toEqual("7/2");
     });
 });
 
@@ -409,7 +409,7 @@ describe("Expression evaluation with multiple variables - nonlinear", function()
 
         var answer = x1.evaluateAt({x:3}); // 3^2 + 3 - y = -y + 12
 
-        expect(answer.print()).toEqual("-y + 12");
+        expect(answer.toString()).toEqual("-y + 12");
     });
 
     it("should return a fraction when substituting all the variables", function() {
@@ -417,7 +417,7 @@ describe("Expression evaluation with multiple variables - nonlinear", function()
 
         var answer = x1.evaluateAt({x: 3, y: new Fraction(1, 2)}); // 3^2 + 3 - 1/2 = 23/2
 
-        expect(answer.print()).toEqual("23/2");
+        expect(answer.toString()).toEqual("23/2");
     });
 
     it("should return a fraction when substituting variables out of order", function() {
@@ -425,7 +425,7 @@ describe("Expression evaluation with multiple variables - nonlinear", function()
 
         var answer = x1.evaluateAt({y: new Fraction(1, 2), x: 3});
 
-        expect(answer.print()).toEqual("23/2");
+        expect(answer.toString()).toEqual("23/2");
     });
 });
 
@@ -438,7 +438,7 @@ describe("Expression evaluation with multiple variables - crossproducts", functi
 
         var answer = x1.evaluateAt({x:3}); // 3^2y + 3 = 9y + 3
 
-        expect(answer.print()).toEqual("9y + 3");
+        expect(answer.toString()).toEqual("9y + 3");
     });
 
     it("should return a reduced fraction when substituting all the variables", function() {
@@ -446,6 +446,6 @@ describe("Expression evaluation with multiple variables - crossproducts", functi
 
         var answer = x1.evaluateAt({y: new Fraction(1, 2), x:3}); // 3^2 * (1/2) + 3 = 15/2
 
-        expect(answer.print()).toEqual("15/2");
+        expect(answer.toString()).toEqual("15/2");
     });
 });

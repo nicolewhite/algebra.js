@@ -28,6 +28,10 @@ function round(decimal, places) {
     return Math.round(parseFloat(decimal) * x) / x;
 }
 
+Number.prototype.toTex = function() {
+    return this.toString();
+};
+
 GREEK_LETTERS = [
     'alpha',
     'beta',

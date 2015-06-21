@@ -25,17 +25,17 @@ describe("Variable printing to string", function() {
     var x = new Variable("x");
 
     it("should print just the variable when the degree is 1", function() {
-        expect(x.print()).toEqual("x");
+        expect(x.toString()).toEqual("x");
     });
 
     it("should print the degree if it's greater than 1", function() {
         x.degree = 2;
-        expect(x.print()).toEqual("x^2");
+        expect(x.toString()).toEqual("x^2");
     });
 
     it("should print an empty string if the degree is 0", function() {
         x.degree = 0;
-        expect(x.print()).toEqual("");
+        expect(x.toString()).toEqual("");
     });
 });
 
@@ -43,16 +43,16 @@ describe("Variable printing to tex", function() {
     var x = new Variable("x");
 
     it("should print just the variable when the degree is 1", function() {
-        expect(x.tex()).toEqual("x");
+        expect(x.toTex()).toEqual("x");
     });
 
     it("should print the degree if it's greater than 1", function() {
         x.degree = 2;
-        expect(x.tex()).toEqual("x^{2}");
+        expect(x.toTex()).toEqual("x^{2}");
     });
 
     it("should print an empty string if the degree is 0", function() {
         x.degree = 0;
-        expect(x.tex()).toEqual("");
+        expect(x.toTex()).toEqual("");
     });
 });

@@ -173,47 +173,47 @@ Expression.prototype.evaluateAt = function(values) {
     return copy;
 };
 
-Expression.prototype.print = function() {
+Expression.prototype.toString = function() {
     if (this.terms.length == 0) {
-        return this.constant.print();
+        return this.constant.toString();
     }
 
     var firstTermCoefficient = this.terms[0].coefficient.reduce();
-    var str = (firstTermCoefficient.numer < 0 ? "-": "") + this.terms[0].print();
+    var str = (firstTermCoefficient.numer < 0 ? "-": "") + this.terms[0].toString();
 
     for (var i = 1; i < this.terms.length; i++) {
         var coefficient = this.terms[i].coefficient.reduce();
 
-        str += (coefficient.numer < 0 ? " - " : " + ") + this.terms[i].print();
+        str += (coefficient.numer < 0 ? " - " : " + ") + this.terms[i].toString();
     }
 
     var constant = this.constant.reduce();
 
     if (constant.numer) {
-        str += (constant.numer < 0 ? " - " : " + ") + constant.abs().print();
+        str += (constant.numer < 0 ? " - " : " + ") + constant.abs().toString();
     }
 
     return str;
 };
 
-Expression.prototype.tex = function() {
+Expression.prototype.toTex = function() {
     if (this.terms.length == 0) {
-        return this.constant.tex();
+        return this.constant.toTex();
     }
 
     var firstTermCoefficient = this.terms[0].coefficient.reduce();
-    var str = (firstTermCoefficient.numer < 0 ? "-": "") + this.terms[0].tex();
+    var str = (firstTermCoefficient.numer < 0 ? "-": "") + this.terms[0].toTex();
 
     for (var i = 1; i < this.terms.length; i++) {
         var coefficient = this.terms[i].coefficient.reduce();
 
-        str += (coefficient.numer < 0 ? " - " : " + ") + this.terms[i].tex();
+        str += (coefficient.numer < 0 ? " - " : " + ") + this.terms[i].toTex();
     }
 
     var constant = this.constant.reduce();
 
     if (constant.numer) {
-        str += (constant.numer < 0 ? " - " : " + ") + constant.abs().tex();
+        str += (constant.numer < 0 ? " - " : " + ") + constant.abs().toTex();
     }
 
     return str;
