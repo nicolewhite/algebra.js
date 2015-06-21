@@ -31,7 +31,7 @@ function render() {
 }
 
 var x = new Expression("x");
-var e = x.multiply(x).add(x.multiply(2)).subtract(4);
+var e = x.multiply(x).add(x).subtract(2);
 
 render();
 
@@ -88,7 +88,7 @@ $("#solve").on("click", function() {
     var answersDiv = document.getElementById("answers");
     
     katex.render(eq.toTex(), eqDiv, {displayMode: true});
-    katex.render("x = " + answers.join(", "), answersDiv);
+    katex.render("x = [" + answers.join(", ") + "]", answersDiv);
 });
 </script>
 
