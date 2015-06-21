@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<div id="expression"></div>
+<div id="expressionDiv"></div>
 
 <table>
     <tr>
@@ -19,32 +19,34 @@ layout: default
     </tr>
 </table>
 
-<p align="center">Set equal to <input id="rhs" type="number" placeholder="e.g. 0"> and <button id="solve">find the real roots.</button></p>
+<p align="center">Set equal to <input id="rhs" type="number" value="0"> and solve.
 
-<div id="equation"></div>
-<div id="answers" align="center"></div>
+<div id="equationDiv"></div>
+<div id="answersDiv"></div>
 
 <script>
 function render() {
-    var expression = document.getElementById("expression");
-    katex.render(e.toTex(), expression, {displayMode: true});
+    katex.render(e.toTex(), expressionDiv, {displayMode: true});
 }
 
 var x = new Expression("x");
 var e = x.multiply(x).add(x).subtract(2);
 
 render();
+buildEquation();
 
 $("#multiply").on("click", function() {
     var int = parseInt($("#multiplyNum").val());
     e = e.multiply(int);
     render();
+    buildEquation();
 });
 
 $("#divide").on("click", function() {
     var int = parseInt($("#divideNum").val());
     e = e.divide(int);
     render();
+    buildEquation();
 });
 
 $("#add").on("click", function() {
@@ -58,6 +60,7 @@ $("#add").on("click", function() {
     }
     
     render();
+    buildEquation();
 });
 
 $("#subtract").on("click", function() {
@@ -71,24 +74,26 @@ $("#subtract").on("click", function() {
     }
     
     render();
+    buildEquation();
 });
 
-$("#solve").on("click", function() {
+function buildEquation() {
     var rhs = parseInt($("#rhs").val());
     var eq = new Equation(e, rhs);
-    var solved = eq.solveFor("x");
     
+    var solved = eq.solveFor("x");
     var answers = [];
     
     for (var i = 0; i < solved.length; i++) {
         answers.push(solved[i].toTex());
     }
     
-    var eqDiv = document.getElementById("equation");
-    var answersDiv = document.getElementById("answers");
-    
-    katex.render(eq.toTex(), eqDiv, {displayMode: true});
-    katex.render("x = [" + answers.join(", ") + "]", answersDiv);
+    katex.render(eq.toTex(), equationDiv, {displayMode: true});
+    katex.render("x = [" + answers.join(", ") + "]", answersDiv, {displayMode: true});
+}
+
+$("#rhs").on("input", function() {
+    buildEquation();
 });
 </script>
 
@@ -480,9 +485,6 @@ Also supports Greek letters, obviously!
 </div>
 
 <script>
-var div1 = document.getElementById("div1");
-var div2 = document.getElementById("div2");
-
 var lambda = new Expression("lambda").add(3).divide(4);
 var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
 
@@ -497,9 +499,6 @@ katex.render(Phi.toTex(), div2);
 </div>
 
 <script>
-var div1 = document.getElementById("div1");
-var div2 = document.getElementById("div2");
-
 var lambda = new Expression("lambda").add(3).divide(4);
 var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
 
