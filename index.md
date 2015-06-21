@@ -12,12 +12,17 @@ layout: default
         <td><button id="subtract">Subtract</button></td>
     </tr>
     <tr>
-        <td><input id="multiplyNum" type="number"></td>
-        <td><input id="divideNum" type="number"></td>
-        <td><input id="addNum" type="number"></td>
-        <td><input id="subtractNum" type="number"></td>
+        <td><input id="multiplyNum" type="number" placeholder="e.g. 2"></td>
+        <td><input id="divideNum" type="number" placeholder="e.g. 2"></td>
+        <td><input id="addNum" type="text" placeholder="e.g. 2, x"></td>
+        <td><input id="subtractNum" type="text" placeholder="e.g. 2, x"></td>
     </tr>
 </table>
+
+<p align="center">Set equal to <input id="rhs" type="number" placeholder="e.g. 0"> and <button id="solve">find the real roots.</button></p>
+
+<div id="equation"></div>
+<div id="answers" align="center"></div>
 
 <script>
 function render() {
@@ -34,28 +39,56 @@ $("#multiply").on("click", function() {
     var int = parseInt($("#multiplyNum").val());
     e = e.multiply(int);
     render();
-    $("#multiplyNum").val("");
 });
 
 $("#divide").on("click", function() {
     var int = parseInt($("#divideNum").val());
     e = e.divide(int);
     render();
-    $("#divideNum").val("");
 });
 
 $("#add").on("click", function() {
-    var int = parseInt($("#addNum").val());
-    e = e.add(int);
+    var val = $("#addNum").val();
+    
+    if (val === "x") {
+        e = e.add(new Expression("x"));
+    } else {
+        var int = parseInt(val);
+        e = e.add(int);
+    }
+    
     render();
-    $("#addNum").val("");
 });
 
 $("#subtract").on("click", function() {
-    var int = parseInt($("#subtractNum").val());
-    e = e.subtract(int);
+    var val = $("#subtractNum").val();
+    
+    if (val === "x") {
+        e = e.subtract(new Expression("x"));
+    } else {
+        var int = parseInt(val);
+        e = e.subtract(int);
+    }
+    
     render();
-    $("#subtractNum").val("");
+});
+
+$("#solve").on("click", function() {
+    var rhs = parseInt($("#rhs").val());
+    var eq = new Equation(e, rhs);
+    var solved = eq.solveFor("x");
+    
+    var answers = [];
+    
+    for (var i = 0; i < solved.length; i++) {
+        answers.push(solved[i].toTex());
+    }
+    
+    var eqDiv = document.getElementById("equation");
+    var answersDiv = document.getElementById("answers");
+    
+    katex.render(eq.toTex(), eqDiv, {displayMode: true});
+    katex.render("x = " + answers.join(", "), answersDiv);
 });
 </script>
 
