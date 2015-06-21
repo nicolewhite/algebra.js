@@ -2,6 +2,63 @@
 layout: default
 ---
 
+<div id="expression"></div>
+
+<table>
+    <tr>
+        <td><button id="multiply">Multiply</button></td>
+        <td><button id="divide">Divide</button></td>
+        <td><button id="add">Add</button></td>
+        <td><button id="subtract">Subtract</button></td>
+    </tr>
+    <tr>
+        <td><input id="multiplyNum" type="number"></td>
+        <td><input id="divideNum" type="number"></td>
+        <td><input id="addNum" type="number"></td>
+        <td><input id="subtractNum" type="number"></td>
+    </tr>
+</table>
+
+<script>
+function render() {
+    var expression = document.getElementById("expression");
+    katex.render(e.tex(), expression, {displayMode: true});
+}
+
+var x = new Expression("x");
+var e = x.multiply(x).add(x.multiply(2)).subtract(4);
+
+render();
+
+$("#multiply").on("click", function() {
+    var int = parseInt($("#multiplyNum").val());
+    e = e.multiply(int);
+    render();
+    $("#multiplyNum").val("");
+});
+
+$("#divide").on("click", function() {
+    var int = parseInt($("#divideNum").val());
+    e = e.divide(int);
+    render();
+    $("#divideNum").val("");
+});
+
+$("#add").on("click", function() {
+    var int = parseInt($("#addNum").val());
+    e = e.add(int);
+    render();
+    $("#addNum").val("");
+});
+
+$("#subtract").on("click", function() {
+    var int = parseInt($("#subtractNum").val());
+    e = e.subtract(int);
+    render();
+    $("#subtractNum").val("");
+});
+</script>
+
 # Contents
 
 - [Usage](#usage)
