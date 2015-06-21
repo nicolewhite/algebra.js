@@ -1,10 +1,7 @@
 var Fraction = require('../src/fractions');
 var Expression = require('../src/expressions');
 var Equation = require('../src/equations');
-
-function round(number) {
-    return Math.round(parseFloat(number)*100)/100;
-};
+var round = require('../src/helper').round;
 
 describe("A linear equation with one variable", function() {
     var x1 = new Expression("x").add(4).divide(5);             // 1/5x + 4/5

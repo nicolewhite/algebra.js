@@ -22,6 +22,12 @@ function isInt(thing) {
     return false;
 }
 
+function round(decimal, places) {
+    places = (typeof(places) === "undefined" ? 2 : places);
+    var x = Math.pow(10, places);
+    return Math.round(parseFloat(decimal) * x) / x;
+}
+
 GREEK_LETTERS = [
     'alpha',
     'beta',
@@ -66,4 +72,5 @@ GREEK_LETTERS = [
 exports.gcd = gcd;
 exports.lcm = lcm;
 exports.isInt = isInt;
+exports.round = round;
 exports.GREEK_LETTERS = GREEK_LETTERS;

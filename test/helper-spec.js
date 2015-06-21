@@ -1,6 +1,7 @@
 gcd = require('../src/helper').gcd;
 lcm = require('../src/helper').lcm;
 isInt = require('../src/helper').isInt;
+round = require('../src/helper').round;
 
 describe("Greatest common divisor", function() {
     it("returns 1 when the arguments are 1 and 1", function() {
@@ -44,5 +45,27 @@ describe("isInt", function() {
 
     it("should return true if it's an integer", function() {
         expect(isInt(4)).toBe(true);
+    });
+});
+
+describe("round", function() {
+    it("should round integers to themselves", function() {
+        expect(round(5)).toEqual(5.00);
+    });
+
+    it("should round to 2 decimal places by default", function() {
+        expect(round(5.555)).toEqual(5.56);
+    });
+
+    it("should round to 0 decimal places correctly", function() {
+        expect(round(5.55, 0)).toEqual(6);
+    });
+
+    it("should round to 1 decimal places correctly", function() {
+        expect(round(5.55, 1)).toEqual(5.6);
+    });
+
+    it("should equal itself when rounding to decimal places beyond what's necessary", function() {
+        expect(round(5.55, 4)).toEqual(5.55);
     });
 });
