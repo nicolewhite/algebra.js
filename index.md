@@ -2,6 +2,8 @@
 layout: default
 ---
 
+<h1 align="center">Build an Equation</h1>
+
 <div id="expressionDiv"></div>
 
 <table>
@@ -30,7 +32,7 @@ function render() {
 }
 
 var x = new Expression("x");
-var e = x.multiply(x).add(x).subtract(2);
+var e = x.multiply(x);
 
 render();
 buildEquation();
@@ -111,9 +113,12 @@ $("#rhs").on("input", function() {
         - [Divide](#expressions-divide)
         - [Evaluate](#expressions-evaluate)
     - [Equations](#equations)
-        - [Solve with Single Variable](#equations-single-variable)
-        - [Solve with Multiple Variables](#equations-multiple-variables)
-        - [Right Hand Side Options](#equations-right-hand-side-options)
+        - [Build an Equation](#equations-build)
+        - [Solving Linear Equations](#equations-linear)
+            - [Linear Equations with One Variable](#equations-linear-one-variable)
+            - [Linear Equations with Multiple Variables](#equations-linear-multiple-variables)
+        - [Solving Quadratic Equations](#equations-quadratic)
+        - [Solving Cubic Equations](#equations-cubic)
 - [LaTeX](#latex)
     - [Tutorial-Like Example](#latex-tutorial-like-example)
     - [Greek Letters](#latex-greek-letters)
@@ -297,12 +302,34 @@ If x = 2 and y = 3/4, then 2x^2 + y + 1/3 = 109/12
 
 ## <a name="equations"></a> Equations
 
-Build an equation by setting an expression equal to another expression or to an integer or fraction. Solve for
-a variable with `Equation.solveFor(variable)`.
+### <a name="equations-build"></a> Build an Equation
 
-### <a name="equations-single-variable"></a> Solve with Single Variable
+Build an equation by setting an expression equal to another expression or to an integer or fraction.
 
-If the equation only has one variable, solving for that variable will return a reduced fraction object.
+```js
+var z = new Expression("z");
+
+var eq1 = new Equation(z.subtract(4).divide(9), z.add(6));
+console.log(eq1.toString());
+
+var eq2 = new Equation(z.add(4).multiply(9), 6);
+console.log(eq2.toString());
+
+var eq3 = new Equation(z.divide(2).multiply(7), new Fraction(1, 4));
+console.log(eq3.toString());
+```
+
+```
+1/9z - 4/9 = z + 6
+9z + 36 = 6
+7/2z = 1/4
+```
+
+### <a name="equations-linear"></a> Solving Linear Equations
+
+#### <a name="equations-linear-one-variable"></a> Linear Equations with One Variable
+
+If a linear equation only has one variable, solving for that variable will return a reduced fraction object.
 
 ```js
 var x1 = new Expression("x").add(new Fraction(2, 3)).divide(5);
@@ -321,15 +348,15 @@ console.log("x = " + answer.toString());
 x = 203/3
 ```
 
-### <a name="equations-multiple-variables"></a> Solve with Multiple Variables
+#### <a name="equations-linear-multiple-variables"></a> Linear Equations with Multiple Variable
 
-If the equation contains more than one variable, solving for a variable will return an expression.
+If a linear equation contains more than one variable, solving for a variable will return an expression.
 
 ```js
-var x = new Expression("x").add(5).divide(4);
-var y = new Expression("y").subtract(new Fraction(4, 5)).multiply(3);
+var x = new Expression("x");
+var y = new Expression("y");
 
-var eq = new Equation(x, y);
+var eq = new Equation(x.add(5).divide(4), y.subtract(new Fraction(4, 5)).multiply(3));
 
 console.log(eq.toString());
 
@@ -346,30 +373,44 @@ x = 12y - 73/5
 y = 1/12x + 73/60
 ```
 
-### <a name="equations-right-hand-side-options"></a> Right Hand Side Options
+### <a name="equations-quadratic"></a> Solving Quadratic Equations
 
-You can also specify an integer or fraction as the right hand side of the equation.
+An equation is quadratic if it can be arranged into the form
+
+<div id="quadratic"></div>
+
+where <span id="aNot0"></span>.
+
+A quadratic equation has at least one real root if its discriminant, <span id="discriminant"></span>, is greater than or equal to 0. 
+Solving a quadratic equation with a discriminant that is greater than or equal to 0 returns an array of its real roots as either Fraction or Number objects, 
+depending on if the roots are rational or irrational, respectively. Solving a quadratic equation with a discriminant that is less than 0 will return an empty array.
+
+<script>
+katex.render("ax^2 + bx + c = 0", quadratic, {displayMode: true});
+katex.render("a \\neq 0", aNot0);
+katex.render("b^2 - 4ac", discriminant);
+</script>
 
 ```js
-var z = new Expression("z").subtract(4).divide(9);
+var x = new Expression("x");
 
-var eq1 = new Equation(z, 0);
+var eq = new Equation(x.multiply(x).add(x).subtract(2), 0);
 
-console.log(eq1.toString());
-console.log("z = " + eq1.solveFor("z").toString());
+console.log(eq.toString());
 
-var eq2 = new Equation(z, new Fraction(1, 4));
+var answers = eq.solveFor("x");
 
-console.log(eq2.toString());
-console.log("z = " + eq2.solveFor("z").toString());
+console.log("x = " + answers.toString());
 ```
 
 ```
-1/9z - 4/9 = 0
-z = 4
-1/9z - 4/9 = 1/4
-z = 25/4
+x^2 + x - 2 = 0
+x = -2,1
 ```
+
+### <a name="equations-cubic"></a> Solving Cubic Equations
+
+Coming soon.
 
 # <a name="latex"></a> LaTeX
 
