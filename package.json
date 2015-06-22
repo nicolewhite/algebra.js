@@ -17,7 +17,8 @@
   "devDependencies": {
     "jasmine-node": "1.14.5",
     "browserify": "10.2.1",
-    "uglifyjs": "2.4.10"
+    "uglifyjs": "2.4.10",
+    "coveralls": "^2.11.2"
   },
   "keywords": [
     "algebra",
@@ -35,5 +36,3 @@
   },
   "homepage": "http://nicolewhite.github.io/algebra.js"
 }
-
-
