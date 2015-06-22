@@ -84,7 +84,7 @@ Equation.prototype.solveFor = function(variable) {
         if (discriminant >= 0) {
             // If the discriminant is equal to 0, there is one real root: -b / 2a.
             if (discriminant === 0) {
-                return [b.multiply(-1).divide(a.multiply(2))];
+                return [b.multiply(-1).divide(a.multiply(2)).reduce()];
 
             // If the discriminant is greater than 0, there are two real roots:
             // (-b - √discriminant) / 2a
