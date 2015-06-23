@@ -14,5 +14,5 @@ sync: minify
 	cp build/algebra.min.js javascripts/algebra.min.js
 
 test-coveralls:
-	./node_modules/.bin/istanbul cover jasmine-node --captureExceptions test && \
+	./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine-node --captureExceptions test && \
 	cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
