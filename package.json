@@ -1,7 +1,7 @@
 {
   "name": "algebra.js",
   "version": "0.1.0",
-  "description": "Build, display, and solve rational equations.",
+  "description": "Build, display, and solve algebraic equations.",
   "main": "algebra.js",
   "scripts": {
     "test": "make test"
@@ -27,7 +27,6 @@
     "fractions",
     "equations",
     "expressions",
-    "rationals",
     "latex"
   ],
   "author": "Nicole White",
