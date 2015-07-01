@@ -130,6 +130,18 @@ describe("Solving a quadratic equation", function() {
     });
 });
 
+describe("An array of answers resulting from solving an equation", function() {
+    var x = new Expression("x");
+
+    it("should convert toTex properly", function() {
+        var ex = x.multiply(x).add(x).subtract(2);
+        var eq = new Equation(ex, 0); // x^2 + x - 2 = 0
+
+        var answers = eq.solveFor("x"); // -2, 1
+        expect(answers.toTex()).toEqual("-2,1");
+    });
+});
+
 describe("An equation built with an expression and an integer or fraction", function() {
     var x = new Expression("x").add(4).divide(5);
     var eq = new Equation(x, new Fraction(3, 4));
