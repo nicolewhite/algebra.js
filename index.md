@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<h1 align="center">Build an Equation</h1>
+<h1 align="center">Build a Quadratic Equation</h1>
 
 <div id="expressionDiv"></div>
 
@@ -14,10 +14,10 @@ layout: default
         <td><button id="subtract">Subtract</button></td>
     </tr>
     <tr>
-        <td><input id="multiplyNum" type="number" placeholder="e.g. 2"></td>
-        <td><input id="divideNum" type="number" placeholder="e.g. 2"></td>
-        <td><input id="addNum" type="text" placeholder="e.g. 2, x"></td>
-        <td><input id="subtractNum" type="text" placeholder="e.g. 2, x"></td>
+        <td><input id="multiplyNum" type="number" placeholder="2"></td>
+        <td><input id="divideNum" type="number" placeholder="3"></td>
+        <td><input id="addNum" type="text" placeholder="x"></td>
+        <td><input id="subtractNum" type="text" placeholder="4"></td>
     </tr>
 </table>
 
@@ -83,15 +83,10 @@ function buildEquation() {
     var rhs = parseInt($("#rhs").val());
     var eq = new Equation(e, rhs);
     
-    var solved = eq.solveFor("x");
-    var answers = [];
-    
-    for (var i = 0; i < solved.length; i++) {
-        answers.push(solved[i].toTex());
-    }
+    var answers = eq.solveFor("x");
     
     katex.render(eq.toTex(), equationDiv, {displayMode: true});
-    katex.render("x = [" + answers.join(", ") + "]", answersDiv, {displayMode: true});
+    katex.render("x = " + answers.toTex(), answersDiv, {displayMode: true});
 }
 
 $("#rhs").on("input", function() {
