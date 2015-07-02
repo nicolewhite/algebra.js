@@ -121,6 +121,18 @@ describe("Expression addition", function() {
     it("should not allow adding floats", function() {
         expect(function(){x.add(0.25)}).toThrow("InvalidArgument");
     });
+
+    it("should allow adding variables passed in as strings - same var", function() {
+        var answer = x.add("x").add(3);
+
+        expect(answer.toString()).toEqual("2x + 3");
+    });
+
+    it("should allow adding variables passed in as strings - different var", function() {
+        var answer = x.add("y").add(3);
+
+        expect(answer.toString()).toEqual("x + y + 3");
+    });
 });
 
 describe("Expression subtraction", function() {
@@ -186,6 +198,18 @@ describe("Expression subtraction", function() {
     it("should not allow subtracting floats", function() {
         expect(function(){x.subtract(0.25)}).toThrow("InvalidArgument");
     });
+
+    it("should allow subtracting variables passed in as strings - same var", function() {
+        var answer = x.subtract("x").add(3);
+
+        expect(answer.toString()).toEqual("3");
+    });
+
+    it("should allow subtracting variables passed in as strings - different var", function() {
+        var answer = x.subtract("y").add(3);
+
+        expect(answer.toString()).toEqual("x - y + 3");
+    });
 });
 
 describe("Expression multiplication", function() {
@@ -234,6 +258,18 @@ describe("Expression multiplication", function() {
                                           // x^2 - y^2
 
         expect(answer.toString()).toEqual("x^2 - y^2")
+    });
+
+    it("should multiply by variables passed in as strings - same var", function() {
+        var answer = x.multiply("x");
+
+        expect(answer.toString()).toEqual("x^2");
+    });
+
+    it("should multiply by variables passed in as strings - different var", function() {
+        var answer = x.multiply("y");
+
+        expect(answer.toString()).toEqual("xy");
     });
 });
 

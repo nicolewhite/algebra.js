@@ -28,7 +28,10 @@ Expression.prototype.copy = function() {
 Expression.prototype.add = function(a) {
     var thisExp = this.copy();
 
-    if (a instanceof Term) {
+    if (typeof(a) === "string") {
+        var exp = new Expression(a);
+        return thisExp.add(exp);
+    } else if (a instanceof Term) {
         var exp = new Expression();
         exp.terms = [a.copy()];
         return thisExp.add(exp);
@@ -65,7 +68,9 @@ Expression.prototype.subtract = function(a) {
     var thisExp = this.copy();
     var inverse;
 
-    if (a instanceof Term) {
+    if (typeof(a) === "string") {
+        inverse = new Expression(a).multiply(-1);
+    } else if (a instanceof Term) {
         inverse = new Expression();
         inverse.terms = [a.copy().multiply(-1)];
     } else if (a instanceof Expression) {
@@ -89,7 +94,10 @@ Expression.prototype.subtract = function(a) {
 Expression.prototype.multiply = function(a) {
     var thisExp = this.copy();
 
-    if (a instanceof Term) {
+    if (typeof(a) === "string") {
+        var exp = new Expression(a);
+        return thisExp.multiply(exp);
+    } else if (a instanceof Term) {
         var exp = new Expression();
         exp.terms = [a.copy()];
         return thisExp.multiply(exp);
