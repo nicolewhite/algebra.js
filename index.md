@@ -2,7 +2,9 @@
 layout: default
 ---
 
-<h1 align="center">Build a Quadratic Equation</h1>
+<h1>Build a Quadratic Equation</h1>
+
+First let's build an expression! Multiply or divide by integers; add or subtract either integers or the variable `x`.
 
 <div id="expressionDiv"></div>
 
@@ -21,7 +23,7 @@ layout: default
     </tr>
 </table>
 
-<p align="center">Set equal to <input id="rhs" type="number" value="0"> and solve.
+<p>Now let's set our expression equal to <input id="rhs" type="number" value="0"> and solve for `x`.
 
 <div id="equationDiv"></div>
 <div id="answersDiv"></div>
