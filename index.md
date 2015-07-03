@@ -236,8 +236,11 @@ When adding / subtracting an expression to / from another expression, any like-t
 ```js
 var expr1 = new Expression("a").add("b").add("c");
 var expr2 = new Expression("c").subtract("b");
+var expr3 = expr1.subtract(expr2);
 
-console.log(expr1.toString() + " - (" + expr2.toString() + ") = " + expr1.subtract(expr2).toString());
+str = "{0} - ({1}) = {2}"
+str = str.format(expr1.toString(), expr2.toString(), expr3.toString()});
+console.log(str);
 ```
 
 ```
@@ -258,7 +261,11 @@ expr2 = expr2.multiply(new Fraction(1, 3));
 expr2 = expr2.multiply("x");
 expr2 = expr2.subtract("y");
 
-console.log("(" + expr1.toString() + ")(" + expr2.toString() + ") = " + expr1.multiply(expr2).toString());
+var expr3 = expr1.multiply(expr2);
+
+str = "({0})({1}) = {2}"
+str = str.format(expr1.toString(), expr2.toString(), expr3.toString());
+console.log(str);
 ```
 
 ```
@@ -292,18 +299,13 @@ expr = expr.add(new Fraction(1, 3));
 var xSub = 2;
 var ySub = new Fraction(3, 4);
 
-message = "If x = " + xSub.toString() + \
-          ", then " + expr.toString() + \
-          " = " + expr.evaluateAt({x:xSub}).toString()
+str = "If x = {0}, then {1} = {2}"
+str = str.format(xSub.toString(), expr.toString(), expr.evaluateAt({x: xSub}))
+console.log(str);
 
-console.log(message);
-
-message = "If x = " + xSub.toString() + \
-          " and y = " + ySub.toString() + \
-          ", then " + expr.toString() + \
-          " = " + expr.evaluateAt({x:xSub, y;:ySub}).toString()
-          
-console.log(message);
+str = "If x = {0} and y = {1}, then {2} = {3}"
+str = str.format(xSub.toString(), ySub.toString(), expr.toString(), expr.evaluateAt({x: xSub, y: ySub}))
+console.log(str);
 ```
 
 ```
