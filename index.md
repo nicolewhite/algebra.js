@@ -4,7 +4,7 @@ layout: default
 
 <h1>Build a Quadratic Equation</h1>
 
-First let's build an expression! Multiply or divide by integers; add or subtract either integers or the variable `x`.
+First let's build an expression! Multiply or divide the expression by integers; add or subtract from the expression either integers or the variable `x`.
 
 <div id="expressionDiv"></div>
 
@@ -57,7 +57,7 @@ $("#add").on("click", function() {
     var val = $("#addNum").val();
     
     if (val === "x") {
-        e = e.add(new Expression("x"));
+        e = e.add(val);
     } else {
         var int = parseInt(val);
         e = e.add(int);
@@ -71,7 +71,7 @@ $("#subtract").on("click", function() {
     var val = $("#subtractNum").val();
     
     if (val === "x") {
-        e = e.subtract(new Expression("x"));
+        e = e.subtract(val);
     } else {
         var int = parseInt(val);
         e = e.subtract(int);
@@ -200,16 +200,11 @@ Initialize expressions with a variable name.
 
 ```js
 var x = new Expression("x");
-console.log(x.toString());
-```
-
-```
-x
 ```
 
 ### <a name="expressions-add-subtract"></a> Add / Subtract
 
-Add integers, fractions, or other expressions to expressions.
+Add integers, fractions, variables, or other expressions to expressions.
 
 ```js
 var x = new Expression("x");
@@ -220,7 +215,12 @@ console.log(x.toString());
 x = x.subtract(new Fraction(1, 3));
 console.log(x.toString());
 
-x = x.add(new Expression("y"));
+x = x.add("y");
+console.log(x.toString());
+
+var otherExp = new Expression("z").add(6);
+
+x = x.add(otherExp);
 console.log(x.toString());
 ```
 
@@ -228,41 +228,41 @@ console.log(x.toString());
 x + 3
 x + 8/3
 x + y + 8/3
+x + y + z + 26/3
 ```
 
 When adding / subtracting an expression to / from another expression, any like-terms will be combined.
 
 ```js
-var a = new Expression("a");
-var b = new Expression("b");
-var c = new Expression("c");
+var expr1 = new Expression("a").add("b").add("c");
+var expr2 = new Expression("c").subtract("b");
 
-var expr1 = a.add(b).add(c);
-var expr2 = c.subtract(b);
-
-console.log(expr1.toString() + " + " + expr2.toString() + " = " + expr1.add(expr2).toString());
+console.log(expr1.toString() + " - (" + expr2.toString() + ") = " + expr1.subtract(expr2).toString());
 ```
 
 ```
-a + b + c + c - b = a + 2c
+a + b + c - (c - b) = a + 2b
 ```
 
 ### <a name="expressions-multiply"></a> Multiply
 
-Multiply expressions by integers, fractions, or other expressions.
+Multiply expressions by integers, fractions, variables, or other expressions.
 
 ```js
-var x = new Expression("x");
-var y = new Expression("y");
+var expr1 = new Expression("x");
+expr1 = expr1.multiply(4);
+expr1 = expr1.add("y");
 
-var expr1 = x.multiply(5).add(y);
-var expr2 = y.add(x).multiply(new Fraction(1, 3));
+var expr2 = new Expression("x");
+expr2 = expr2.multiply(new Fraction(1, 3));
+expr2 = expr2.multiply("x");
+expr2 = expr2.subtract("y");
 
 console.log("(" + expr1.toString() + ")(" + expr2.toString() + ") = " + expr1.multiply(expr2).toString());
 ```
 
 ```
-(5x + y)(1/3y + 1/3x) = 5/3x^2 + 1/3y^2 + 2xy
+(4x + y)(1/3x^2 - y) = 4/3x^3 + 1/3yx^2 - y^2 - 4xy
 ```
 
 ### <a name="expressions-divide"></a> Divide
@@ -283,13 +283,27 @@ console.log(x.toString());
 Evaluate expressions by substituting in fractions or integers for variables. Evaluating for only some of its variables returns an expression object. Evaluating an expression for all of its variables returns a reduced fraction object.
 
 ```js
-var x = new Expression("x");
-var y = new Expression("y");
+var expr = new Expression("x");
+expr = expr.multiply(2);
+expr = expr.multiply("x");
+expr = expr.add("y");
+expr = expr.add(new Fraction(1, 3));
 
-var expr = x.multiply(2).multiply(x).add(y).add(new Fraction(1, 3));
+var xSub = 2;
+var ySub = new Fraction(3, 4);
 
-console.log("If x = 2, then " + expr.toString() + " = " + expr.evaluateAt({x:2}).toString());
-console.log("If x = 2 and y = 3/4, then " + expr.toString() + " = " + expr.evaluateAt({x:2, y:new Fraction(3, 4)}).toString());
+message = "If x = " + xSub.toString() + \
+          ", then " + expr.toString() + \
+          " = " + expr.evaluateAt({x:xSub}).toString()
+
+console.log(message);
+
+message = "If x = " + xSub.toString() + \
+          " and y = " + ySub.toString() + \
+          ", then " + expr.toString() + \
+          " = " + expr.evaluateAt({x:xSub, y;:ySub}).toString()
+          
+console.log(message);
 ```
 
 ```
@@ -329,8 +343,13 @@ console.log(eq3.toString());
 If a linear equation only has one variable, solving for that variable will return a reduced fraction object.
 
 ```js
-var x1 = new Expression("x").add(new Fraction(2, 3)).divide(5);
-var x2 = new Expression("x").divide(7).add(4);
+var x1 = new Expression("x");
+x1 = x.add(new Fraction(2, 3));
+x1 = x1.divide(5);
+
+var x2 = new Expression("x");
+x2 = x2.divide(7);
+x2 = x2.add(4);
 
 var eq = new Equation(x1, x2);
 console.log(eq.toString());
@@ -338,6 +357,7 @@ console.log(eq.toString());
 var answer = eq.solveFor("x");
 
 console.log("x = " + answer.toString());
+
 ```
 
 ```
@@ -350,10 +370,15 @@ x = 203/3
 If a linear equation contains more than one variable, solving for a variable will return an expression.
 
 ```js
-var x = new Expression("x");
-var y = new Expression("y");
+var expr1 = new Expression("x");
+expr1 = expr1.add(5);
+expr1 = expr1.divide(4);
 
-var eq = new Equation(x.add(5).divide(4), y.subtract(new Fraction(4, 5)).multiply(3));
+var expr2 = new Expression("y");
+expr2 = expr2.subtract(new Fraction(4, 5));
+expr2 = expr2.multiply(3);
+
+var eq = new Equation(expr1, expr2);
 
 console.log(eq.toString());
 
@@ -389,13 +414,13 @@ katex.render("b^2 - 4ac", discriminant);
 </script>
 
 ```js
-var x = new Expression("x");
+var expr = new Expression("x").multiply("x").add("x").subtract(2);
 
-var eq = new Equation(x.multiply(x).add(x).subtract(2), 0);
+var quad = new Equation(expr, 0);
 
-console.log(eq.toString());
+console.log(quad.toString());
 
-var answers = eq.solveFor("x");
+var answers = quad.solveFor("x");
 
 console.log("x = " + answers.toString());
 ```
