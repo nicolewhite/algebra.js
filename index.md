@@ -4,9 +4,9 @@ layout: default
 
 <h1>Build a Quadratic Equation</h1>
 
-First let's build an expression! Multiply or divide the expression by integers; add or subtract from the expression either integers or the variable `x`.
+This is a short example of something you could build using `algebra.js`. First, let's build an expression!
 
-<div id="expressionDiv"></div>
+<div id="expression"></div>
 
 <table>
     <tr>
@@ -16,25 +16,25 @@ First let's build an expression! Multiply or divide the expression by integers; 
         <td><button id="subtract">Subtract</button></td>
     </tr>
     <tr>
-        <td><input id="multiplyNum" type="number" placeholder="2"></td>
-        <td><input id="divideNum" type="number" placeholder="3"></td>
-        <td><input id="addNum" type="text" placeholder="x"></td>
-        <td><input id="subtractNum" type="text" placeholder="4"></td>
+        <td><input id="multiplyNum" type="number" value="2"></td>
+        <td><input id="divideNum" type="number" value="3"></td>
+        <td><input id="addNum" type="text" value="x"></td>
+        <td><input id="subtractNum" type="text" value="4"></td>
     </tr>
 </table>
 
 <p>Now let's set our expression equal to <input id="rhs" type="number" value="0"> and solve for `x`.
 
-<div id="equationDiv"></div>
-<div id="answersDiv"></div>
+<div id="equation"></div>
+<div id="answers"></div>
 
 <script>
 function render() {
-    katex.render(e.toTex(), expressionDiv, {displayMode: true});
+    katex.render(e.toTex(), expression, {displayMode: true});
 }
 
 var x = new Expression("x");
-var e = x.multiply(x);
+var e = x.multiply(x).add(x).subtract(2);
 
 render();
 buildEquation();
@@ -85,10 +85,10 @@ function buildEquation() {
     var rhs = parseInt($("#rhs").val());
     var eq = new Equation(e, rhs);
     
-    var answers = eq.solveFor("x");
+    var answer = eq.solveFor("x");
     
-    katex.render(eq.toTex(), equationDiv, {displayMode: true});
-    katex.render("x = " + answers.toTex(), answersDiv, {displayMode: true});
+    katex.render(eq.toTex(), equation, {displayMode: true});
+    katex.render("x = " + answer.toTex(), answers, {displayMode: true});
 }
 
 $("#rhs").on("input", function() {
@@ -99,9 +99,9 @@ $("#rhs").on("input", function() {
 # Contents
 
 - [Usage](#usage)
-    - [In Node](#usage-in-node)
-    - [In the Browser](#usage-in-browser)
     - [Right Now](#usage-right-now)
+    - [In the Browser](#usage-in-browser)
+    - [In Node](#usage-in-node)
 - [Getting Started](#getting-started)
     - [Fractions](#fractions)
     - [Expressions](#expressions)
@@ -122,24 +122,6 @@ $("#rhs").on("input", function() {
 
 # <a name="usage"></a> Usage
 
-## <a name="usage-in-node"></a> In Node
-
-```
-$ npm install algebra.js
-```
-
-```js
-var algebra = require('algebra.js');
-```
-
-## <a name="usage-in-browser"></a> In the Browser
-
-Download <a href="javascripts/algebra.min.js" download><u>`algebra.min.js`</u></a>.
-
-```html
-<script src="algebra.min.js"></script>
-```
-
 ## <a name="usage-right-now"></a> Right Now
 
 Chrome / OS X: Cmd + Option + J
@@ -149,6 +131,24 @@ Chrome / Windows: Ctrl + Shift + J
 Firefox / OS X: Cmd + Option + K
 
 Firefox / Windows: Ctrl + Shift + K
+
+## <a name="usage-in-browser"></a> In the Browser
+
+Download <a href="javascripts/algebra.min.js" download><u>`algebra.min.js`</u></a>.
+
+```html
+<script src="algebra.min.js"></script>
+```
+
+## <a name="usage-in-node"></a> In Node
+
+```
+$ npm install algebra.js
+```
+
+```js
+var algebra = require('algebra.js');
+```
 
 # <a name="getting-started"></a> Getting Started 
 
@@ -238,13 +238,15 @@ var expr1 = new Expression("a").add("b").add("c");
 var expr2 = new Expression("c").subtract("b");
 var expr3 = expr1.subtract(expr2);
 
-str = "{0} - ({1}) = {2}"
-str = str.format(expr1.toString(), expr2.toString(), expr3.toString()});
-console.log(str);
+console.log(expr1.toString());
+console.log(expr2.toString());
+console.log(expr3.toString());
 ```
 
 ```
-a + b + c - (c - b) = a + 2b
+a + b + c
+c - b
+a + 2b
 ```
 
 ### <a name="expressions-multiply"></a> Multiply
@@ -254,22 +256,23 @@ Multiply expressions by integers, fractions, variables, or other expressions.
 ```js
 var expr1 = new Expression("x");
 expr1 = expr1.multiply(4);
-expr1 = expr1.add("y");
+expr1 = expr1.add(6);
 
 var expr2 = new Expression("x");
 expr2 = expr2.multiply(new Fraction(1, 3));
-expr2 = expr2.multiply("x");
-expr2 = expr2.subtract("y");
+expr2 = expr2.multiply("y");
 
 var expr3 = expr1.multiply(expr2);
 
-str = "({0})({1}) = {2}"
-str = str.format(expr1.toString(), expr2.toString(), expr3.toString());
-console.log(str);
+console.log(expr1.toString());
+console.log(expr2.toString());
+console.log(expr3.toString());
 ```
 
 ```
-(4x + y)(1/3x^2 - y) = 4/3x^3 + 1/3yx^2 - y^2 - 4xy
+4x + 6
+1/3xy
+4/3x^2y + 2xy
 ```
 
 ### <a name="expressions-divide"></a> Divide
@@ -299,18 +302,18 @@ expr = expr.add(new Fraction(1, 3));
 var xSub = 2;
 var ySub = new Fraction(3, 4);
 
-str = "If x = {0}, then {1} = {2}"
-str = str.format(xSub.toString(), expr.toString(), expr.evaluateAt({x: xSub}))
-console.log(str);
+var answer1 = expr.evaluateAt({x: xSub});
+var answer2 = expr.evaluateAt({x: xSub, y: ySub});
 
-str = "If x = {0} and y = {1}, then {2} = {3}"
-str = str.format(xSub.toString(), ySub.toString(), expr.toString(), expr.evaluateAt({x: xSub, y: ySub}))
-console.log(str);
+console.log(expr.toString());
+console.log(answer1.toString());
+console.log(answer2.toString());
 ```
 
 ```
-If x = 2, then 2x^2 + y + 1/3 = y + 25/3
-If x = 2 and y = 3/4, then 2x^2 + y + 1/3 = 109/12
+2x^2 + y + 1/3
+y + 25/3
+109/12
 ```
 
 ## <a name="equations"></a> Equations
@@ -444,99 +447,35 @@ Make things pretty with LaTeX. All classes have a `.toTex()` method for renderin
 ## <a name="latex-tutorial-like-example"></a> Tutorial-Like Example
 
 ```html
-<div id="tutorial"></div>
+<div id="myEquation"></div>
+<div id="mySolution"></div>
 
 <script>
-appendLatex = function(latex) {
-    var div = document.getElementById("tutorial");
-    var newDiv = document.createElement("div");
-    div.appendChild(newDiv);
-    katex.render(latex, newDiv, {displayMode: true});
-}
+var expr = new Expression("x");
+expr = expr.add("x");
+expr = expr.subtract(2);
 
-appendText = function(text) {
-    var div = document.getElementById("tutorial");
-    var newDiv = document.createElement("div");
-    div.appendChild(newDiv);
-    newDiv.innerHTML = text;
-}
+var eq = new Equation(expr, new Fraction(1, 3));
+katex.render(eq.toTex(), myEquation);
 
-var LETTER = "x";
-var SLOPE1 = 3;
-var SLOPE2 = 4;
-var INTERCEPT1 = 5
-var INTERCEPT2 = new Fraction(5, 7);
-
-var expr1 = new Expression(LETTER).multiply(SLOPE1).add(INTERCEPT1);
-var expr2 = new Expression(LETTER).multiply(SLOPE2).add(INTERCEPT2);
-
-appendText("Let's say we have the equations of two lines:");
-appendLatex("y = " + expr1.toTex());
-appendLatex("y = " + expr2.toTex());
-
-appendText("If we want to find where these two lines intersect, we need to solve for " + LETTER + ":");
-
-var eq = new Equation(expr1, expr2);
-appendLatex(eq.toTex());
-
-var x = eq.solveFor(LETTER);
-appendLatex(LETTER + " = " + x.toTex());
-
-appendText("Now we need to plug " + x.toString() + " into one of the original expressions to find y:");
-
-var y = expr1.evaluateAt({x: x});
-appendLatex("y = " + y.toTex());
-
-appendText("Thus, these lines intersect at the point:");
-appendLatex("\\left(" + x.toTex() + "," + y.toTex() + "\\right)");
+var x = eq.solveFor("x");
+katex.render("x = " + x.toTex(), mySolution);
 </script>
 ```
 
-<div id="tutorial"></div>
+<div id="myEquation"></div>
+<div id="mySolution"></div>
 
 <script>
-appendLatex = function(latex) {
-    var div = document.getElementById("tutorial");
-    var newDiv = document.createElement("div");
-    div.appendChild(newDiv);
-    katex.render(latex, newDiv, {displayMode: true});
-}
+var expr = new Expression("x");
+expr = expr.add("x");
+expr = expr.subtract(2);
 
-appendText = function(text) {
-    var div = document.getElementById("tutorial");
-    var newDiv = document.createElement("div");
-    div.appendChild(newDiv);
-    newDiv.innerHTML = text;
-}
+var eq = new Equation(expr, new Fraction(1, 3));
+katex.render(eq.toTex(), myEquation);
 
-var LETTER = "x";
-var SLOPE1 = 3;
-var SLOPE2 = 4;
-var INTERCEPT1 = 5
-var INTERCEPT2 = new Fraction(5, 7);
-
-var expr1 = new Expression(LETTER).multiply(SLOPE1).add(INTERCEPT1);
-var expr2 = new Expression(LETTER).multiply(SLOPE2).add(INTERCEPT2);
-
-appendText("Let's say we have the equations of two lines:");
-appendLatex("y = " + expr1.toTex());
-appendLatex("y = " + expr2.toTex());
-
-appendText("If we want to find where these two lines intersect, we need to solve for " + LETTER + ":");
-
-var eq = new Equation(expr1, expr2);
-appendLatex(eq.toTex());
-
-var x = eq.solveFor(LETTER);
-appendLatex(LETTER + " = " + x.toTex());
-
-appendText("Now we need to plug " + x.toString() + " into one of the original expressions to find y:");
-
-var y = expr1.evaluateAt({x: x});
-appendLatex("y = " + y.toTex());
-
-appendText("Thus, these lines intersect at the point:");
-appendLatex("\\left(" + x.toTex() + "," + y.toTex() + "\\right)");
+var x = eq.solveFor("x");
+katex.render("x = " + x.toTex(), mySolution);
 </script>
 
 ## <a name="latex-greek-letters"></a> Greek Letters
@@ -545,30 +484,30 @@ Also supports Greek letters, obviously!
 
 ```html
 <div>
-    <div id="div1"></div>
-    <div id="div2"></div>
+    <div id="expr1"></div>
+    <div id="expr2"></div>
 </div>
 
 <script>
 var lambda = new Expression("lambda").add(3).divide(4);
 var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
 
-katex.render(lambda.toTex(), div1);
-katex.render(Phi.toTex(), div2);
+katex.render(lambda.toTex(), expr1);
+katex.render(Phi.toTex(), expr2);
 </script>
 ```
 
 <div>
-    <div id="div1"></div>
-    <div id="div2"></div>
+    <div id="expr1"></div>
+    <div id="expr2"></div>
 </div>
 
 <script>
 var lambda = new Expression("lambda").add(3).divide(4);
 var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
 
-katex.render(lambda.toTex(), div1);
-katex.render(Phi.toTex(), div2);
+katex.render(lambda.toTex(), expr1);
+katex.render(Phi.toTex(), expr2);
 </script>
 
 See [here](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters) for a full list of 
