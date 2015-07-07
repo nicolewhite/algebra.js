@@ -4,7 +4,8 @@ layout: default
 
 <h1>Build a Quadratic Equation</h1>
 
-This is a short example of something you could build using `algebra.js`. First, let's build an expression!
+This is a short example of something you can create using `algebra.js`. First, let's build an expression!
+Manipulate the expression with the buttons below while altering the input values.
 
 <div id="expression"></div>
 
