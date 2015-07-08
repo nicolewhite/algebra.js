@@ -51,8 +51,8 @@ describe("A valid fraction with a negative numerator", function() {
         expect(frac.toString()).toEqual("-1/2");
     });
 
-    it("should print to tex with the negative out in front", function() {
-        expect(frac.toTex()).toEqual("-\\frac{1}{2}");
+    it("should print to tex with the negative in the numerator", function() {
+        expect(frac.toTex()).toEqual("\\frac{-1}{2}");
     });
 
     it("should coerce to a valueOf properly", function() {
@@ -68,12 +68,12 @@ describe("A valid fraction with a negative denominator", function() {
         expect(frac.denom).toBeDefined();
     });
 
-    it("should print to string with a negative denominator", function() {
-        expect(frac.toString()).toEqual("2/-4");
+    it("should print to string with a negative numerator", function() {
+        expect(frac.toString()).toEqual("-1/2");
     });
 
-    it("should print to tex with a negative denominator", function() {
-        expect(frac.toTex()).toEqual("\\frac{2}{-4}");
+    it("should print to tex with a negative numerator", function() {
+        expect(frac.toTex()).toEqual("\\frac{-1}{2}");
     });
 
     it("should bring the negative up to the numerator when reduced", function() {
@@ -141,11 +141,11 @@ describe("Fraction addition", function() {
         expect(function(){x.add(0.25)}).toThrow("InvalidArgument");
     });
 
-    it("should return an unreduced version of the answer", function() {
+    it("should return a reduced version of the answer", function() {
         var y = new Fraction(2, 3);
         var answer = x.add(y);
 
-        expect(answer.toString()).toEqual("3/3");
+        expect(answer.toString()).toEqual("1");
     });
 
     it("should allow an answer of 0", function() {
@@ -176,11 +176,11 @@ describe("Fraction subtraction", function() {
         expect(function(){x.subtract(0.25)}).toThrow("InvalidArgument");
     });
 
-    it("should return an unreduced version of the answer", function() {
+    it("should return a reduced version of the answer", function() {
         var y = new Fraction(4, 6);
         var answer = x.subtract(y);
 
-        expect(answer.toString()).toEqual("-2/6");
+        expect(answer.toString()).toEqual("-1/3");
     });
 
     it("should allow an answer of 0", function() {
@@ -219,7 +219,7 @@ describe("Fraction division", function() {
         var y = new Fraction(1, 2);
         var answer = x.divide(y);
 
-        expect(answer.toString()).toEqual("2/2");
+        expect(answer.toString()).toEqual("1");
     });
 
     it("should allow division of integers", function() {

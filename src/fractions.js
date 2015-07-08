@@ -75,7 +75,7 @@ Fraction.prototype.add = function(f) {
         copy.numer += a;
     }
 
-    return copy;
+    return copy.reduce();
 };
 
 Fraction.prototype.subtract = function(f) {
@@ -111,7 +111,7 @@ Fraction.prototype.multiply = function(f) {
     copy.numer *= a;
     copy.denom *= b;
 
-    return copy;
+    return copy.reduce();
 };
 
 Fraction.prototype.divide = function(f) {
@@ -152,7 +152,7 @@ Fraction.prototype.abs = function() {
     var copy = this.copy();
     copy.numer = Math.abs(copy.numer);
     copy.denom = Math.abs(copy.denom);
-    return copy;
+    return copy.reduce();
 };
 
 Fraction.prototype.valueOf = function() {
@@ -160,34 +160,30 @@ Fraction.prototype.valueOf = function() {
 };
 
 Fraction.prototype.toString = function() {
-    if (this.numer == 0) {
+    var frac = this.reduce();
+
+    if (frac.numer == 0) {
         return "0";
-    } else if (this.denom == 1) {
-        return this.numer.toString();
-    } else if (this.denom == -1) {
-        return (-this.numer).toString();
+    } else if (frac.denom == 1) {
+        return frac.numer.toString();
+    } else if (frac.denom == -1) {
+        return (-frac.numer).toString();
     } else {
-        return this.numer + "/" + this.denom;
+        return frac.numer + "/" + frac.denom;
     }
 };
 
 Fraction.prototype.toTex = function() {
-    if (this.numer == 0) {
+    var frac = this.reduce();
+
+    if (frac.numer == 0) {
         return "0";
-    } else if (this.denom == 1) {
-        return this.numer.toString();
-    } else if (this.denom == -1) {
-        return (-this.numer).toString();
+    } else if (frac.denom == 1) {
+        return frac.numer.toString();
+    } else if (frac.denom == -1) {
+        return (-frac.numer).toString();
     } else {
-        var str = "";
-        var top = this.numer;
-
-        if (Math.sign(this.numer) == -1 && Math.sign(this.denom) == 1) {
-            str = "-";
-            top = Math.abs(top);
-        }
-
-        return str + "\\frac{" + top + "}{" + this.denom + "}";
+        return "\\frac{" + frac.numer + "}{" + frac.denom + "}";
     }
 };
 
