@@ -2,6 +2,40 @@
 layout: default
 ---
 
+# Quick Start
+
+```js
+var expr = new Expression("x");
+expr = expr.add("x");
+expr = expr.subtract(3);
+
+console.log(expr.toString());
+```
+
+```
+2x - 3
+```
+
+```js
+var eq = new Equation(expr, 4);
+
+console.log(eq.toString());
+```
+
+```
+2x - 3 = 4
+```
+
+```js
+var x = eq.solveFor("x");
+
+console.log("x = " + x.toString());
+```
+
+```
+x = 7/2
+```
+
 # Contents
 
 - [Usage](#usage)
@@ -23,7 +57,7 @@ layout: default
         - [Solving Quadratic Equations](#equations-quadratic)
         - [Solving Cubic Equations](#equations-cubic)
 - [LaTeX](#latex)
-    - [Tutorial-Like Example](#latex-tutorial-like-example)
+    - [Example](#latex-example)
     - [Greek Letters](#latex-greek-letters)
 
 # <a name="usage"></a> Usage
@@ -106,7 +140,7 @@ var x = new Expression("x");
 
 ### <a name="expressions-add-subtract"></a> Add / Subtract
 
-Add integers, fractions, variables, or other expressions to expressions.
+Add or subtract integers, fractions, variables, or other expressions to expressions.
 
 ```js
 var x = new Expression("x");
@@ -138,6 +172,7 @@ When adding / subtracting an expression to / from another expression, any like-t
 ```js
 var expr1 = new Expression("a").add("b").add("c");
 var expr2 = new Expression("c").subtract("b");
+
 var expr3 = expr1.subtract(expr2);
 
 console.log(expr1.toString());
@@ -247,7 +282,7 @@ console.log(eq3.toString());
 
 #### <a name="equations-linear-one-variable"></a> Linear Equations with One Variable
 
-If a linear equation only has one variable, solving for that variable will return a reduced fraction object.
+If a linear equation only has one variable, solving for that variable will return a fraction object.
 
 ```js
 var x1 = new Expression("x");
@@ -346,7 +381,7 @@ Coming soon.
 Make things pretty with LaTeX. All classes have a `.toTex()` method for rendering LaTeX. Combining this with
  [KaTeX](https://github.com/Khan/KaTeX), for example, is easy.
 
-## <a name="latex-tutorial-like-example"></a> Tutorial-Like Example
+## <a name="latex-example"></a> Example
 
 ```html
 <div id="myEquation"></div>
