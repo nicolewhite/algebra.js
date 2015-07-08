@@ -2,101 +2,6 @@
 layout: default
 ---
 
-<h1>Build a Quadratic Equation</h1>
-
-This is a short example of something you can create using `algebra.js`. First, let's build an expression!
-Manipulate the expression with the buttons below while altering the input values.
-
-<div id="expression"></div>
-
-<table>
-    <tr>
-        <td><button id="multiply">Multiply</button></td>
-        <td><button id="divide">Divide</button></td>
-        <td><button id="add">Add</button></td>
-        <td><button id="subtract">Subtract</button></td>
-    </tr>
-    <tr>
-        <td><input id="multiplyNum" type="number" value="2"></td>
-        <td><input id="divideNum" type="number" value="3"></td>
-        <td><input id="addNum" type="text" value="x"></td>
-        <td><input id="subtractNum" type="text" value="4"></td>
-    </tr>
-</table>
-
-<p>Now let's set our expression equal to <input id="rhs" type="number" value="0"> and solve for `x`.
-
-<div id="equation"></div>
-<div id="answers"></div>
-
-<script>
-function render() {
-    katex.render(e.toTex(), expression, {displayMode: true});
-}
-
-var x = new Expression("x");
-var e = x.multiply(x).add(x).subtract(2);
-
-render();
-buildEquation();
-
-$("#multiply").on("click", function() {
-    var int = parseInt($("#multiplyNum").val());
-    e = e.multiply(int);
-    render();
-    buildEquation();
-});
-
-$("#divide").on("click", function() {
-    var int = parseInt($("#divideNum").val());
-    e = e.divide(int);
-    render();
-    buildEquation();
-});
-
-$("#add").on("click", function() {
-    var val = $("#addNum").val();
-    
-    if (val === "x") {
-        e = e.add(val);
-    } else {
-        var int = parseInt(val);
-        e = e.add(int);
-    }
-    
-    render();
-    buildEquation();
-});
-
-$("#subtract").on("click", function() {
-    var val = $("#subtractNum").val();
-    
-    if (val === "x") {
-        e = e.subtract(val);
-    } else {
-        var int = parseInt(val);
-        e = e.subtract(int);
-    }
-    
-    render();
-    buildEquation();
-});
-
-function buildEquation() {
-    var rhs = parseInt($("#rhs").val());
-    var eq = new Equation(e, rhs);
-    
-    var answer = eq.solveFor("x");
-    
-    katex.render(eq.toTex(), equation, {displayMode: true});
-    katex.render("x = " + answer.toTex(), answers, {displayMode: true});
-}
-
-$("#rhs").on("input", function() {
-    buildEquation();
-});
-</script>
-
 # Contents
 
 - [Usage](#usage)
@@ -163,7 +68,7 @@ var Equation = algebra.Equation;
 
 ## <a name="fractions"></a> Fractions 
 
-Add, subtract, multiply, and divide fractions by either integers or other fractions. Fractions are not automatically 
+Add, subtract, multiply, and divide fractions by either integers or other fractions. Fractions are automatically 
 reduced.
 
 ```js
@@ -173,26 +78,22 @@ console.log(frac.toString());
 frac = frac.add(new Fraction(3, 4));
 console.log(frac.toString());
 
-frac = frac.subtract(5);
+frac = frac.subtract(2);
 console.log(frac.toString());
 
-frac = frac.multiply(new Fraction(6, 7));
+frac = frac.multiply(new Fraction(4, 3));
 console.log(frac.toString());
 
 frac = frac.divide(5);
-console.log(frac.toString());
-
-frac = frac.reduce();
 console.log(frac.toString());
 ```
 
 ```
 1/2
 5/4
--15/4
--90/28
--90/140
--9/14
+-3/4
+-1
+-1/5
 ```
 
 ## <a name="expressions"></a> Expressions 
@@ -291,7 +192,7 @@ console.log(x.toString());
 
 ### <a name="expressions-evaluate"></a> Evaluate
 
-Evaluate expressions by substituting in fractions or integers for variables. Evaluating for only some of its variables returns an expression object. Evaluating an expression for all of its variables returns a reduced fraction object.
+Evaluate expressions by substituting in fractions or integers for variables. Evaluating for only some of its variables returns an expression object. Evaluating an expression for all of its variables returns a fraction object.
 
 ```js
 var expr = new Expression("x");
