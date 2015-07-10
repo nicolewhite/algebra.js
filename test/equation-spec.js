@@ -190,3 +190,22 @@ describe("Checking the type of an equation", function() {
         expect(eq._isQuadratic("x")).toBe(true);
     });
 });
+
+describe("Solving for variables that can't be isolated", function() {
+    it("should return undefined if the variable is crossproducts with other vars", function() {
+        var expr = new Expression("x").multiply("y");
+        var eq = new Equation(expr, 2); // xy = 2
+        var answer = eq.solveFor("x");
+        expect(answer).toBeUndefined();
+    });
+
+    it("should return undefined if the variable has multiple degrees and there are other vars", function() {
+        var expr = new Expression("x");
+        expr = expr.multiply("x");
+        expr = expr.add("x");
+        expr = expr.add("y");
+        var eq = new Equation(expr, 4); // x^2 + x + y = 4
+        var answer = eq.solveFor("x");
+        expect(answer).toBeUndefined();
+    });
+});

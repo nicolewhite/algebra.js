@@ -132,8 +132,12 @@ Equation.prototype._maxDegree = function() {
     return Math.max(lhsMax, rhsMax)
 };
 
+Equation.prototype._maxDegreeOfVariable = function(variable) {
+    return Math.max(this.lhs._maxDegreeOfVariable(variable), this.rhs._maxDegreeOfVariable(variable));
+};
+
 Equation.prototype._variableCanBeIsolated = function(variable) {
-    return this.lhs._maxDegreeOfVariable(variable) === 1 && this.rhs._maxDegreeOfVariable(variable) === 1;
+    return this._maxDegreeOfVariable(variable) === 1;
 };
 
 Equation.prototype._onlyHasVariable = function(variable) {
