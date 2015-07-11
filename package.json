@@ -1,6 +1,6 @@
 {
   "name": "algebra.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Build, display, and solve algebraic equations.",
   "main": "algebra.js",
   "scripts": {
@@ -34,5 +34,5 @@
   "bugs": {
     "url": "https://github.com/nicolewhite/algebra.js/issues"
   },
-  "homepage": "http://nicolewhite.github.io/algebra.js"
+  "homepage": "http://algebra.js.org"
 }
