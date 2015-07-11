@@ -34,3 +34,5 @@ console.log("x = " + x.toString());
 ```
 x = 7/2
 ```
+
+[Read more at the project site](http://algebra.js.org).
