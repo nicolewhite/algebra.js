@@ -56,6 +56,7 @@ x = 7/2
             - [Linear Equations with Multiple Variables](#equations-linear-multiple-variables)
         - [Solving Quadratic Equations](#equations-quadratic)
         - [Solving Cubic Equations](#equations-cubic)
+        - [Solving Anything Else](#equations-anything-else)
 - [LaTeX](#latex)
     - [Example](#latex-example)
     - [Greek Letters](#latex-greek-letters)
@@ -140,7 +141,7 @@ var x = new Expression("x");
 
 ### <a name="expressions-add-subtract"></a> Add / Subtract
 
-Add or subtract integers, fractions, variables, or other expressions to expressions.
+Add or subtract integers, fractions, variables, or other expressions to or from expressions.
 
 ```js
 var x = new Expression("x");
@@ -227,7 +228,7 @@ console.log(x.toString());
 
 ### <a name="expressions-evaluate"></a> Evaluate
 
-Evaluate expressions by substituting in fractions or integers for variables. Evaluating for only some of its variables returns an expression object. Evaluating an expression for all of its variables returns a fraction object.
+Evaluate expressions by substituting in fractions or integers for variables. Evaluating an expression for only some of its variables returns an expression object. Evaluating an expression for all of its variables returns a fraction object.
 
 ```js
 var expr = new Expression("x");
@@ -309,7 +310,7 @@ x = 203/3
 
 #### <a name="equations-linear-multiple-variables"></a> Linear Equations with Multiple Variable
 
-If a linear equation contains more than one variable, solving for a variable will return an expression.
+If a linear equation has more than one variable, solving for a variable will return an expression.
 
 ```js
 var expr1 = new Expression("x");
@@ -375,6 +376,33 @@ x = -2,1
 ### <a name="equations-cubic"></a> Solving Cubic Equations
 
 Coming soon.
+
+### <a name="equations-anything-else"></a> Solving Anything Else
+
+Equations will only be solved if there is an [algebraic solution](https://en.wikipedia.org/wiki/Algebraic_solution) or if the variable being solved for can be isolated through addition and subtraction. Attempting to solve an equation that does not fit these criteria returns `undefined`.
+ 
+```js
+var expr = new Expression("x");
+expr = expr.multiply("x");
+expr = expr.add("x");
+expr = expr.add("y");
+
+var eq = new Equation(expr, 3);
+
+console.log(eq.toString());
+
+var xAnswer = eq.solveFor("x");
+var yAnswer = eq.solveFor("y");
+
+console.log("x = " + xAnswer);
+console.log("y = " + yAnswer.toString());
+```
+
+```
+x^2 + x + y = 3
+x = undefined
+y = -x^2 - x + 3
+```
 
 # <a name="latex"></a> LaTeX
 
