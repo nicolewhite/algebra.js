@@ -137,7 +137,15 @@ Equation.prototype._maxDegreeOfVariable = function(variable) {
 };
 
 Equation.prototype._variableCanBeIsolated = function(variable) {
-    return this._maxDegreeOfVariable(variable) === 1;
+    return this._maxDegreeOfVariable(variable) === 1 && this._noCrossProductsWithVariable(variable);
+};
+
+Equation.prototype._noCrossProductsWithVariable = function(variable) {
+    return this.lhs._noCrossProductsWithVariable(variable) && this.rhs._noCrossProductsWithVariable(variable);
+};
+
+Equation.prototype._noCrossProducts = function() {
+    return this.lhs._noCrossProducts() && this.rhs._noCrossProducts();
 };
 
 Equation.prototype._onlyHasVariable = function(variable) {
@@ -145,7 +153,7 @@ Equation.prototype._onlyHasVariable = function(variable) {
 };
 
 Equation.prototype._isLinear = function() {
-    return this._maxDegree() === 1;
+    return this._maxDegree() === 1 && this._noCrossProducts();
 };
 
 Equation.prototype._isQuadratic = function(variable) {

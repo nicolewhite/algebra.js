@@ -298,6 +298,28 @@ Expression.prototype._onlyHasVariable = function(variable) {
     return true;
 };
 
+Expression.prototype._noCrossProductsWithVariable = function(variable) {
+    for (var i = 0; i < this.terms.length; i++) {
+        var term = this.terms[i];
+        if (term.hasVariable(variable)  && !term.onlyHasVariable(variable)) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+Expression.prototype._noCrossProducts = function() {
+    for (var i = 0; i < this.terms.length; i++) {
+        var term = this.terms[i];
+        if (term.variables.length > 1) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
 Expression.prototype._maxDegree = function() {
     var max = 1;
 

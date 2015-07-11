@@ -485,3 +485,17 @@ describe("Expression evaluation with multiple variables - crossproducts", functi
         expect(answer.toString()).toEqual("15/2");
     });
 });
+
+describe("Checking for cross products in expressions", function() {
+    it("should return true if there are no cross products", function() {
+        var expr = new Expression("x").add("y");
+        cross = expr._noCrossProductsWithVariable("x");
+        expect(cross).toBe(true);
+    });
+
+    it("should return false if there are cross products", function() {
+        var expr = new Expression("x").multiply("y").add("x");
+        cross = expr._noCrossProductsWithVariable("x");
+        expect(cross).toBe(false);
+    });
+});
