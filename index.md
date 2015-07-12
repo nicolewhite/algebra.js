@@ -475,5 +475,4 @@ katex.render(lambda.toTex(), expr1);
 katex.render(Phi.toTex(), expr2);
 </script>
 
-See [here](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters) for a full list of 
-all the Greek letters available.
+Check out the [list of Greek letters available](https://www.sharelatex.com/learn/List_of_Greek_letters_and_math_symbols#Greek_letters).
