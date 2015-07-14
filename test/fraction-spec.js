@@ -268,8 +268,10 @@ describe("Fraction exponentiation", function() {
         expect(answer.equalTo(new Fraction(1, 8))).toBe(true);
     });
 
-    it("should throw exception with invalid n", function() {
-        expect(function(){x.pow(0.25)}).toThrow("InvalidArgument");
+    it("should work with n < 1", function() {
+        var frac = new Fraction(1, 4);
+        var squareRootFrac = frac.pow(0.5);
+        expect(squareRootFrac.equalTo(new Fraction(1, 2))).toBe(true);
     });
 });
 

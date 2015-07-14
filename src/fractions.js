@@ -131,21 +131,10 @@ Fraction.prototype.divide = function(f) {
 };
 
 Fraction.prototype.pow = function(n) {
-    if (isInt(n)) {
-        if (n === 0) {
-            return new Fraction(1, 1);
-        } else {
-            var copy = this.copy();
-
-            for (var i = 0; i < n - 1; i++) {
-                copy = copy.multiply(this);
-            }
-
-            return copy;
-        }
-    } else {
-        throw "InvalidArgument";
-    }
+    var copy = this.copy();
+    copy.numer = Math.pow(copy.numer, n);
+    copy.denom = Math.pow(copy.denom, n);
+    return copy;
 };
 
 Fraction.prototype.abs = function() {
