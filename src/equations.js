@@ -78,30 +78,31 @@ Equation.prototype.solveFor = function(variable) {
         var c = coefs.c;
 
         // Calculate the discriminant, b^2 - 4ac.
-        var discriminant = b.pow(2).subtract(a.multiply(c).multiply(4)).valueOf();
+        var discriminant = b.pow(2).subtract(a.multiply(c).multiply(4));
 
         // If the discriminant is greater than or equal to 0, there is at least one real root.
-        if (discriminant >= 0) {
+        if (discriminant.valueOf() >= 0) {
             // If the discriminant is equal to 0, there is one real root: -b / 2a.
-            if (discriminant === 0) {
+            if (discriminant.valueOf() === 0) {
                 return [b.multiply(-1).divide(a.multiply(2)).reduce()];
 
             // If the discriminant is greater than 0, there are two real roots:
             // (-b - √discriminant) / 2a
             // (-b + √discriminant) / 2a
             } else {
-                var squareRootDiscriminant = Math.sqrt(discriminant);
+                var squareRootDiscriminant;
 
                 // If the answers will be rational, return reduced Fraction objects.
-                if (isInt(squareRootDiscriminant)) {
+                if (discriminant._squareRootIsRational()) {
+                    squareRootDiscriminant = discriminant.pow(0.5);
                     var root1 = b.multiply(-1).subtract(squareRootDiscriminant).divide(a.multiply(2));
                     var root2 = b.multiply(-1).add(squareRootDiscriminant).divide(a.multiply(2));
                     return [root1.reduce(), root2.reduce()];
                 // If the answers will be irrational, return numbers.
                 } else {
+                    squareRootDiscriminant = Math.sqrt(discriminant.valueOf());
                     a = a.valueOf();
                     b = b.valueOf();
-                    c = c.valueOf();
 
                     var root1 = (-b - squareRootDiscriminant) / 2*a;
                     var root2 = (-b + squareRootDiscriminant) / 2*a;

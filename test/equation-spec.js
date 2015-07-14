@@ -91,6 +91,15 @@ describe("Solving a quadratic equation", function() {
         expect(answers[1].equalTo(new Fraction(1, 1))).toBe(true);
     });
 
+    it("should return two reduced fractions if the equation has two real roots that are rational fractions", function() {
+        var ex = x.multiply(x).multiply(2).add(x);
+        var eq = new Equation(ex, 0);
+        var answers = eq.solveFor("x");
+
+        expect(answers[0].equalTo(new Fraction(-1, 2))).toBe(true);
+        expect(answers[1].equalTo(new Fraction(0, 1))).toBe(true);
+    });
+
     it("should return two numbers if the equation has two real roots that are irrational", function() {
         var ex = x.multiply(x).add(x.multiply(4)).add(2);
         var eq = new Equation(ex, 0); // x^2 + 4x + 2 = 0
