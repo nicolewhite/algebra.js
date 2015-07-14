@@ -272,3 +272,20 @@ describe("Fraction exponentiation", function() {
         expect(function(){x.pow(0.25)}).toThrow("InvalidArgument");
     });
 });
+
+describe("Checking if the square root of a fraction is rational", function() {
+    it("should return true if it's 0", function() {
+        var frac = new Fraction(0, -7);
+        expect(frac._squareRootIsRational()).toBe(true);
+    });
+
+    it("should return true if it's rational", function() {
+        var frac = new Fraction(1, 4);
+        expect(frac._squareRootIsRational()).toBe(true);
+    });
+
+    it("should return false if it's irrational", function() {
+        var frac = new Fraction(2, 4);
+        expect(frac._squareRootIsRational()).toBe(false);
+    });
+});

@@ -187,4 +187,15 @@ Fraction.prototype.toTex = function() {
     }
 };
 
+Fraction.prototype._squareRootIsRational = function() {
+    if (this.valueOf() === 0) {
+        return true;
+    }
+
+    var squareNumer = Math.sqrt(this.numer);
+    var squareDenom = Math.sqrt(this.denom);
+
+    return isInt(squareNumer) && isInt(squareDenom);
+};
+
 module.exports = Fraction;
