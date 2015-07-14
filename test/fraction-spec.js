@@ -273,6 +273,12 @@ describe("Fraction exponentiation", function() {
         var squareRootFrac = frac.pow(0.5);
         expect(squareRootFrac.equalTo(new Fraction(1, 2))).toBe(true);
     });
+
+    it("should return a reduced answer", function() {
+        var frac = new Fraction(2, 4);    // 2/4
+        var squareRootFrac = frac.pow(2); // 2^2/4^2 = 4/16 = 1/4
+        expect(squareRootFrac.equalTo(new Fraction(1, 4))).toBe(true);
+    })
 });
 
 describe("Checking if the square root of a fraction is rational", function() {

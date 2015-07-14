@@ -134,7 +134,7 @@ Fraction.prototype.pow = function(n) {
     var copy = this.copy();
     copy.numer = Math.pow(copy.numer, n);
     copy.denom = Math.pow(copy.denom, n);
-    return copy;
+    return copy.reduce();
 };
 
 Fraction.prototype.abs = function() {
