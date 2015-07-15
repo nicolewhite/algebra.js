@@ -51,12 +51,13 @@ x = 7/2
         - [Evaluate](#expressions-evaluate)
     - [Equations](#equations)
         - [Build an Equation](#equations-build)
-        - [Solving Linear Equations](#equations-linear)
-            - [Linear Equations with One Variable](#equations-linear-one-variable)
-            - [Linear Equations with Multiple Variables](#equations-linear-multiple-variables)
-        - [Solving Quadratic Equations](#equations-quadratic)
-        - [Solving Cubic Equations](#equations-cubic)
-        - [Solving Anything Else](#equations-anything-else)
+        - [Solve Linear Equations](#equations-linear)
+            - [One Variable](#equations-linear-one-variable)
+            - [Multiple Variables](#equations-linear-multiple-variables)
+        - [Solve Quadratic Equations](#equations-quadratic)
+        - [Solve Cubic Equations](#equations-cubic)
+        - [Solve Quartic Equations](#equations-quartic)
+        - [Solve Anything Else](#equations-anything-else)
 - [LaTeX](#latex)
     - [Example](#latex-example)
     - [Greek Letters](#latex-greek-letters)
@@ -279,9 +280,9 @@ console.log(eq3.toString());
 7/2z = 1/4
 ```
 
-### <a name="equations-linear"></a> Solving Linear Equations
+### <a name="equations-linear"></a> Solve Linear Equations
 
-#### <a name="equations-linear-one-variable"></a> Linear Equations with One Variable
+#### <a name="equations-linear-one-variable"></a> One Variable
 
 If a linear equation only has one variable, solving for that variable will return a fraction object.
 
@@ -308,7 +309,7 @@ console.log("x = " + answer.toString());
 x = 203/3
 ```
 
-#### <a name="equations-linear-multiple-variables"></a> Linear Equations with Multiple Variable
+#### <a name="equations-linear-multiple-variables"></a> Multiple Variables
 
 If a linear equation has more than one variable, solving for a variable will return an expression.
 
@@ -338,7 +339,7 @@ x = 12y - 73/5
 y = 1/12x + 73/60
 ```
 
-### <a name="equations-quadratic"></a> Solving Quadratic Equations
+### <a name="equations-quadratic"></a> Solve Quadratic Equations
 
 An equation is quadratic if it can be arranged into the form
 
@@ -373,11 +374,15 @@ x^2 + x - 2 = 0
 x = -2,1
 ```
 
-### <a name="equations-cubic"></a> Solving Cubic Equations
+### <a name="equations-cubic"></a> Solve Cubic Equations
 
 Coming soon.
 
-### <a name="equations-anything-else"></a> Solving Anything Else
+### <a name="equations-quartic"></a> Solve Quartic Equations
+
+Coming soon.
+
+### <a name="equations-anything-else"></a> Solve Anything Else
 
 Equations will only be solved if there is an [algebraic solution](https://en.wikipedia.org/wiki/Algebraic_solution) or if the variable being solved for can be isolated through addition and subtraction. Attempting to solve an equation that does not fit these criteria returns `undefined`.
  
