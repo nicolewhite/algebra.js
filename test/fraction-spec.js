@@ -276,8 +276,9 @@ describe("Fraction exponentiation", function() {
 
     it("should return a reduced answer", function() {
         var frac = new Fraction(2, 4);    // 2/4
-        var squareRootFrac = frac.pow(2); // 2^2/4^2 = 4/16 = 1/4
-        expect(squareRootFrac.equalTo(new Fraction(1, 4))).toBe(true);
+        var squareFrac = frac.pow(2); // 2^2/4^2 = 4/16 = 1/4
+        expect(squareFrac.numer).toEqual(1);
+        expect(squareFrac.denom).toEqual(4);
     })
 });
 
