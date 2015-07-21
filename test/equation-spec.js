@@ -218,3 +218,29 @@ describe("Solving for variables that can't be isolated", function() {
         expect(answer).toBeUndefined();
     });
 });
+
+describe("Solving a cubic equation", function() {
+    it("works when there's one distinct real root", function() {
+        var a = new Expression("x").pow(3);
+        var b = new Expression("x").pow(2).multiply(-3);
+        var c = new Expression("x").multiply(3);
+        var d = -1;
+
+        var expr = a.add(b).add(c).add(d);
+
+        var eq = new Equation(expr, 0); // x^3 - 3x^2 + 3x - 1 = 0
+        var answers = eq.solveFor("x");
+        expect(answers.toString()).toEqual("1");
+    });
+
+    it("works when there's two distinct real roots", function() {
+        var expr = new Expression("x").pow(3);
+        expr = expr.subtract(new Expression("x").multiply(3));
+        expr = expr.add(2); // x^3 - 3x + 2
+
+        var eq = new Equation(expr, 0); // x^3 - 3x + 2 = 0
+        var answers = eq.solveFor("x");
+
+        expect(answers.toString()).toEqual("-2,1");
+    });
+});

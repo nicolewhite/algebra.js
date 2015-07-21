@@ -114,7 +114,55 @@ Equation.prototype.solveFor = function(variable) {
             return [];
         }
     } else if (this._isCubic(variable)) {
-        // TODO: solve
+        // Move everything to the lhs so we have the form ax^3 + bx^2 + cx + d = 0.
+        var newLhs = this.lhs.copy();
+
+        for (var i = 0; i < this.rhs.terms.length; i++) {
+            newLhs = newLhs.subtract(this.rhs.terms[i]);
+        }
+
+        newLhs = newLhs.subtract(this.rhs.constant);
+
+        // Extract the coefficients a, b, c, and d into a dict.
+        var coefs = newLhs._cubicCoefficients();
+
+        var a = coefs.a;
+        var b = coefs.b;
+        var c = coefs.c;
+        var d = coefs.d;
+
+        // Calculate D and D0.
+        var D = a.multiply(b).multiply(c).multiply(d).multiply(18);
+        D = D.subtract(b.pow(3).multiply(d).multiply(4));
+        D = D.add(b.pow(2).multiply(c.pow(2)));
+        D = D.subtract(a.multiply(c.pow(3)).multiply(4));
+        D = D.subtract(a.pow(2).multiply(d.pow(2)).multiply(27));
+
+        var D0 = b.pow(2).subtract(a.multiply(c).multiply(3));
+
+        // Check for special cases when D = 0.
+        if (D.valueOf() === 0) {
+            // If D = D0 = 0, there is one distinct real root, -b / 3a.
+            if (D0.valueOf() === 0) {
+                var root1 = b.multiply(-1).divide(a.multiply(3));
+
+                return [root1.reduce()];
+            // Otherwise, if D0 != 0, there are two distinct real roots.
+            // 9ad - bc / 2D0
+            // 4abc - 9a^2d - b^3 / aD0
+            } else {
+                var root1 = a.multiply(b).multiply(c).multiply(4);
+                root1 = root1.subtract(a.pow(2).multiply(d).multiply(9));
+                root1 = root1.subtract(b.pow(3));
+                root1 = root1.divide(a.multiply(D0));
+
+                var root2 = a.multiply(d).multiply(9).subtract(b.multiply(c)).divide(D0.multiply(2));
+
+                return [root1.reduce(), root2.reduce()];
+            }
+        }
+
+        // TODO: Reduce to a depressed cubic.
         return;
     }
 };
