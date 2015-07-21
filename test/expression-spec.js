@@ -499,3 +499,27 @@ describe("Checking for cross products in expressions", function() {
         expect(cross).toBe(false);
     });
 });
+
+describe("Raising expressions to powers", function() {
+    var x = new Expression("x").add(2);
+
+    it("should return 1 if power is 0", function() {
+        var answer = x.pow(0);
+        expect(answer.toString()).toEqual("1");
+    });
+
+    it("should return the original expression if power is 1", function() {
+        var answer = x.pow(1);
+        expect(answer.toString()).toEqual("x + 2");
+    });
+
+    it("should work with power 2", function() {
+        var answer = x.pow(2);
+        expect(answer.toString()).toEqual("x^2 + 4x + 4");
+    });
+
+    it("should work with power 3", function() {
+        var answer = x.pow(3);
+        expect(answer.toString()).toEqual("x^3 + 6x^2 + 12x + 8");
+    })
+});

@@ -159,6 +159,24 @@ Expression.prototype.divide = function(a) {
     }
 };
 
+Expression.prototype.pow = function(a) {
+    if (isInt(a)) {
+        var copy = this.copy();
+
+        if (a === 0) {
+            return new Expression().add(1);
+        } else {
+            for (var i = 1; i < a; i++) {
+                copy = copy.multiply(this);
+            }
+
+            return copy;
+        }
+    } else {
+        throw "InvalidArgument";
+    }
+};
+
 Expression.prototype.evaluateAt = function(values) {
     var copy = this.copy();
     var keepTerms = [];
@@ -365,6 +383,28 @@ Expression.prototype._quadraticCoefficients = function() {
     }
 
     return {a:a, b:b, c:c}
+};
+
+Expression.prototype._cubicCoefficients = function() {
+    // This function isn't used until everything has been moved to the LHS in Equation.solve.
+    var a;
+    var b = new Fraction(0, 1);
+    var c = new Fraction(0, 1);
+    var d = this.constant.copy();
+
+    for (var i = 0; i < this.terms.length; i++) {
+        var thisTerm = this.terms[i];
+
+        if (thisTerm.maxDegree() === 3) {
+            a = thisTerm.coefficient.copy();
+        } else if (thisTerm.maxDegree() === 2) {
+            b = thisTerm.coefficient.copy();
+        } else if (thisTerm.maxDegree() === 1) {
+            c = thisTerm.coefficient.copy();
+        }
+    }
+
+    return {a:a, b:b, c:c, d:d}
 };
 
 module.exports = Expression;
