@@ -156,7 +156,7 @@ console.log(x.toString());
 x = x.add("y");
 console.log(x.toString());
 
-var otherExp = new Expression("z").add(6);
+var otherExp = new Expression("x").add(6);
 
 x = x.add(otherExp);
 console.log(x.toString());
@@ -166,10 +166,11 @@ console.log(x.toString());
 x + 3
 x + 8/3
 x + y + 8/3
-x + y + z + 26/3
+2x + y + 26/3
 ```
 
 When adding / subtracting an expression to / from another expression, any like-terms will be combined.
+Keep in mind the distributive property when subtracting expressions.
 
 ```js
 var expr1 = new Expression("a").add("b").add("c");
@@ -177,15 +178,11 @@ var expr2 = new Expression("c").subtract("b");
 
 var expr3 = expr1.subtract(expr2);
 
-console.log(expr1.toString());
-console.log(expr2.toString());
-console.log(expr3.toString());
+console.log(expr1.toString() + " - (" + expr2.toString() + ") = " + expr3.toString());
 ```
 
 ```
-a + b + c
-c - b
-a + 2b
+a + b + c - (c - b) = a + 2b
 ```
 
 ### <a name="expressions-multiply"></a> Multiply
@@ -194,24 +191,21 @@ Multiply expressions by integers, fractions, variables, or other expressions.
 
 ```js
 var expr1 = new Expression("x");
+expr1 = expr1.add(2);
 expr1 = expr1.multiply(4);
-expr1 = expr1.add(6);
 
 var expr2 = new Expression("x");
-expr2 = expr2.multiply(new Fraction(1, 3));
 expr2 = expr2.multiply("y");
+expr2 = expr2.multiply(new Fraction(1, 3));
+expr2 = expr2.add(4);
 
 var expr3 = expr1.multiply(expr2);
 
-console.log(expr1.toString());
-console.log(expr2.toString());
-console.log(expr3.toString());
+console.log("(" + expr1.toString() + ")(" + expr2.toString() + ") = " + expr3.toString());
 ```
 
 ```
-4x + 6
-1/3xy
-4/3x^2y + 2xy
+(4x + 8)(1/3xy + 4) = 4/3x^2y + 16x + 8/3xy + 32
 ```
 
 ### <a name="expressions-divide"></a> Divide
@@ -421,11 +415,13 @@ Make things pretty with LaTeX. All classes have a `.toTex()` method for renderin
 <div id="mySolution"></div>
 
 <script>
-var expr = new Expression("x");
-expr = expr.add("x");
-expr = expr.subtract(2);
+var a = new Expression("x").multiply("x");
+var b = new Expression("x").multiply(new Fraction(5, 4));
+var c = new Fraction(-21, 4);
 
-var eq = new Equation(expr, new Fraction(1, 3));
+var expr = a.add(b).add(c);
+
+var eq = new Equation(expr, 0);
 katex.render(eq.toTex(), myEquation);
 
 var x = eq.solveFor("x");
@@ -437,11 +433,13 @@ katex.render("x = " + x.toTex(), mySolution);
 <div id="mySolution"></div>
 
 <script>
-var expr = new Expression("x");
-expr = expr.add("x");
-expr = expr.subtract(2);
+var a = new Expression("x").multiply("x");
+var b = new Expression("x").multiply(new Fraction(5, 4));
+var c = new Fraction(-21, 4);
 
-var eq = new Equation(expr, new Fraction(1, 3));
+var expr = a.add(b).add(c);
+
+var eq = new Equation(expr, 0);
 katex.render(eq.toTex(), myEquation);
 
 var x = eq.solveFor("x");
