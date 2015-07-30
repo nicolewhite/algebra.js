@@ -523,3 +523,19 @@ describe("Raising expressions to powers", function() {
         expect(answer.toString()).toEqual("x^3 + 6x^2 + 12x + 8");
     })
 });
+
+describe("Expression sorting", function() {
+    it("should sort by degree of the term", function() {
+        var x2 = new Expression("x").multiply("x");
+        var exp = new Expression("x").add(x2); // x + x^2
+        exp._sort();
+        expect(exp.toString()).toEqual("x^2 + x");
+    });
+
+    it("should sort by the number of variables in the term", function() {
+        var x2 = new Expression("x").multiply("x");
+        var exp = x2.add(x2.multiply("y")); // x^2 + x^2y
+        exp._sort();
+        expect(exp.toString()).toEqual("x^2y + x^2");
+    });
+});

@@ -58,7 +58,7 @@ Equation.prototype.solveFor = function(variable) {
             return newRhs.constant.reduce();
         }
 
-        newRhs._sortByDegree();
+        newRhs._sort();
         return newRhs;
     } else if (this._isQuadratic(variable)) {
         // Move everything to the lhs so we have the form ax^2 + bx + c = 0.

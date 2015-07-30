@@ -61,6 +61,7 @@ Expression.prototype.add = function(a) {
     }
 
     thisExp._removeTermsWithCoefficientZero();
+    thisExp._sort();
     return thisExp;
 };
 
@@ -125,7 +126,7 @@ Expression.prototype.multiply = function(a) {
         thisExp.terms = newTerms;
         thisExp._combineLikeTerms();
         thisExp._removeTermsWithCoefficientZero();
-        thisExp._sortByDegree();
+        thisExp._sort();
     } else if (a instanceof Fraction || isInt(a)) {
         thisExp.constant = thisExp.constant.multiply(a);
 
@@ -170,6 +171,7 @@ Expression.prototype.pow = function(a) {
                 copy = copy.multiply(this);
             }
 
+            copy._sort();
             return copy;
         }
     } else {
@@ -291,8 +293,22 @@ Expression.prototype._combineLikeTerms = function() {
     return this;
 };
 
-Expression.prototype._sortByDegree = function() {
-    this.terms = this.terms.sort(function(a, b) {return b.maxDegree() - a.maxDegree()});
+Expression.prototype._sort = function() {
+    function sortTerms(a, b) {
+        var x = a.maxDegree();
+        var y = b.maxDegree();
+
+        if (x === y) {
+            var m = a.variables.length;
+            var n = b.variables.length;
+
+            return n - m;
+        } else {
+            return y - x;
+        }
+    }
+
+    this.terms = this.terms.sort(sortTerms);
     return this;
 };
 
