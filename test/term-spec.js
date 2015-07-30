@@ -161,3 +161,13 @@ describe("Term division", function() {
         expect(function(){t.divide(.5)}).toThrow("InvalidArgument");
     });
 });
+
+describe("Term sorting", function() {
+    it("sorts variables by degree", function() {
+        var x = new Term(new Variable("x"));
+        var y = new Term(new Variable("y"));
+        var t = y.multiply(x).multiply(x); // yx^2
+        t.sort();
+        expect(t.toString()).toEqual("x^2y");
+    });
+});

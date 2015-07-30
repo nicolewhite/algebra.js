@@ -77,7 +77,7 @@ Term.prototype.multiply = function(a) {
         throw "InvalidArgument";
     }
 
-    return thisTerm;
+    return thisTerm.sort();
 };
 
 Term.prototype.divide = function(a) {
@@ -200,6 +200,14 @@ Term.prototype.onlyHasVariable = function(variable) {
     return true;
 };
 
+Term.prototype.sort = function() {
+    function sortVars(a, b) {
+        return b.degree - a.degree;
+    }
+
+    this.variables = this.variables.sort(sortVars);
+    return this;
+};
 
 Term.prototype.toString = function() {
     var str;
