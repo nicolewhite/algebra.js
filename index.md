@@ -48,6 +48,7 @@ x = 7/2
         - [Add / Subtract](#expressions-add-subtract)
         - [Multiply](#expressions-multiply)
         - [Divide](#expressions-divide)
+        - [Raise](#expressions-raise)
         - [Evaluate](#expressions-evaluate)
     - [Equations](#equations)
         - [Build an Equation](#equations-build)
@@ -205,7 +206,7 @@ console.log("(" + expr1.toString() + ")(" + expr2.toString() + ") = " + expr3.to
 ```
 
 ```
-(4x + 8)(1/3xy + 4) = 4/3x^2y + 16x + 8/3xy + 32
+(4x + 8)(1/3xy + 4) = 4/3x^2y + 8/3xy + 16x + 32
 ```
 
 ### <a name="expressions-divide"></a> Divide
@@ -219,6 +220,22 @@ console.log(x.toString());
 
 ```
 5/2x
+```
+
+### <a name="expressions-raise"></a> Raise
+
+Raise expressions to integer powers.
+
+```js
+var exp = new Expression("x").add(2);
+
+var exp3 = exp.pow(3);
+
+console.log("(" + exp.toString() + ")^3 = " + exp3.toString());
+```
+
+```
+(x + 2)^3 = x^3 + 6x^2 + 12x + 8
 ```
 
 ### <a name="expressions-evaluate"></a> Evaluate
