@@ -1,5 +1,5 @@
+var Variable = require('../src/expressions').Variable;
 var Fraction = require('../src/fractions');
-var Variable = require('../src/variables');
 
 describe("A variable", function() {
     var x = new Variable("x");

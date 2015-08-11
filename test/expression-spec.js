@@ -1,5 +1,5 @@
 var Fraction = require('../src/fractions');
-var Expression = require('../src/expressions');
+var Expression = require('../src/expressions').Expression;
 
 describe("An expression initialized with an alphabetic variable name", function() {
     var x = new Expression("x");

@@ -1,6 +1,6 @@
+var Expression = require('./expressions').Expression;
 var isInt = require('./helper').isInt;
 var Fraction = require('./fractions');
-var Expression = require('./expressions');
 
 var Complex = function(real, imaginary) {
     if (real instanceof Fraction && imaginary instanceof Fraction) {

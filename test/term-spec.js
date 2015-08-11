@@ -1,5 +1,5 @@
-var Variable = require('../src/variables');
-var Term = require('../src/terms');
+var Term = require('../src/expressions').Term;
+var Variable = require('../src/expressions').Variable;
 var Fraction = require('../src/fractions');
 
 describe("Terms", function() {

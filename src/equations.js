@@ -1,7 +1,7 @@
+var Expression = require('./expressions').Expression;
+var Variable = require('./expressions').Variable;
+var Term = require('./expressions').Term;
 var Fraction = require('./fractions');
-var Expression = require('./expressions');
-var Variable = require('./variables');
-var Term = require('./terms');
 var isInt = require('./helper').isInt;
 
 var Equation = function(lhs, rhs) {
