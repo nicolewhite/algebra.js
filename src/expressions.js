@@ -241,19 +241,6 @@ Expression.prototype.toTex = function() {
     return str;
 };
 
-Expression.prototype._removeTermsWithVar = function(variable) {
-    var keep = [];
-
-    for (var i = 0; i < this.terms.length; i++) {
-        if (this.terms[i].variable != variable) {
-            keep.push(this.terms[i]);
-        }
-    }
-
-    this.terms = keep;
-    return this;
-};
-
 Expression.prototype._removeTermsWithCoefficientZero = function() {
     var keep = [];
 
