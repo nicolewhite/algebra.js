@@ -486,6 +486,40 @@ describe("Expression evaluation with multiple variables - crossproducts", functi
     });
 });
 
+describe("Expression evaulation with other expressions", function() {
+    it("works with no coefficient", function() {
+       var x = new Expression("x").add(2);   // x + 2
+       var sub = new Expression("y").add(4); // y + 4
+
+       var answer = x.eval({x:sub}); // (y + 4) + 2 = y + 6
+       expect(answer.toString()).toEqual("y + 6");
+    });
+
+    it("works with a coefficient", function() {
+        var x = new Expression("x").multiply(2).add(2); // 2x + 2
+        var sub = new Expression("y").add(4); // y + 4
+
+        var answer = x.eval({x:sub}); // 2(y + 4) + 2 = 2y + 8 + 2 = 2y + 10
+        expect(answer.toString()).toEqual("2y + 10");
+    });
+
+    it("works with cross products", function() {
+        var x = new Expression("x").multiply("y").add(2); // xy + 2
+        var sub = new Expression("y").add(4); // y + 4
+
+        var answer = x.eval({x:sub}); // (y + 4)y + 2 = y^2 + 4y + 2
+        expect(answer.toString()).toEqual("y^2 + 4y + 2");
+    });
+
+    it("works with powers", function() {
+        var x = new Expression("x").multiply("x").add("x").add(2); // x^2 + x + 2
+        var sub = new Expression("y").add(4); // y + 4
+
+        var answer = x.eval({x:sub}); // (y + 4)^2 + (y + 4) + 2 = y^2 + 9y + 22
+        expect(answer.toString()).toEqual("y^2 + 9y + 22");
+    });
+});
+
 describe("Checking for cross products in expressions", function() {
     it("should return true if there are no cross products", function() {
         var expr = new Expression("x").add("y");

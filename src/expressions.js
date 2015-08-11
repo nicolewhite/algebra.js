@@ -8,11 +8,18 @@ var Expression = function(variable) {
         var v = new Variable(variable);
         var t = new Term(v);
         this.terms = [t];
+    } else if(isInt(variable)) {
+        this.constant = new Fraction(variable, 1);
+        this.terms = [];
+    } else if(variable instanceof Fraction) {
+        this.constant = variable;
+        this.terms = [];
+    } else if(variable instanceof Term) {
+        this.terms = [variable];
     } else if(typeof(variable) === "undefined") {
         this.terms = [];
     }
 };
-
 Expression.prototype.copy = function() {
     var copy = new Expression();
     copy.constant = this.constant.copy();
@@ -178,25 +185,14 @@ Expression.prototype.pow = function(a) {
 };
 
 Expression.prototype.eval = function(values) {
-    var copy = this.copy();
-    var keepTerms = [];
+    var exp = new Expression();
 
-    for (var i = 0; i < copy.terms.length; i++) {
-        copy.terms[i] = copy.terms[i].eval(values);
-
-        if (copy.terms[i].variables.length === 0) {
-            copy.constant = copy.constant.add(copy.terms[i].coefficient);
-        } else {
-            keepTerms.push(copy.terms[i]);
-        }
+    for(var i = 0; i < this.terms.length; i++) {
+        var thisTerm = this.terms[i];
+        exp = exp.add(thisTerm.eval(values));
     }
 
-    if (keepTerms.length === 0) {
-        return copy.constant.reduce();
-    }
-
-    copy.terms = keepTerms;
-    return copy;
+    return exp.add(this.constant);
 };
 
 Expression.prototype.toString = function() {
@@ -510,38 +506,33 @@ Term.prototype.divide = function(a) {
 };
 
 Term.prototype.eval = function(values) {
-    var thisTerm = this.copy();
-    var varMap = Object.keys(values);
-    var keepVars = [];
+    var copy = this.copy();
+    var keys = Object.keys(values);
+    var exp = new Expression(this.coefficient);
 
-    for (var i = 0; i < this.variables.length; i++) {
-        var thisVar = this.variables[i];
-        var keep = true;
+    for(var i = 0; i < copy.variables.length; i++) {
+        var thisVar = copy.variables[i];
 
-        for (var j = 0; j < varMap.length; j++) {
-            if (thisVar.variable === varMap[j]) {
-                var eval = values[varMap[j]];
+        var eval = new Expression(thisVar.variable).pow(thisVar.degree);
 
-                if (eval instanceof Fraction) {
-                    eval = eval.pow(thisVar.degree);
-                } else if (isInt(eval)) {
-                    eval = Math.pow(eval, thisVar.degree);
+        for(var j = 0; j < keys.length; j++) {
+            if(thisVar.variable == keys[j]) {
+                var sub = values[keys[j]];
+
+                if(sub instanceof Fraction || sub instanceof Expression) {
+                    eval = sub.pow(thisVar.degree);
+                } else if(isInt(sub)) {
+                    eval = Math.pow(sub, thisVar.degree);
                 } else {
                     throw "InvalidArgument";
                 }
-
-                thisTerm.coefficient = thisTerm.coefficient.multiply(eval);
-                keep = false;
             }
         }
 
-        if (keep) {
-            keepVars.push(thisVar);
-        }
+        exp = exp.multiply(eval);
     }
 
-    thisTerm.variables = keepVars;
-    return thisTerm;
+    return exp;
 };
 
 Term.prototype.hasVariable = function(variable) {
