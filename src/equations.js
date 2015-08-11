@@ -167,6 +167,10 @@ Equation.prototype.solveFor = function(variable) {
     }
 };
 
+Equation.prototype.eval = function(values) {
+    return new Equation(this.lhs.eval(values), this.rhs.eval(values));
+};
+
 Equation.prototype.toString = function() {
     return this.lhs.toString() + " = " + this.rhs.toString();
 };

@@ -245,3 +245,24 @@ describe("Solving a cubic equation", function() {
         expect(answers.toString()).toEqual("-2,1");
     });
 });
+
+describe("Equation evaluation", function() {
+    it("works with ints", function() {
+        var x = new Expression("x");
+        var y = new Expression("y");
+
+        var eq = new Equation(x, y.add(2)); // x = y + 2
+        var answer = eq.eval({x:2});
+        expect(answer.toString()).toEqual("2 = y + 2");
+    });
+
+    it("works with expressions", function() {
+        var x = new Expression("x");
+        var sub = new Expression("y").add(4);
+
+        var eq = new Equation(x, 2); // x = 2
+        var answer = eq.eval({x: sub}); // y + 4 = 2
+
+        expect(answer.toString()).toEqual("y + 4 = 2");
+    });
+});
