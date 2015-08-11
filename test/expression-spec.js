@@ -383,13 +383,13 @@ describe("Expression evaluation with one variable - linear", function() {
     x = x.add(3);
 
     it("should allow evaluating at integers", function() {
-        var answer = x.evaluateAt({'x': 2});
+        var answer = x.eval({'x': 2});
 
         expect(answer.toString()).toEqual("5");
     });
 
     it("should allow evaluating at fractions", function() {
-        var answer = x.evaluateAt({'x': new Fraction(1, 5)});
+        var answer = x.eval({'x': new Fraction(1, 5)});
 
         expect(answer.toString()).toEqual("16/5");
     });
@@ -400,13 +400,13 @@ describe("Expression evaluation with one variable - nonlinear", function() {
     var x2 = x.multiply(x).add(x).add(3); // x^2 + x + 3
 
     it("should allow evaluating at integers", function() {
-        var answer = x2.evaluateAt({x: 2}); // 2^2 + 2 + 3 = 9
+        var answer = x2.eval({x: 2}); // 2^2 + 2 + 3 = 9
 
         expect(answer.toString()).toEqual("9");
     });
 
     it("should allow evaluating at fractions", function() {
-        var answer = x2.evaluateAt({x: new Fraction(1, 5)}); // (1/5)^2 + 1/5 + 3 = 81/25
+        var answer = x2.eval({x: new Fraction(1, 5)}); // (1/5)^2 + 1/5 + 3 = 81/25
 
         expect(answer.toString()).toEqual("81/25");
     });
@@ -418,19 +418,19 @@ describe("Expression evaluation with multiple variables - linear", function() {
     var z = x.add(y); // x + y
 
     it("should return an expression when not substituting all the variables", function() {
-        var answer = z.evaluateAt({x: 3});
+        var answer = z.eval({x: 3});
 
         expect(answer.toString()).toEqual("y + 3");
     });
 
     it("should return a fraction when substituting all the variables", function() {
-        var answer = z.evaluateAt({x: 3, y: new Fraction(1, 2)});
+        var answer = z.eval({x: 3, y: new Fraction(1, 2)});
 
         expect(answer.toString()).toEqual("7/2");
     });
 
     it("should return a fraction when substituting variables out of order", function() {
-        var answer = z.evaluateAt({y: new Fraction(1, 2), 'x': 3});
+        var answer = z.eval({y: new Fraction(1, 2), 'x': 3});
 
         expect(answer.toString()).toEqual("7/2");
     });
@@ -443,7 +443,7 @@ describe("Expression evaluation with multiple variables - nonlinear", function()
     it("should return an expression when not substituting all the variables", function() {
         var x1 = x.multiply(x).add(x).subtract(y); // x^2 + x - y
 
-        var answer = x1.evaluateAt({x:3}); // 3^2 + 3 - y = -y + 12
+        var answer = x1.eval({x:3}); // 3^2 + 3 - y = -y + 12
 
         expect(answer.toString()).toEqual("-y + 12");
     });
@@ -451,7 +451,7 @@ describe("Expression evaluation with multiple variables - nonlinear", function()
     it("should return a fraction when substituting all the variables", function() {
         var x1 = x.multiply(x).add(x).subtract(y); // x^2 + x - y
 
-        var answer = x1.evaluateAt({x: 3, y: new Fraction(1, 2)}); // 3^2 + 3 - 1/2 = 23/2
+        var answer = x1.eval({x: 3, y: new Fraction(1, 2)}); // 3^2 + 3 - 1/2 = 23/2
 
         expect(answer.toString()).toEqual("23/2");
     });
@@ -459,7 +459,7 @@ describe("Expression evaluation with multiple variables - nonlinear", function()
     it("should return a fraction when substituting variables out of order", function() {
         var x1 = x.multiply(x).add(x).subtract(y); // x^2 + x - y
 
-        var answer = x1.evaluateAt({y: new Fraction(1, 2), x: 3});
+        var answer = x1.eval({y: new Fraction(1, 2), x: 3});
 
         expect(answer.toString()).toEqual("23/2");
     });
@@ -472,7 +472,7 @@ describe("Expression evaluation with multiple variables - crossproducts", functi
     it("should return an expression when not substituting all the variables", function() {
         var x1 = x.multiply(x).multiply(y).add(x); // x^2y + x
 
-        var answer = x1.evaluateAt({x:3}); // 3^2y + 3 = 9y + 3
+        var answer = x1.eval({x:3}); // 3^2y + 3 = 9y + 3
 
         expect(answer.toString()).toEqual("9y + 3");
     });
@@ -480,7 +480,7 @@ describe("Expression evaluation with multiple variables - crossproducts", functi
     it("should return a reduced fraction when substituting all the variables", function() {
         var x1 = x.multiply(x).multiply(y).add(x); // x^2y + x
 
-        var answer = x1.evaluateAt({y: new Fraction(1, 2), x:3}); // 3^2 * (1/2) + 3 = 15/2
+        var answer = x1.eval({y: new Fraction(1, 2), x:3}); // 3^2 * (1/2) + 3 = 15/2
 
         expect(answer.toString()).toEqual("15/2");
     });

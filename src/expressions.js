@@ -179,12 +179,12 @@ Expression.prototype.pow = function(a) {
     }
 };
 
-Expression.prototype.evaluateAt = function(values) {
+Expression.prototype.eval = function(values) {
     var copy = this.copy();
     var keepTerms = [];
 
     for (var i = 0; i < copy.terms.length; i++) {
-        copy.terms[i] = copy.terms[i].evaluateAt(values);
+        copy.terms[i] = copy.terms[i].eval(values);
 
         if (copy.terms[i].variables.length === 0) {
             copy.constant = copy.constant.add(copy.terms[i].coefficient);

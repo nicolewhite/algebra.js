@@ -90,7 +90,7 @@ Term.prototype.divide = function(a) {
     }
 };
 
-Term.prototype.evaluateAt = function(values) {
+Term.prototype.eval = function(values) {
     var thisTerm = this.copy();
     var varMap = Object.keys(values);
     var keepVars = [];
