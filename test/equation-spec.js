@@ -258,6 +258,20 @@ describe("Solving a cubic equation", function() {
         expect(answers[1].equalTo(new Fraction(-3, 1))).toBe(true);
         expect(answers[2].equalTo(new Fraction(-2, 1))).toBe(true);
     });
+
+    it("works when there are three real roots, discriminant > 0 and a != 1", function() {
+        var n1 = new Expression("x").add("x").add(2); // 2x + 2
+        var n2 = new Expression("x").add(3); // x + 3
+        var n3 = new Expression("x").add(4); // x + 4
+
+        var cubic = n1.multiply(n2).multiply(n3);
+        cubic = new Equation(cubic, 0);
+        var answers = cubic.solveFor("x");
+
+        expect(answers[0].equalTo(new Fraction(-4, 1))).toBe(true);
+        expect(answers[1].equalTo(new Fraction(-3, 1))).toBe(true);
+        expect(answers[2].equalTo(new Fraction(-1, 1))).toBe(true);
+    });
 });
 
 describe("Equation evaluation", function() {

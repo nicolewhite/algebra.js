@@ -170,9 +170,6 @@ Equation.prototype.solveFor = function(variable) {
 
         // If D > 0, there are three real roots.
         } else {
-            // Divide by a.
-            newLhs = newLhs.divide(a);
-
             // Reduce to a depressed cubic with the Tschirnhaus transformation, x = t - b/3a.
             var t = new Expression("t").subtract(b.divide(a.multiply(3)));
             var params = {};
@@ -215,6 +212,18 @@ Equation.prototype.solveFor = function(variable) {
             x1 = (isInt(x1) ? new Fraction(x1, 1) : new Number(x1));
             x2 = (isInt(x2) ? new Fraction(x2, 1) : new Number(x2));
             x3 = (isInt(x3) ? new Fraction(x3, 1) : new Number(x3));
+
+            var params1 = {};
+            var params2 = {};
+            var params3 = {};
+
+            params1[variable] = (x1 instanceof Number ? Math.round(x1): x1);
+            params2[variable] = (x2 instanceof Number ? Math.round(x2): x2);
+            params3[variable] = (x3 instanceof Number ? Math.round(x3): x3);
+
+            x1 = (newLhs.eval(params1).toString() === "0" ? new Fraction(Math.round(x1), 1) : x1);
+            x2 = (newLhs.eval(params2).toString() === "0" ? new Fraction(Math.round(x2), 1) : x2);
+            x3 = (newLhs.eval(params3).toString() === "0" ? new Fraction(Math.round(x3), 1) : x3);
 
             return [x3, x2, x1];
         }
