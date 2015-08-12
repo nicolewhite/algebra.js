@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/nicolewhite/algebra.js.svg?branch=master)](https://travis-ci.org/nicolewhite/algebra.js) 
 [![Coverage Status](https://coveralls.io/repos/nicolewhite/algebra.js/badge.svg?branch=master)](https://coveralls.io/r/nicolewhite/algebra.js?branch=master)
+[![npm version](https://badge.fury.io/js/algebra.js.svg)](http://badge.fury.io/js/algebra.js)
 
 ```js
 var expr = new Expression("x");
