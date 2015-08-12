@@ -240,7 +240,9 @@ console.log("(" + exp.toString() + ")^3 = " + exp3.toString());
 
 ### <a name="expressions-evaluate"></a> Evaluate
 
-Evaluate expressions by substituting in fractions or integers for variables. Evaluating an expression for only some of its variables returns an expression object. Evaluating an expression for all of its variables returns a fraction object.
+Evaluate expressions by substituting in fractions, integers, or other expressions for variables. Evaluating an expression for only some of its variables returns an expression object. Evaluating an expression for all of its variables returns a fraction object.
+
+#### Integers and Fractions
 
 ```js
 var expr = new Expression("x");
@@ -252,8 +254,8 @@ expr = expr.add(new Fraction(1, 3));
 var xSub = 2;
 var ySub = new Fraction(3, 4);
 
-var answer1 = expr.evaluateAt({x: xSub});
-var answer2 = expr.evaluateAt({x: xSub, y: ySub});
+var answer1 = expr.eval({x: xSub});
+var answer2 = expr.eval({x: xSub, y: ySub});
 
 console.log(expr.toString());
 console.log(answer1.toString());
@@ -264,6 +266,24 @@ console.log(answer2.toString());
 2x^2 + y + 1/3
 y + 25/3
 109/12
+```
+
+#### Other Expressions
+
+```js
+var expr = new Expression("x").add(2);
+var sub = new Expression("y").add(4);
+
+console.log(expr.toString());
+
+expr = expr.eval({x: sub});
+
+console.log(expr.toString());
+```
+
+```
+x + 2
+y + 6
 ```
 
 ## <a name="equations"></a> Equations
