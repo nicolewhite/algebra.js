@@ -160,10 +160,64 @@ Equation.prototype.solveFor = function(variable) {
 
                 return [root1.reduce(), root2.reduce()];
             }
-        }
 
-        // TODO: Reduce to a depressed cubic.
-        return;
+        // Otherwise, if D != 0, check its sign.
+
+        // If D < 0, there is one real root.
+        } else if (D.valueOf() < 0) {
+            // TODO: Cardano maybe?
+            return;
+
+        // If D > 0, there are three real roots.
+        } else {
+            // Divide by a.
+            newLhs = newLhs.divide(a);
+
+            // Reduce to a depressed cubic with the Tschirnhaus transformation, x = t - b/3a.
+            var t = new Expression("t").subtract(b.divide(a.multiply(3)));
+            var params = {};
+            params[variable] = t;
+            var depressed = newLhs.eval(params);
+
+            var depressedCoefs = depressed._cubicCoefficients();
+
+            var depA = depressedCoefs.a;
+            var depC = depressedCoefs.c;
+            var depD = depressedCoefs.d;
+
+            // Let q = √((-3ac / 9a^2), h = 2aq^3.
+            // a, b, c, d now refer to the coefficients of the depressed cubic. b = 0.
+            var q2 = depA.multiply(depC).multiply(-3).divide(depA.pow(2).multiply(9));
+            var q = Math.sqrt(q2.valueOf());
+
+            var h = 2 * depA.valueOf() * Math.pow(q, 3);
+
+            // theta = (1/3)arccos(-d/h)
+            var theta = (1 / 3) * Math.acos(-depD.valueOf() / h);
+
+            // t1 = 2 * q * cos(theta)
+            // t2 = 2 * q * cos((2pi / 3) - theta)
+            // t3 = 2 * q * cos((2pi / 3) + theta)
+
+            var t1 = 2 * q * Math.cos(theta);
+            var t2 = 2 * q * Math.cos((2 * Math.PI / 3) - theta);
+            var t3 = 2 * q * Math.cos((2 * Math.PI / 3) + theta);
+
+            // x1 = t1 - b/3a;
+            // x2 = t2 - b/3a;
+            // x3 = t3 - b/3a;
+
+            var x1 = t1 + t.constant.valueOf();
+            var x2 = t2 + t.constant.valueOf();
+            var x3 = t3 + t.constant.valueOf();
+
+            // TODO: Make this work with non-integer rationals.
+            x1 = (isInt(x1) ? new Fraction(x1, 1) : new Number(x1));
+            x2 = (isInt(x2) ? new Fraction(x2, 1) : new Number(x2));
+            x3 = (isInt(x3) ? new Fraction(x3, 1) : new Number(x3));
+
+            return [x3, x2, x1];
+        }
     }
 };
 

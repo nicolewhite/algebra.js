@@ -221,7 +221,7 @@ describe("Solving for variables that can't be isolated", function() {
 });
 
 describe("Solving a cubic equation", function() {
-    it("works when there's one distinct real root", function() {
+    it("works when there's one distinct real root - discriminant = 0", function() {
         var a = new Expression("x").pow(3);
         var b = new Expression("x").pow(2).multiply(-3);
         var c = new Expression("x").multiply(3);
@@ -234,7 +234,7 @@ describe("Solving a cubic equation", function() {
         expect(answers.toString()).toEqual("1");
     });
 
-    it("works when there's two distinct real roots", function() {
+    it("works when there's two distinct real roots - discriminant = 0", function() {
         var expr = new Expression("x").pow(3);
         expr = expr.subtract(new Expression("x").multiply(3));
         expr = expr.add(2); // x^3 - 3x + 2
@@ -243,6 +243,20 @@ describe("Solving a cubic equation", function() {
         var answers = eq.solveFor("x");
 
         expect(answers.toString()).toEqual("-2,1");
+    });
+
+    it("works when there are three real roots, discriminant > 0", function() {
+        var n1 = new Expression("x").add(2); // x + 2
+        var n2 = new Expression("x").add(3); // x + 3
+        var n3 = new Expression("x").add(4); // x + 4
+
+        var cubic = n1.multiply(n2).multiply(n3);
+        cubic = new Equation(cubic, 0);
+        var answers = cubic.solveFor("x");
+
+        expect(answers[0].equalTo(new Fraction(-4, 1))).toBe(true);
+        expect(answers[1].equalTo(new Fraction(-3, 1))).toBe(true);
+        expect(answers[2].equalTo(new Fraction(-2, 1))).toBe(true);
     });
 });
 
