@@ -53,8 +53,6 @@ x = 7/2
     - [Equations](#equations)
         - [Build an Equation](#equations-build)
         - [Solve Linear Equations](#equations-linear)
-            - [One Variable](#equations-linear-one-variable)
-            - [Multiple Variables](#equations-linear-multiple-variables)
         - [Solve Quadratic Equations](#equations-quadratic)
         - [Solve Cubic Equations](#equations-cubic)
         - [Solve Quartic Equations](#equations-quartic)
@@ -313,7 +311,7 @@ console.log(eq3.toString());
 
 ### <a name="equations-linear"></a> Solve Linear Equations
 
-#### <a name="equations-linear-one-variable"></a> One Variable
+#### One Variable
 
 If a linear equation only has one variable, solving for that variable will return a fraction object.
 
@@ -340,7 +338,7 @@ console.log("x = " + answer.toString());
 x = 203/3
 ```
 
-#### <a name="equations-linear-multiple-variables"></a> Multiple Variables
+#### Multiple Variables
 
 If a linear equation has more than one variable, solving for a variable will return an expression.
 
@@ -374,19 +372,13 @@ y = 1/12x + 73/60
 
 An equation is quadratic if it can be arranged into the form
 
-<div id="quadratic"></div>
+$$ax^2 + bx + c = 0$$
 
-where <span id="aNot0"></span>.
+where $a \\neq 0$.
 
-A quadratic equation has at least one real root if its discriminant, <span id="discriminant"></span>, is greater than or equal to 0. 
+A quadratic equation has at least one real root if its discriminant, \(b^2 - 4ac\), is greater than or equal to 0.
 Solving a quadratic equation with a discriminant that is greater than or equal to 0 returns an array of its real roots as either Fraction or Number objects, 
 depending on if the roots are rational or irrational, respectively. Solving a quadratic equation with a discriminant that is less than 0 will return an empty array.
-
-<script>
-katex.render("ax^2 + bx + c = 0", quadratic, {displayMode: true});
-katex.render("a \\neq 0", aNot0);
-katex.render("b^2 - 4ac", discriminant);
-</script>
 
 ```js
 var expr = new Expression("x").multiply("x").add("x").subtract(2);
@@ -407,7 +399,32 @@ x = -2,1
 
 ### <a name="equations-cubic"></a> Solve Cubic Equations
 
-Coming soon.
+An equation is cubic if it can be arranged into the form
+
+$$ax^3 + bx^2 + cx + d = 0$$
+
+where $a \\neq 0$.
+
+All cubic equations have at least one real root. Solving a cubic equation returns an array of its real roots as either Fraction or Number objects, depending on if the roots are rational or irrational, respectively.
+
+```js
+var n1 = new Expression("x").add(2);
+var n2 = new Expression("x").add(3);
+var n3 = new Expression("x").add(4);
+
+var cubic = new Equation(n1.multiply(n2).multiply(n3), 0);
+
+console.log(cubic.toString());
+
+var answers = cubic.solveFor("x");
+
+console.log("x = " + answers.toString());
+```
+
+```
+x^3 + 9x^2 + 26x + 24 = 0
+x = -4,-3,-2
+```
 
 ### <a name="equations-quartic"></a> Solve Quartic Equations
 
@@ -415,7 +432,7 @@ Coming soon.
 
 ### <a name="equations-anything-else"></a> Solve Anything Else
 
-Equations will only be solved if there is an [algebraic solution](https://en.wikipedia.org/wiki/Algebraic_solution) or if the variable being solved for can be isolated through addition and subtraction. Attempting to solve an equation that does not fit these criteria returns `undefined`.
+Equations will only be solved if there is an [algebraic solution](https://en.wikipedia.org/wiki/Algebraic_solution) or if the variable being solved for can be isolated through arithmetic operations. Attempting to solve an equation that does not fit these criteria returns `undefined`.
  
 ```js
 var expr = new Expression("x");
