@@ -6,8 +6,8 @@ layout: default
 
 ```js
 var expr = new Expression("x");
-expr = expr.add("x");
 expr = expr.subtract(3);
+expr = expr.add("x");
 
 console.log(expr.toString());
 ```
@@ -378,9 +378,10 @@ Solving a quadratic equation with a discriminant that is greater than or equal t
 depending on if the roots are rational or irrational, respectively. Solving a quadratic equation with a discriminant that is less than 0 will return an empty array.
 
 ```js
-var expr = new Expression("x").multiply("x").add("x").subtract(2);
+var n1 = new Expression("x").add(5);
+var n2 = new Expression("x").subtract(new Fraction(3, 4));
 
-var quad = new Equation(expr, 0);
+var quad = new Equation(n1.multiply(n2), 0);
 
 console.log(quad.toString());
 
@@ -390,8 +391,8 @@ console.log("x = " + answers.toString());
 ```
 
 ```
-x^2 + x - 2 = 0
-x = -2,1
+x^2 + 17/4x - 15/4 = 0
+x = -5,3/4
 ```
 
 ### <a name="equations-cubic"></a> Solve Cubic Equations
@@ -466,17 +467,17 @@ Make things pretty with LaTeX. All classes have a `.toTex()` method for renderin
 <div id="mySolution"></div>
 
 <script>
-var a = new Expression("x").multiply("x");
+var a = new Expression("x").pow(2);
 var b = new Expression("x").multiply(new Fraction(5, 4));
 var c = new Fraction(-21, 4);
 
 var expr = a.add(b).add(c);
 
-var eq = new Equation(expr, 0);
-katex.render(eq.toTex(), myEquation);
+var quad = new Equation(expr, 0);
+katex.render(quad.toTex(), myEquation);
 
-var x = eq.solveFor("x");
-katex.render("x = " + x.toTex(), mySolution);
+var answers = quad.solveFor("x");
+katex.render("x = " + answers.toTex(), mySolution);
 </script>
 ```
 
@@ -484,17 +485,17 @@ katex.render("x = " + x.toTex(), mySolution);
 <div id="mySolution"></div>
 
 <script>
-var a = new Expression("x").multiply("x");
+var a = new Expression("x").pow(2);
 var b = new Expression("x").multiply(new Fraction(5, 4));
 var c = new Fraction(-21, 4);
 
 var expr = a.add(b).add(c);
 
-var eq = new Equation(expr, 0);
-katex.render(eq.toTex(), myEquation);
+var quad = new Equation(expr, 0);
+katex.render(quad.toTex(), myEquation);
 
-var x = eq.solveFor("x");
-katex.render("x = " + x.toTex(), mySolution);
+var answers = quad.solveFor("x");
+katex.render("x = " + answers.toTex(), mySolution);
 </script>
 
 ## <a name="latex-greek-letters"></a> Greek Letters
