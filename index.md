@@ -376,7 +376,7 @@ $$ax^2 + bx + c = 0$$
 
 where $a \\neq 0$.
 
-A quadratic equation has at least one real root if its discriminant, \(b^2 - 4ac\), is greater than or equal to 0.
+A quadratic equation has at least one real root if its discriminant, $b^2 - 4ac$, is greater than or equal to 0.
 Solving a quadratic equation with a discriminant that is greater than or equal to 0 returns an array of its real roots as either Fraction or Number objects, 
 depending on if the roots are rational or irrational, respectively. Solving a quadratic equation with a discriminant that is less than 0 will return an empty array.
 
