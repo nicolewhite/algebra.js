@@ -161,14 +161,7 @@ Equation.prototype.solveFor = function(variable) {
                 return [root1.reduce(), root2.reduce()];
             }
 
-        // Otherwise, if D != 0, check its sign.
-
-        // If D < 0, there is one real root.
-        } else if (D.valueOf() < 0) {
-            // TODO: Cardano maybe?
-            return;
-
-        // If D > 0, there are three real roots.
+        // Otherwise, if D != 0, reduce to a depressed cubic.
         } else {
             // Reduce to a depressed cubic with the Tschirnhaus transformation, x = t - b/3a.
             var t = new Expression("t").subtract(b.divide(a.multiply(3)));
@@ -178,54 +171,79 @@ Equation.prototype.solveFor = function(variable) {
 
             var depressedCoefs = depressed._cubicCoefficients();
 
-            var depA = depressedCoefs.a;
-            var depC = depressedCoefs.c;
-            var depD = depressedCoefs.d;
+            var a = depressedCoefs.a.valueOf();
+            var b = depressedCoefs.b.valueOf();
+            var c = depressedCoefs.c.valueOf();
+            var d = depressedCoefs.d.valueOf();
 
-            // Let q = √((-3ac / 9a^2), h = 2aq^3.
-            // a, b, c, d now refer to the coefficients of the depressed cubic. b = 0.
-            var q2 = depA.multiply(depC).multiply(-3).divide(depA.pow(2).multiply(9));
-            var q = Math.sqrt(q2.valueOf());
+            // If D < 0, there is one real root.
+            if (D.valueOf() < 0) {
+                // Solve with Cardano's formula.
+                // Let p = -b / 3*a
+                //     q = p^3 + ((b*c - 3*a*d) / (6*a^2))
+                //     r = c / 3*a
 
-            var h = 2 * depA.valueOf() * Math.pow(q, 3);
+                var p = -b / 3 * a;
+                var q = Math.pow(p, 3) + ((b * c - 3 * a * d) / (6 * a^2));
+                var r = c / 3 * a;
 
-            // theta = (1/3)arccos(-d/h)
-            var theta = (1 / 3) * Math.acos(-depD.valueOf() / h);
+                // Let s = √(q^2 + (r - p^2)^3)
+                // Then, x = (q + s)^(1/3) + (q - s)^(1/3) + p
 
-            // t1 = 2 * q * cos(theta)
-            // t2 = 2 * q * cos((2pi / 3) - theta)
-            // t3 = 2 * q * cos((2pi / 3) + theta)
+                var s = Math.sqrt(Math.pow(q, 2) + Math.pow((r - Math.pow(p, 2)), 3));
+                var x = Math.cbrt(q + s) + Math.cbrt(q - s) + p;
 
-            var t1 = 2 * q * Math.cos(theta);
-            var t2 = 2 * q * Math.cos((2 * Math.PI / 3) - theta);
-            var t3 = 2 * q * Math.cos((2 * Math.PI / 3) + theta);
+                x = (isInt(x) ? new Fraction(x, 1) : new Number(x));
+                var params = {};
+                params[variable] = (x instanceof Number ? Math.round(x): x);
+                x = (newLhs.eval(params).toString() === "0" ? new Fraction(Math.round(x), 1) : x);
 
-            // x1 = t1 - b/3a;
-            // x2 = t2 - b/3a;
-            // x3 = t3 - b/3a;
+                return [x];
 
-            var x1 = t1 + t.constant.valueOf();
-            var x2 = t2 + t.constant.valueOf();
-            var x3 = t3 + t.constant.valueOf();
+            // If D > 0, there are three real roots.
+            } else {
+                // Let q = √(-3ac / 9a^2), h = 2aq^3.
+                var q = Math.sqrt((-3 * a * c) / (9 * Math.pow(a, 2)));
+                var h = 2 * a * Math.pow(q, 3);
 
-            // TODO: Make this work with non-integer rationals.
-            x1 = (isInt(x1) ? new Fraction(x1, 1) : new Number(x1));
-            x2 = (isInt(x2) ? new Fraction(x2, 1) : new Number(x2));
-            x3 = (isInt(x3) ? new Fraction(x3, 1) : new Number(x3));
+                // theta = (1/3)arccos(-d/h)
+                var theta = (1 / 3) * Math.acos(-d / h);
 
-            var params1 = {};
-            var params2 = {};
-            var params3 = {};
+                // t1 = 2 * q * cos(theta)
+                // t2 = 2 * q * cos((2pi / 3) - theta)
+                // t3 = 2 * q * cos((2pi / 3) + theta)
 
-            params1[variable] = (x1 instanceof Number ? Math.round(x1): x1);
-            params2[variable] = (x2 instanceof Number ? Math.round(x2): x2);
-            params3[variable] = (x3 instanceof Number ? Math.round(x3): x3);
+                var t1 = 2 * q * Math.cos(theta);
+                var t2 = 2 * q * Math.cos((2 * Math.PI / 3) - theta);
+                var t3 = 2 * q * Math.cos((2 * Math.PI / 3) + theta);
 
-            x1 = (newLhs.eval(params1).toString() === "0" ? new Fraction(Math.round(x1), 1) : x1);
-            x2 = (newLhs.eval(params2).toString() === "0" ? new Fraction(Math.round(x2), 1) : x2);
-            x3 = (newLhs.eval(params3).toString() === "0" ? new Fraction(Math.round(x3), 1) : x3);
+                // x1 = t1 - b/3a;
+                // x2 = t2 - b/3a;
+                // x3 = t3 - b/3a;
 
-            return [x3, x2, x1];
+                var x1 = t1 + t.constant.valueOf();
+                var x2 = t2 + t.constant.valueOf();
+                var x3 = t3 + t.constant.valueOf();
+
+                // TODO: Make this work with non-integer rationals.
+                x1 = (isInt(x1) ? new Fraction(x1, 1) : new Number(x1));
+                x2 = (isInt(x2) ? new Fraction(x2, 1) : new Number(x2));
+                x3 = (isInt(x3) ? new Fraction(x3, 1) : new Number(x3));
+
+                var params1 = {};
+                var params2 = {};
+                var params3 = {};
+
+                params1[variable] = (x1 instanceof Number ? Math.round(x1): x1);
+                params2[variable] = (x2 instanceof Number ? Math.round(x2): x2);
+                params3[variable] = (x3 instanceof Number ? Math.round(x3): x3);
+
+                x1 = (newLhs.eval(params1).toString() === "0" ? new Fraction(Math.round(x1), 1) : x1);
+                x2 = (newLhs.eval(params2).toString() === "0" ? new Fraction(Math.round(x2), 1) : x2);
+                x3 = (newLhs.eval(params3).toString() === "0" ? new Fraction(Math.round(x3), 1) : x3);
+
+                return [x3, x2, x1];
+            }
         }
     }
 };

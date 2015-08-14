@@ -272,6 +272,18 @@ describe("Solving a cubic equation", function() {
         expect(answers[1].equalTo(new Fraction(-3, 1))).toBe(true);
         expect(answers[2].equalTo(new Fraction(-1, 1))).toBe(true);
     });
+
+    it("works when there is one real root, discriminant < 0", function() {
+        var a = new Expression("x").pow(3);
+        var c = new Expression("x").multiply(-2);
+
+        var expr = a.add(c);
+        var cubic = new Equation(expr, 4);
+
+        var answers = cubic.solveFor("x");
+
+        expect(answers[0].equalTo(new Fraction(2, 1))).toBe(true);
+    });
 });
 
 describe("Equation evaluation", function() {
