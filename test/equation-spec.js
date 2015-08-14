@@ -290,6 +290,18 @@ describe("Solving a cubic equation", function() {
         expect(answers[2].equalTo(new Fraction(-1, 1))).toBe(true);
     });
 
+    it("toTex works", function() {
+        var n1 = new Expression("x").add("x").add(2); // 2x + 2
+        var n2 = new Expression("x").add(3); // x + 3
+        var n3 = new Expression("x").add(4); // x + 4
+
+        var cubic = n1.multiply(n2).multiply(n3);
+        cubic = new Equation(cubic, 0);
+        var answers = cubic.solveFor("x");
+
+        expect(answers.toTex()).toEqual("-4,-3,-1");
+    });
+
     it("works when there is one real root, discriminant < 0", function() {
         var a = new Expression("x").pow(3);
         var c = new Expression("x").multiply(-2);

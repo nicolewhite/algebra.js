@@ -115,7 +115,7 @@ Equation.prototype.solveFor = function(variable) {
 
                     var root1 = (-b - squareRootDiscriminant) / 2*a;
                     var root2 = (-b + squareRootDiscriminant) / 2*a;
-                    return [new Number(root1), new Number(root2)];
+                    return [root1, root2];
                 }
             }
         // If the discriminant is negative, there are no real roots.
@@ -202,9 +202,9 @@ Equation.prototype.solveFor = function(variable) {
                 var s = Math.sqrt(Math.pow(q, 2) + Math.pow((r - Math.pow(p, 2)), 3));
                 var x = Math.cbrt(q + s) + Math.cbrt(q - s) + p;
 
-                x = (isInt(x) ? new Fraction(x, 1) : new Number(x));
+                x = (isInt(x) ? new Fraction(x, 1) : x);
                 var params = {};
-                params[variable] = (x instanceof Number ? Math.round(x): x);
+                params[variable] = Math.round(x);
                 x = (newLhs.eval(params).toString() === "0" ? new Fraction(Math.round(x), 1) : x);
 
                 return [x];
@@ -235,17 +235,17 @@ Equation.prototype.solveFor = function(variable) {
                 var x3 = t3 + t.constant.valueOf();
 
                 // TODO: Make this work with non-integer rationals.
-                x1 = (isInt(x1) ? new Fraction(x1, 1) : new Number(x1));
-                x2 = (isInt(x2) ? new Fraction(x2, 1) : new Number(x2));
-                x3 = (isInt(x3) ? new Fraction(x3, 1) : new Number(x3));
+                x1 = (isInt(x1) ? new Fraction(x1, 1) : x1);
+                x2 = (isInt(x2) ? new Fraction(x2, 1) : x2);
+                x3 = (isInt(x3) ? new Fraction(x3, 1) : x3);
 
                 var params1 = {};
                 var params2 = {};
                 var params3 = {};
 
-                params1[variable] = (x1 instanceof Number ? Math.round(x1): x1);
-                params2[variable] = (x2 instanceof Number ? Math.round(x2): x2);
-                params3[variable] = (x3 instanceof Number ? Math.round(x3): x3);
+                params1[variable] = Math.round(x1);
+                params2[variable] = Math.round(x2);
+                params3[variable] = Math.round(x3);
 
                 x1 = (newLhs.eval(params1).toString() === "0" ? new Fraction(Math.round(x1), 1) : x1);
                 x2 = (newLhs.eval(params2).toString() === "0" ? new Fraction(Math.round(x2), 1) : x2);
