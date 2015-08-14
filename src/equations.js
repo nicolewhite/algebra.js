@@ -52,9 +52,18 @@ Equation.prototype.solveFor = function(variable) {
 
         newRhs = newRhs.subtract(this.lhs.constant);
         newRhs = newRhs.add(this.rhs.constant);
+
+        if (newLhs.terms.length === 0) {
+            if (newLhs.constant.equalTo(newRhs.constant)) {
+                return "all reals";
+            } else {
+                throw "NoSolution";
+            }
+        }
+
         newRhs = newRhs.divide(newLhs.terms[0].coefficient);
 
-        if (newRhs.terms.length == 0) {
+        if (newRhs.terms.length === 0) {
             return newRhs.constant.reduce();
         }
 

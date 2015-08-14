@@ -220,6 +220,23 @@ describe("Solving for variables that can't be isolated", function() {
     });
 });
 
+describe("Solving linear equations with no / infinite solution", function() {
+    it("should throw an exception when there's no solution", function() {
+        var x = new Expression("x");
+        var eq = new Equation(x, x.add(2)); // x = x + 2
+
+        expect(function(){eq.solveFor("x")}).toThrow("NoSolution");
+    });
+
+    it("should return 'all reals' when there's infinite solutions", function() {
+        var x = new Expression("x");
+        var eq = new Equation(x, x); // x = x
+
+        var answer = eq.solveFor("x");
+        expect(answer).toEqual("all reals");
+    });
+});
+
 describe("Solving a cubic equation", function() {
     it("works when there's one distinct real root - discriminant = 0", function() {
         var a = new Expression("x").pow(3);
