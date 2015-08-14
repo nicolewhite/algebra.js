@@ -298,3 +298,25 @@ describe("Checking if the square root of a fraction is rational", function() {
         expect(frac._squareRootIsRational()).toBe(false);
     });
 });
+
+describe("Checking if the cube root of a fraction is rational", function() {
+    it("should return true if it's 0", function() {
+        var frac = new Fraction(0, -7);
+        expect(frac._cubeRootIsRational()).toBe(true);
+    });
+
+    it("should return true if it's rational", function() {
+        var frac = new Fraction(1, 8);
+        expect(frac._cubeRootIsRational()).toBe(true);
+    });
+
+    it("should return true if it's rational and negative", function() {
+        var frac = new Fraction(1, -8);
+        expect(frac._cubeRootIsRational()).toBe(true);
+    });
+
+    it("should return false if it's irrational", function() {
+        var frac = new Fraction(2, 4);
+        expect(frac._cubeRootIsRational()).toBe(false);
+    });
+});

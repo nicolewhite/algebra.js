@@ -181,10 +181,21 @@ Fraction.prototype._squareRootIsRational = function() {
         return true;
     }
 
-    var squareNumer = Math.sqrt(this.numer);
-    var squareDenom = Math.sqrt(this.denom);
+    var sqrtNumer = Math.sqrt(this.numer);
+    var sqrtDenom = Math.sqrt(this.denom);
 
-    return isInt(squareNumer) && isInt(squareDenom);
+    return isInt(sqrtNumer) && isInt(sqrtDenom);
+};
+
+Fraction.prototype._cubeRootIsRational = function() {
+    if (this.valueOf() === 0) {
+        return true;
+    }
+
+    var cbrtNumer = Math.cbrt(this.numer);
+    var cbrtDenom = Math.cbrt(this.denom);
+
+    return isInt(cbrtNumer) && isInt(cbrtDenom);
 };
 
 module.exports = Fraction;
