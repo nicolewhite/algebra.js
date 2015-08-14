@@ -249,13 +249,11 @@ expr = expr.multiply("x");
 expr = expr.add("y");
 expr = expr.add(new Fraction(1, 3));
 
-var xSub = 2;
-var ySub = new Fraction(3, 4);
-
-var answer1 = expr.eval({x: xSub});
-var answer2 = expr.eval({x: xSub, y: ySub});
-
 console.log(expr.toString());
+
+var answer1 = expr.eval({x: 2});
+var answer2 = expr.eval({x: 2, y: new Fraction(3, 4)});
+
 console.log(answer1.toString());
 console.log(answer2.toString());
 ```
@@ -270,13 +268,13 @@ y + 25/3
 
 ```js
 var expr = new Expression("x").add(2);
+
+console.log(expr.toString());
+
 var sub = new Expression("y").add(4);
+var answer = expr.eval({x: sub});
 
-console.log(expr.toString());
-
-expr = expr.eval({x: sub});
-
-console.log(expr.toString());
+console.log(answer.toString());
 ```
 
 ```
@@ -317,7 +315,7 @@ If a linear equation only has one variable, solving for that variable will retur
 
 ```js
 var x1 = new Expression("x");
-x1 = x.add(new Fraction(2, 3));
+x1 = x1.add(new Fraction(2, 3));
 x1 = x1.divide(5);
 
 var x2 = new Expression("x");
@@ -330,7 +328,6 @@ console.log(eq.toString());
 var answer = eq.solveFor("x");
 
 console.log("x = " + answer.toString());
-
 ```
 
 ```
@@ -374,10 +371,10 @@ An equation is quadratic if it can be arranged into the form
 
 $$ax^2 + bx + c = 0$$
 
-where $a \\neq 0$.
+where $a \neq 0$.
 
 A quadratic equation has at least one real root if its discriminant, $b^2 - 4ac$, is greater than or equal to 0.
-Solving a quadratic equation with a discriminant that is greater than or equal to 0 returns an array of its real roots as either Fraction or Number objects, 
+Solving a quadratic equation with a discriminant that is greater than or equal to 0 returns an array of its real roots as either Fraction objects or numbers, 
 depending on if the roots are rational or irrational, respectively. Solving a quadratic equation with a discriminant that is less than 0 will return an empty array.
 
 ```js
@@ -403,9 +400,9 @@ An equation is cubic if it can be arranged into the form
 
 $$ax^3 + bx^2 + cx + d = 0$$
 
-where $a \\neq 0$.
+where $a \neq 0$.
 
-All cubic equations have at least one real root. Solving a cubic equation returns an array of its real roots as either Fraction or Number objects, depending on if the roots are rational or irrational, respectively.
+All cubic equations have at least one real root. Solving a cubic equation returns an array of its real roots as either Fraction objects or numbers.
 
 ```js
 var n1 = new Expression("x").add(2);
