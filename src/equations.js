@@ -25,6 +25,7 @@ Equation.prototype.solveFor = function(variable) {
         throw "InvalidArgument";
     }
 
+    // If the equation is linear and the variable in question can be isolated through arithmetic, solve.
     if (this._isLinear() || this._variableCanBeIsolated(variable)) {
         var solvingFor = new Term(new Variable(variable));
         var newLhs = new Expression();
@@ -55,7 +56,7 @@ Equation.prototype.solveFor = function(variable) {
 
         if (newLhs.terms.length === 0) {
             if (newLhs.constant.equalTo(newRhs.constant)) {
-                return "all reals";
+                return new Fraction(1, 1);
             } else {
                 throw "NoSolution";
             }
@@ -69,189 +70,193 @@ Equation.prototype.solveFor = function(variable) {
 
         newRhs._sort();
         return newRhs;
-    } else if (this._isQuadratic(variable)) {
-        // Move everything to the lhs so we have the form ax^2 + bx + c = 0.
+
+    // Otherwise, move everything to the LHS.
+    } else {
         var newLhs = this.lhs.copy();
+        newLhs = newLhs.subtract(this.rhs);
 
-        for (var i = 0; i < this.rhs.terms.length; i++) {
-            newLhs = newLhs.subtract(this.rhs.terms[i]);
-        }
+        // If there are no terms left after this rearrangement and the constant is 0, there are infinite solutions.
+        if (newLhs.terms.length === 0 && newLhs.constant.valueOf() === 0) {
+                return [new Fraction(1, 1)];
 
-        newLhs = newLhs.subtract(this.rhs.constant);
+        // Otherwise, check degree and solve.
+        } else if (this._isQuadratic(variable)) {
+            var coefs = newLhs._quadraticCoefficients();
 
-        // Extract the coefficients a, b, and c into a dict.
-        var coefs = newLhs._quadraticCoefficients();
+            var a = coefs.a;
+            var b = coefs.b;
+            var c = coefs.c;
 
-        var a = coefs.a;
-        var b = coefs.b;
-        var c = coefs.c;
+            // Calculate the discriminant, b^2 - 4ac.
+            var discriminant = b.pow(2).subtract(a.multiply(c).multiply(4));
 
-        // Calculate the discriminant, b^2 - 4ac.
-        var discriminant = b.pow(2).subtract(a.multiply(c).multiply(4));
+            // If the discriminant is greater than or equal to 0, there is at least one real root.
+            if (discriminant.valueOf() >= 0) {
+                // If the discriminant is equal to 0, there is one real root: -b / 2a.
+                if (discriminant.valueOf() === 0) {
+                    return [b.multiply(-1).divide(a.multiply(2)).reduce()];
 
-        // If the discriminant is greater than or equal to 0, there is at least one real root.
-        if (discriminant.valueOf() >= 0) {
-            // If the discriminant is equal to 0, there is one real root: -b / 2a.
-            if (discriminant.valueOf() === 0) {
-                return [b.multiply(-1).divide(a.multiply(2)).reduce()];
-
-            // If the discriminant is greater than 0, there are two real roots:
-            // (-b - √discriminant) / 2a
-            // (-b + √discriminant) / 2a
-            } else {
-                var squareRootDiscriminant;
-
-                // If the answers will be rational, return reduced Fraction objects.
-                if (discriminant._squareRootIsRational()) {
-                    squareRootDiscriminant = discriminant.pow(0.5);
-                    var root1 = b.multiply(-1).subtract(squareRootDiscriminant).divide(a.multiply(2));
-                    var root2 = b.multiply(-1).add(squareRootDiscriminant).divide(a.multiply(2));
-                    return [root1.reduce(), root2.reduce()];
-                // If the answers will be irrational, return numbers.
+                    // If the discriminant is greater than 0, there are two real roots:
+                    // (-b - √discriminant) / 2a
+                    // (-b + √discriminant) / 2a
                 } else {
-                    squareRootDiscriminant = Math.sqrt(discriminant.valueOf());
-                    a = a.valueOf();
-                    b = b.valueOf();
+                    var squareRootDiscriminant;
 
-                    var root1 = (-b - squareRootDiscriminant) / 2*a;
-                    var root2 = (-b + squareRootDiscriminant) / 2*a;
-                    return [root1, root2];
+                    // If the answers will be rational, return reduced Fraction objects.
+                    if (discriminant._squareRootIsRational()) {
+                        squareRootDiscriminant = discriminant.pow(0.5);
+                        var root1 = b.multiply(-1).subtract(squareRootDiscriminant).divide(a.multiply(2));
+                        var root2 = b.multiply(-1).add(squareRootDiscriminant).divide(a.multiply(2));
+                        return [root1.reduce(), root2.reduce()];
+                        // If the answers will be irrational, return numbers.
+                    } else {
+                        squareRootDiscriminant = Math.sqrt(discriminant.valueOf());
+                        a = a.valueOf();
+                        b = b.valueOf();
+
+                        var root1 = (-b - squareRootDiscriminant) / 2*a;
+                        var root2 = (-b + squareRootDiscriminant) / 2*a;
+                        return [root1, root2];
+                    }
+                }
+                // If the discriminant is negative, there are no real roots.
+            } else {
+                return [];
+            }
+        } else if (this._isCubic(variable)) {
+            // Move everything to the lhs so we have the form ax^3 + bx^2 + cx + d = 0.
+            var newLhs = this.lhs.copy();
+            newLhs = newLhs.subtract(this.rhs);
+
+            // If there are no terms left after this rearrangement and the constant is 0, there are infinite solutions.
+            if (newLhs.terms.length === 0) {
+                if (newLhs.constant.valueOf() === 0) {
+                    return new Fraction(1, 1);
                 }
             }
-        // If the discriminant is negative, there are no real roots.
-        } else {
-            return [];
-        }
-    } else if (this._isCubic(variable)) {
-        // Move everything to the lhs so we have the form ax^3 + bx^2 + cx + d = 0.
-        var newLhs = this.lhs.copy();
 
-        for (var i = 0; i < this.rhs.terms.length; i++) {
-            newLhs = newLhs.subtract(this.rhs.terms[i]);
-        }
+            // Extract the coefficients a, b, c, and d into a dict.
+            var coefs = newLhs._cubicCoefficients();
 
-        newLhs = newLhs.subtract(this.rhs.constant);
+            var a = coefs.a;
+            var b = coefs.b;
+            var c = coefs.c;
+            var d = coefs.d;
 
-        // Extract the coefficients a, b, c, and d into a dict.
-        var coefs = newLhs._cubicCoefficients();
+            // Calculate D and D0.
+            var D = a.multiply(b).multiply(c).multiply(d).multiply(18);
+            D = D.subtract(b.pow(3).multiply(d).multiply(4));
+            D = D.add(b.pow(2).multiply(c.pow(2)));
+            D = D.subtract(a.multiply(c.pow(3)).multiply(4));
+            D = D.subtract(a.pow(2).multiply(d.pow(2)).multiply(27));
 
-        var a = coefs.a;
-        var b = coefs.b;
-        var c = coefs.c;
-        var d = coefs.d;
+            var D0 = b.pow(2).subtract(a.multiply(c).multiply(3));
 
-        // Calculate D and D0.
-        var D = a.multiply(b).multiply(c).multiply(d).multiply(18);
-        D = D.subtract(b.pow(3).multiply(d).multiply(4));
-        D = D.add(b.pow(2).multiply(c.pow(2)));
-        D = D.subtract(a.multiply(c.pow(3)).multiply(4));
-        D = D.subtract(a.pow(2).multiply(d.pow(2)).multiply(27));
+            // Check for special cases when D = 0.
+            if (D.valueOf() === 0) {
+                // If D = D0 = 0, there is one distinct real root, -b / 3a.
+                if (D0.valueOf() === 0) {
+                    var root1 = b.multiply(-1).divide(a.multiply(3));
 
-        var D0 = b.pow(2).subtract(a.multiply(c).multiply(3));
+                    return [root1.reduce()];
+                    // Otherwise, if D0 != 0, there are two distinct real roots.
+                    // 9ad - bc / 2D0
+                    // 4abc - 9a^2d - b^3 / aD0
+                } else {
+                    var root1 = a.multiply(b).multiply(c).multiply(4);
+                    root1 = root1.subtract(a.pow(2).multiply(d).multiply(9));
+                    root1 = root1.subtract(b.pow(3));
+                    root1 = root1.divide(a.multiply(D0));
 
-        // Check for special cases when D = 0.
-        if (D.valueOf() === 0) {
-            // If D = D0 = 0, there is one distinct real root, -b / 3a.
-            if (D0.valueOf() === 0) {
-                var root1 = b.multiply(-1).divide(a.multiply(3));
+                    var root2 = a.multiply(d).multiply(9).subtract(b.multiply(c)).divide(D0.multiply(2));
 
-                return [root1.reduce()];
-            // Otherwise, if D0 != 0, there are two distinct real roots.
-            // 9ad - bc / 2D0
-            // 4abc - 9a^2d - b^3 / aD0
+                    return [root1.reduce(), root2.reduce()];
+                }
+
+                // Otherwise, if D != 0, reduce to a depressed cubic.
             } else {
-                var root1 = a.multiply(b).multiply(c).multiply(4);
-                root1 = root1.subtract(a.pow(2).multiply(d).multiply(9));
-                root1 = root1.subtract(b.pow(3));
-                root1 = root1.divide(a.multiply(D0));
-
-                var root2 = a.multiply(d).multiply(9).subtract(b.multiply(c)).divide(D0.multiply(2));
-
-                return [root1.reduce(), root2.reduce()];
-            }
-
-        // Otherwise, if D != 0, reduce to a depressed cubic.
-        } else {
-            // Reduce to a depressed cubic with the Tschirnhaus transformation, x = t - b/3a.
-            var t = new Expression("t").subtract(b.divide(a.multiply(3)));
-            var params = {};
-            params[variable] = t;
-            var depressed = newLhs.eval(params);
-
-            var depressedCoefs = depressed._cubicCoefficients();
-
-            var a = depressedCoefs.a.valueOf();
-            var b = depressedCoefs.b.valueOf();
-            var c = depressedCoefs.c.valueOf();
-            var d = depressedCoefs.d.valueOf();
-
-            // If D < 0, there is one real root.
-            if (D.valueOf() < 0) {
-                // Solve with Cardano's formula.
-                // Let p = -b / 3*a
-                //     q = p^3 + ((b*c - 3*a*d) / (6*a^2))
-                //     r = c / 3*a
-
-                var p = -b / 3 * a;
-                var q = Math.pow(p, 3) + ((b * c - 3 * a * d) / (6 * a^2));
-                var r = c / 3 * a;
-
-                // Let s = √(q^2 + (r - p^2)^3)
-                // Then, x = (q + s)^(1/3) + (q - s)^(1/3) + p
-
-                var s = Math.sqrt(Math.pow(q, 2) + Math.pow((r - Math.pow(p, 2)), 3));
-                var x = Math.cbrt(q + s) + Math.cbrt(q - s) + p;
-
-                x = (isInt(x) ? new Fraction(x, 1) : x);
+                // Reduce to a depressed cubic with the Tschirnhaus transformation, x = t - b/3a.
+                var t = new Expression("t").subtract(b.divide(a.multiply(3)));
                 var params = {};
-                params[variable] = Math.round(x);
-                x = (newLhs.eval(params).toString() === "0" ? new Fraction(Math.round(x), 1) : x);
+                params[variable] = t;
+                var depressed = newLhs.eval(params);
 
-                return [x];
+                var depressedCoefs = depressed._cubicCoefficients();
 
-            // If D > 0, there are three real roots.
-            } else {
-                // Let q = √(-3ac / 9a^2), h = 2aq^3.
-                var q = Math.sqrt((-3 * a * c) / (9 * Math.pow(a, 2)));
-                var h = 2 * a * Math.pow(q, 3);
+                var a = depressedCoefs.a.valueOf();
+                var b = depressedCoefs.b.valueOf();
+                var c = depressedCoefs.c.valueOf();
+                var d = depressedCoefs.d.valueOf();
 
-                // theta = (1/3)arccos(-d/h)
-                var theta = (1 / 3) * Math.acos(-d / h);
+                // If D < 0, there is one real root.
+                if (D.valueOf() < 0) {
+                    // Solve with Cardano's formula.
+                    // Let p = -b / 3*a
+                    //     q = p^3 + ((b*c - 3*a*d) / (6*a^2))
+                    //     r = c / 3*a
 
-                // t1 = 2 * q * cos(theta)
-                // t2 = 2 * q * cos((2pi / 3) - theta)
-                // t3 = 2 * q * cos((2pi / 3) + theta)
+                    var p = -b / 3 * a;
+                    var q = Math.pow(p, 3) + ((b * c - 3 * a * d) / (6 * a^2));
+                    var r = c / 3 * a;
 
-                var t1 = 2 * q * Math.cos(theta);
-                var t2 = 2 * q * Math.cos((2 * Math.PI / 3) - theta);
-                var t3 = 2 * q * Math.cos((2 * Math.PI / 3) + theta);
+                    // Let s = √(q^2 + (r - p^2)^3)
+                    // Then, x = (q + s)^(1/3) + (q - s)^(1/3) + p
 
-                // x1 = t1 - b/3a;
-                // x2 = t2 - b/3a;
-                // x3 = t3 - b/3a;
+                    var s = Math.sqrt(Math.pow(q, 2) + Math.pow((r - Math.pow(p, 2)), 3));
+                    var x = Math.cbrt(q + s) + Math.cbrt(q - s) + p;
 
-                var x1 = t1 + t.constant.valueOf();
-                var x2 = t2 + t.constant.valueOf();
-                var x3 = t3 + t.constant.valueOf();
+                    x = (isInt(x) ? new Fraction(x, 1) : x);
+                    var params = {};
+                    params[variable] = Math.round(x);
+                    x = (newLhs.eval(params).toString() === "0" ? new Fraction(Math.round(x), 1) : x);
 
-                // TODO: Make this work with non-integer rationals.
-                x1 = (isInt(x1) ? new Fraction(x1, 1) : x1);
-                x2 = (isInt(x2) ? new Fraction(x2, 1) : x2);
-                x3 = (isInt(x3) ? new Fraction(x3, 1) : x3);
+                    return [x];
 
-                var params1 = {};
-                var params2 = {};
-                var params3 = {};
+                    // If D > 0, there are three real roots.
+                } else {
+                    // Let q = √(-3ac / 9a^2), h = 2aq^3.
+                    var q = Math.sqrt((-3 * a * c) / (9 * Math.pow(a, 2)));
+                    var h = 2 * a * Math.pow(q, 3);
 
-                params1[variable] = Math.round(x1);
-                params2[variable] = Math.round(x2);
-                params3[variable] = Math.round(x3);
+                    // theta = (1/3)arccos(-d/h)
+                    var theta = (1 / 3) * Math.acos(-d / h);
 
-                x1 = (newLhs.eval(params1).toString() === "0" ? new Fraction(Math.round(x1), 1) : x1);
-                x2 = (newLhs.eval(params2).toString() === "0" ? new Fraction(Math.round(x2), 1) : x2);
-                x3 = (newLhs.eval(params3).toString() === "0" ? new Fraction(Math.round(x3), 1) : x3);
+                    // t1 = 2 * q * cos(theta)
+                    // t2 = 2 * q * cos((2pi / 3) - theta)
+                    // t3 = 2 * q * cos((2pi / 3) + theta)
 
-                return [x3, x2, x1];
+                    var t1 = 2 * q * Math.cos(theta);
+                    var t2 = 2 * q * Math.cos((2 * Math.PI / 3) - theta);
+                    var t3 = 2 * q * Math.cos((2 * Math.PI / 3) + theta);
+
+                    // x1 = t1 - b/3a;
+                    // x2 = t2 - b/3a;
+                    // x3 = t3 - b/3a;
+
+                    var x1 = t1 + t.constant.valueOf();
+                    var x2 = t2 + t.constant.valueOf();
+                    var x3 = t3 + t.constant.valueOf();
+
+                    // TODO: Make this work with non-integer rationals.
+                    x1 = (isInt(x1) ? new Fraction(x1, 1) : x1);
+                    x2 = (isInt(x2) ? new Fraction(x2, 1) : x2);
+                    x3 = (isInt(x3) ? new Fraction(x3, 1) : x3);
+
+                    var params1 = {};
+                    var params2 = {};
+                    var params3 = {};
+
+                    params1[variable] = Math.round(x1);
+                    params2[variable] = Math.round(x2);
+                    params3[variable] = Math.round(x3);
+
+                    x1 = (newLhs.eval(params1).toString() === "0" ? new Fraction(Math.round(x1), 1) : x1);
+                    x2 = (newLhs.eval(params2).toString() === "0" ? new Fraction(Math.round(x2), 1) : x2);
+                    x3 = (newLhs.eval(params3).toString() === "0" ? new Fraction(Math.round(x3), 1) : x3);
+
+                    return [x3, x2, x1];
+                }
             }
         }
     }

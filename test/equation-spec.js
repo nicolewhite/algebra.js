@@ -138,6 +138,13 @@ describe("Solving a quadratic equation", function() {
         expect(answers[0].equalTo(new Fraction(-2, 1))).toBe(true);
         expect(answers[1].equalTo(new Fraction(1, 1))).toBe(true);
     });
+
+    it("should return 1 if there are infinite solutions", function() {
+        var eq = new Equation(x.multiply(x), x.multiply(x)); // x^2 = x^2
+        var answers = eq.solveFor("x");
+
+        expect(answers[0].equalTo(new Fraction(1, 1))).toBe(true);
+    });
 });
 
 describe("An array of answers resulting from solving an equation", function() {
@@ -228,12 +235,12 @@ describe("Solving linear equations with no / infinite solution", function() {
         expect(function(){eq.solveFor("x")}).toThrow("NoSolution");
     });
 
-    it("should return 'all reals' when there's infinite solutions", function() {
+    it("should return 1 when there's infinite solutions", function() {
         var x = new Expression("x");
         var eq = new Equation(x, x); // x = x
 
         var answer = eq.solveFor("x");
-        expect(answer).toEqual("all reals");
+        expect(answer.equalTo(new Fraction(1, 1))).toBe(true);
     });
 });
 
@@ -312,6 +319,14 @@ describe("Solving a cubic equation", function() {
         var answers = cubic.solveFor("x");
 
         expect(answers[0].equalTo(new Fraction(2, 1))).toBe(true);
+    });
+
+    it("returns 1 when there are infinite solutions", function() {
+        var exp = new Expression("x").pow(3);
+        var cubic = new Equation(exp.add(4), exp.add(4)); // x^3 + 4 = x^3 + 4
+
+        var answers = cubic.solveFor("x");
+        expect(answers[0].equalTo(new Fraction(1, 1))).toBe(true);
     });
 });
 
