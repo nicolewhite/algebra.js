@@ -133,6 +133,12 @@ describe("Expression addition", function() {
 
         expect(answer.toString()).toEqual("x + y + 3");
     });
+
+    it("should return unsimplified answers if simplify=false", function() {
+        var answer = x.add("x", false).add(3);
+
+        expect(answer.toString()).toEqual("x + x + 3");
+    });
 });
 
 describe("Expression subtraction", function() {
@@ -209,6 +215,12 @@ describe("Expression subtraction", function() {
         var answer = x.subtract("y").add(3);
 
         expect(answer.toString()).toEqual("x - y + 3");
+    });
+
+    it("should return an unsimplified expression if simplify=false", function() {
+        var answer = x.subtract(x, false).subtract(3);
+
+        expect(answer.toString()).toEqual("x - x - 3");
     });
 });
 

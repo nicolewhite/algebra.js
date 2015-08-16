@@ -30,16 +30,17 @@ Expression.prototype.copy = function() {
     return copy;
 };
 
-Expression.prototype.add = function(a) {
+Expression.prototype.add = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
     var thisExp = this.copy();
 
     if (typeof(a) === "string") {
         var exp = new Expression(a);
-        return thisExp.add(exp);
+        return thisExp.add(exp, simplify);
     } else if (a instanceof Term) {
         var exp = new Expression();
         exp.terms = [a.copy()];
-        return thisExp.add(exp);
+        return thisExp.add(exp, simplify);
     } else if (a instanceof Expression) {
         thisExp.constant = thisExp.constant.add(a.constant);
         var keepTerms = a.copy().terms;
@@ -50,7 +51,7 @@ Expression.prototype.add = function(a) {
             for (var j = 0; j < keepTerms.length; j++) {
                 var thatTerm = keepTerms[j];
 
-                if (thisTerm.canBeCombinedWith(thatTerm)) {
+                if (thisTerm.canBeCombinedWith(thatTerm) && simplify) {
                     thisExp.terms[i] = thisTerm.add(thatTerm);
                     keepTerms.splice(j, 1);
                 }
@@ -70,7 +71,8 @@ Expression.prototype.add = function(a) {
     return thisExp;
 };
 
-Expression.prototype.subtract = function(a) {
+Expression.prototype.subtract = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
     var thisExp = this.copy();
     var inverse;
 
@@ -94,7 +96,7 @@ Expression.prototype.subtract = function(a) {
         throw "InvalidArgument";
     }
 
-    return thisExp.add(inverse);
+    return thisExp.add(inverse, simplify);
 };
 
 Expression.prototype.multiply = function(a) {
