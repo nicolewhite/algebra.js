@@ -8,8 +8,8 @@ describe("An expression initialized with an alphabetic variable name", function(
         expect(x).toBeDefined();
     });
 
-    it("is initalized with a constant of 0", function() {
-        expect(x.constant).toEqual(new Fraction(0, 1));
+    it("is initalized with an empty array of constants", function() {
+        expect(x.constants.length).toEqual(0);
     });
 
     it("is initalized with one term", function() {
@@ -42,8 +42,8 @@ describe("An expression initialized with nothing", function() {
         expect(x).toBeDefined();
     });
 
-    it("is initalized with a constant of 0", function() {
-        expect(x.constant).toEqual(new Fraction(0, 1));
+    it("is initalized with an empty array of constants", function() {
+        expect(x.constants.length).toEqual(0);
     });
 
     it("is initalized with zero terms", function() {
@@ -134,10 +134,16 @@ describe("Expression addition", function() {
         expect(answer.toString()).toEqual("x + y + 3");
     });
 
-    it("should return unsimplified answers if simplify=false", function() {
+    it("should return unsimplified terms if simplify=false", function() {
         var answer = x.add("x", false).add(3);
 
         expect(answer.toString()).toEqual("x + x + 3");
+    });
+
+    it("should return unsimplified constants if simplify=false", function() {
+        var answer = x.add(3).add(3, false);
+
+        expect(answer.toString()).toEqual("x + 3 + 3");
     });
 });
 
@@ -217,10 +223,16 @@ describe("Expression subtraction", function() {
         expect(answer.toString()).toEqual("x - y + 3");
     });
 
-    it("should return an unsimplified expression if simplify=false", function() {
+    it("should return unsimplified terms if simplify=false", function() {
         var answer = x.subtract(x, false).subtract(3);
 
         expect(answer.toString()).toEqual("x - x - 3");
+    });
+
+    it("should return unsimplified constants if simplify=false", function() {
+        var answer = x.subtract(3).subtract(3, false);
+
+        expect(answer.toString()).toEqual("x - 3 - 3");
     });
 });
 
@@ -350,7 +362,7 @@ describe("Expression printing to string", function() {
     });
 });
 
-describe("Expression printing to tek", function() {
+describe("Expression printing to tex", function() {
     it("should put a negative sign on the first term if it's negative", function() {
         var x = new Expression("x");
         x = x.multiply(-1);
