@@ -20,6 +20,17 @@ var Expression = function(variable) {
         this.terms = [];
     }
 };
+
+Expression.prototype.constant = function() {
+    var sum = new Fraction(0, 1);
+
+    for (var i = 0; i < this.constants.length; i++) {
+        sum = sum.add(this.constants[i]);
+    }
+
+    return sum;
+};
+
 Expression.prototype.copy = function() {
     var copy = new Expression();
     copy.constants = [];
@@ -55,18 +66,10 @@ Expression.prototype.add = function(a, simplify) {
         }
 
         thisExp.terms = thisExp.terms.concat(keepTerms);
-        var allConstants = thisExp.constants.concat(a.constants);
+        thisExp.constants = thisExp.constants.concat(a.constants);
 
         if (simplify) {
-            var newConst = new Fraction(0, 1);
-
-            for (var i = 0; i < allConstants.length; i++) {
-                newConst = newConst.add(allConstants[i]);
-            }
-
-            thisExp.constants = (newConst.valueOf() === 0 ? [] : [newConst]);
-        } else {
-            thisExp.constants = allConstants;
+            thisExp.constants = (thisExp.constant().valueOf() === 0 ? [] : [thisExp.constant()]);
         }
     } else {
         throw "InvalidArgument";
@@ -142,14 +145,7 @@ Expression.prototype.multiply = function(a, simplify) {
 
         if (simplify) {
             thisExp._combineLikeTerms();
-
-            var newConst = new Fraction(0, 1);
-
-            for (var i = 0; i < thisExp.constants.length; i++) {
-                newConst = newConst.add(thisExp.constants[i]);
-            }
-
-            thisExp.constants = (newConst.valueOf() === 0 ? [] : [newConst]);
+            thisExp.constants = (thisExp.constant().valueOf() === 0 ? [] : [thisExp.constant()]);
         }
 
         thisExp._removeTermsWithCoefficientZero();
@@ -211,9 +207,7 @@ Expression.prototype.eval = function(values) {
         exp = exp.add(thisTerm.eval(values));
     }
 
-    for (var i = 0; i < this.constants.length; i++) {
-        exp = exp.add(this.constants[i]);
-    }
+    exp = exp.add(this.constant());
 
     return exp;
 };

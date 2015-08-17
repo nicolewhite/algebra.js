@@ -51,27 +51,11 @@ Equation.prototype.solveFor = function(variable) {
             }
         }
 
-        for (var i = 0; i < this.lhs.constants.length; i++) {
-            newRhs = newRhs.subtract(this.lhs.constants[i]);
-        }
-
-        for (var i = 0; i < this.rhs.constants.length; i++) {
-            newRhs = newRhs.add(this.rhs.constants[i]);
-        }
+        newRhs = newRhs.subtract(this.lhs.constant());
+        newRhs = newRhs.add(this.rhs.constant());
 
         if (newLhs.terms.length === 0) {
-            var newLhsSum = new Fraction(0, 1);
-            var newRhsSum = new Fraction(0, 1);
-
-            for (var i = 0; i < newLhs.constants.length; i++) {
-                newLhsSum = newLhsSum.add(newLhs.constants[i]);
-            }
-
-            for (var i = 0; i < newRhs.constants.length; i++) {
-                newRhsSum = newRhsSum.add(newRhs.constants[i]);
-            }
-
-            if (newLhsSum.equalTo(newRhsSum)) {
+            if (newLhs.constant().equalTo(newRhs.constant())) {
                 return new Fraction(1, 1);
             } else {
                 throw "NoSolution";
@@ -81,13 +65,7 @@ Equation.prototype.solveFor = function(variable) {
         newRhs = newRhs.divide(newLhs.terms[0].coefficient);
 
         if (newRhs.terms.length === 0) {
-            var newRhsSum = new Fraction(0, 1);
-
-            for (var i = 0; i < newRhs.constants.length; i++) {
-                newRhsSum = newRhsSum.add(newRhs.constants[i]);
-            }
-
-            return newRhsSum.reduce();
+            return newRhs.constant().reduce();
         }
 
         newRhs._sort();
@@ -101,13 +79,7 @@ Equation.prototype.solveFor = function(variable) {
         // If there are no terms left after this rearrangement and the constant is 0, there are infinite solutions.
         // Otherwise, there are no solutions.
         if (newLhs.terms.length === 0) {
-            var newLhsSum = new Fraction(0, 1);
-
-            for (var i = 0; i < newLhs.constants.length; i++) {
-                newLhsSum = newLhsSum.add(newLhs.constants[i]);
-            }
-
-            if (newLhsSum.valueOf() === 0) {
+            if (newLhs.constant().valueOf() === 0) {
                 return [new Fraction(1, 1)];
             } else {
                 throw "NoSolution";
@@ -256,9 +228,9 @@ Equation.prototype.solveFor = function(variable) {
                     // x2 = t2 - b/3a;
                     // x3 = t3 - b/3a;
 
-                    var x1 = t1 + t.constants[0].valueOf();
-                    var x2 = t2 + t.constants[0].valueOf();
-                    var x3 = t3 + t.constants[0].valueOf();
+                    var x1 = t1 + t.constant().valueOf();
+                    var x2 = t2 + t.constant().valueOf();
+                    var x3 = t3 + t.constant().valueOf();
 
                     x1 = (isInt(x1) ? new Fraction(x1, 1) : x1);
                     x2 = (isInt(x2) ? new Fraction(x2, 1) : x2);
