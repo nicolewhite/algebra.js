@@ -454,6 +454,7 @@ Term.prototype.multiply = function(a) {
     if (a instanceof Term) {
         var thatTerm = a.copy();
 
+        var keepVars = thatTerm.variables;
         var thisVars = thisTerm.variables;
         var thatVars = thatTerm.variables;
 
@@ -461,17 +462,12 @@ Term.prototype.multiply = function(a) {
             for (var j = 0; j < thatVars.length; j++) {
                 if (thisVars[i].variable === thatVars[j].variable) {
                     thisVars[i].degree += thatVars[j].degree;
-                    thatVars[j].throwaway = true;
+                    keepVars.splice(j, 1);
                 }
             }
         }
 
-        for (var i = 0; i < thatVars.length; i++) {
-            if (!thatVars[i].throwaway) {
-                thisVars.push(thatVars[i])
-            }
-        }
-
+        thisTerm.variables = thisTerm.variables.concat(keepVars);
         thisTerm.coefficient = thisTerm.coefficient.multiply(thatTerm.coefficient);
     } else if(isInt(a) || a instanceof Fraction) {
         thisTerm.coefficient = thisTerm.coefficient.multiply(a);
