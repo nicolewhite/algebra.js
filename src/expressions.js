@@ -31,6 +31,17 @@ Expression.prototype.constant = function() {
     return sum;
 };
 
+Expression.prototype.simplify = function() {
+    var copy = this.copy();
+
+    copy._combineLikeTerms();
+    copy._removeTermsWithCoefficientZero();
+    copy.constants = (copy.constant().valueOf() === 0 ? [] : [copy.constant()]);
+    copy._sort();
+
+    return copy;
+};
+
 Expression.prototype.copy = function() {
     var copy = new Expression();
     copy.constants = [];
@@ -67,17 +78,12 @@ Expression.prototype.add = function(a, simplify) {
 
         thisExp.terms = thisExp.terms.concat(keepTerms);
         thisExp.constants = thisExp.constants.concat(a.constants);
-
-        if (simplify) {
-            thisExp.constants = (thisExp.constant().valueOf() === 0 ? [] : [thisExp.constant()]);
-        }
+        thisExp._sort();
     } else {
         throw "InvalidArgument";
     }
 
-    thisExp._removeTermsWithCoefficientZero();
-    thisExp._sort();
-    return thisExp;
+    return (simplify ? thisExp.simplify() : thisExp);
 };
 
 Expression.prototype.subtract = function(a, simplify) {
@@ -142,19 +148,12 @@ Expression.prototype.multiply = function(a, simplify) {
 
         thisExp.constants = newConstants;
         thisExp.terms = newTerms;
-
-        if (simplify) {
-            thisExp._combineLikeTerms();
-            thisExp.constants = (thisExp.constant().valueOf() === 0 ? [] : [thisExp.constant()]);
-        }
-
-        thisExp._removeTermsWithCoefficientZero();
         thisExp._sort();
     } else {
         throw "InvalidArgument";
     }
 
-    return thisExp;
+    return (simplify ? thisExp.simplify() : thisExp);
 };
 
 Expression.prototype.divide = function(a) {

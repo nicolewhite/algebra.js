@@ -135,7 +135,7 @@ describe("Expression addition", function() {
     });
 
     it("should return unsimplified terms if simplify=false", function() {
-        var answer = x.add("x", false).add(3);
+        var answer = x.add(3).add("x", false);
 
         expect(answer.toString()).toEqual("x + x + 3");
     });
@@ -224,7 +224,7 @@ describe("Expression subtraction", function() {
     });
 
     it("should return unsimplified terms if simplify=false", function() {
-        var answer = x.subtract(x, false).subtract(3);
+        var answer = x.subtract(3).subtract(x, false);
 
         expect(answer.toString()).toEqual("x - x - 3");
     });
@@ -598,6 +598,39 @@ describe("Expression sorting", function() {
     });
 });
 
+describe("Expression simplification", function() {
+    it("should combine terms", function() {
+        var exp = new Expression("x").add(2).add("x", false); // x + x + 2
+
+        expect(exp.toString()).toEqual("x + x + 2");
+
+        var sim = exp.simplify();
+
+        expect(sim.toString()).toEqual("2x + 2");
+    });
+
+    it("should combine constants", function() {
+        var exp = new Expression("x").add(2).add(4, false); // x + 2 + 4
+
+        expect(exp.toString()).toEqual("x + 2 + 4");
+
+        var sim = exp.simplify();
+
+        expect(sim.toString()).toEqual("x + 6");
+    });
+
+    it("should combine terms and constants", function() {
+        var exp = new Expression("x").add(2);
+        exp = exp.add("x", false);
+        exp = exp.add(4, false);
+
+        expect(exp.toString()).toEqual("x + x + 2 + 4");
+
+        var sim = exp.simplify();
+
+        expect(sim.toString()).toEqual("2x + 6");
+    });
+});
 describe("Expression summation", function() {
 	it("should return a sum expressions whose variables have been substituted", function() {
 		var xplus3 = new Expression("x").add(3);
