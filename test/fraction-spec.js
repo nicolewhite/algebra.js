@@ -68,12 +68,14 @@ describe("A valid fraction with a negative denominator", function() {
         expect(frac.denom).toBeDefined();
     });
 
-    it("should print to string with a negative numerator", function() {
-        expect(frac.toString()).toEqual("-1/2");
+    it("should print to string with a negative numerator after being reduced", function() {
+        var red = frac.reduce();
+        expect(red.toString()).toEqual("-1/2");
     });
 
     it("should print to tex with a negative numerator", function() {
-        expect(frac.toTex()).toEqual("\\frac{-1}{2}");
+        var red = frac.reduce();
+        expect(red.toTex()).toEqual("\\frac{-1}{2}");
     });
 
     it("should bring the negative up to the numerator when reduced", function() {
@@ -318,5 +320,64 @@ describe("Checking if the cube root of a fraction is rational", function() {
     it("should return false if it's irrational", function() {
         var frac = new Fraction(2, 4);
         expect(frac._cubeRootIsRational()).toBe(false);
+    });
+});
+
+describe("Fraction simplification", function() {
+    it("works with addition", function() {
+        var frac = new Fraction(1, 2); // 1/2
+        frac = frac.add(new Fraction(1, 2), false); // 1/2 + 1/2 = 2/2
+
+        expect(frac.toString()).toEqual("2/2");
+    }) ;
+
+    it("works with subtraction", function() {
+        var frac = new Fraction(3, 4); // 3/4
+        frac = frac.subtract(new Fraction(1, 4), false); // 3/4 - 1/4 = 2/4
+
+        expect(frac.toString()).toEqual("2/4");
+    });
+
+    it("works with multiplication", function() {
+        var frac = new Fraction(1, 6); // 1/6
+        frac = frac.multiply(new Fraction(-2, 6), false); // 1/6 * -2/6 = -2/36
+
+        expect(frac.toString()).toEqual("-2/36");
+    });
+
+    it("works with division", function() {
+        var frac = new Fraction(1, 2); // 1/2
+        frac = frac.divide(new Fraction(2, 4), false); // 1/2 / 2/4 = 4/4
+
+        expect(frac.toString()).toEqual("4/4");
+    });
+
+    it("works with powers", function() {
+        var frac = new Fraction(2, 4); // 2/4
+
+        frac = frac.pow(2, false); // 2^2 / 4^2 = 4/16
+
+        expect(frac.toString()).toEqual("4/16");
+    });
+
+    it("stays unsimplified when asking for the absolute value", function() {
+        var frac = new Fraction(-2, 4);
+        frac = frac.abs();
+
+        expect(frac.toString()).toEqual("2/4");
+    });
+
+    it("leaves negatives in the denominator", function() {
+        var frac = new Fraction(1, 2); // 1/2
+        frac = frac.multiply(new Fraction(2, -4), false); // 1/2 * 2/-4 = 2/-8
+
+        expect(frac.toString()).toEqual("2/-8");
+    });
+
+    it("returns the lcm in the denom when adding two fractions", function() {
+        var frac = new Fraction(1, 6); // 1/6
+        frac = frac.add(new Fraction(1, 3), false); // 1/6 + 1/3 = 1/6 + 2/3 = 3/6
+
+        expect(frac.toString()).toEqual("3/6");
     });
 });
