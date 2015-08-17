@@ -184,7 +184,7 @@ a:hover {
   font-weight: bold; }
 .main-content table th, .main-content table td {
   padding: 0.2rem 1rem;
-  border: 0px solid #e9ebec; }
+  border: 1px solid #e9ebec; }
 .main-content dl {
   padding: 0; }
 .main-content dl dt {

@@ -65,13 +65,42 @@ x = 7/2
 
 ## <a name="usage-right-now"></a> Right Now
 
-Chrome / OS X: Cmd + Option + J
+You can follow along with the examples right now by executing the suggested keyboard shortcut for your browser and 
+operating system. This will open the JavaScript Console in your browser.
 
-Chrome / Windows: Ctrl + Shift + J
+<table>
+    <thead>
+        <tr>
+            <th>Operating System</th>
+            <th>Browser</th>
+            <th>Keyboard Shortcut</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        <tr>
+            <td>OS X</td>
+            <td>Chrome</td>
+            <td>Cmd + Option + J</td>
+        </tr>
+        <tr>
+            <td>OS X</td>
+            <td>Firefox</td>
+            <td>Cmd + Option + K</td>
+        </tr>
+        <tr>
+            <td>Windows</td>
+            <td>Chrome</td>
+            <td>Ctrl + Shift + J</td>
+        </tr>
+        <tr>
+            <td>Windows</td>
+            <td>Firefox</td>
+            <td>Ctrl + Shift + K</td>
+        </tr>
+    </tbody>
+</table>
 
-Firefox / OS X: Cmd + Option + K
-
-Firefox / Windows: Ctrl + Shift + K
 
 ## <a name="usage-in-browser"></a> In the Browser
 
