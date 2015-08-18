@@ -132,15 +132,27 @@ Parser.prototype.shunting_yard = function() {
 
 //Converts the base types NUMBER and IDENTIFIER to an Expression.
 Parser.prototype.convert_for_application = function(operand) {
-    var result = operand;
-    if(operand.type !== undefined){
+    if(operand.type === 'NUMBER'){
+        //Integer conversion
         if(parseInt(operand.value) == operand.value){
-            result = new Expression(parseInt(operand.value));    
+            return new Expression(parseInt(operand.value));      
         }else{
-            result = new Expression(operand.value);
+            //Split the decimal number to integer and decimal parts
+            var splits = operand.value.split('.');
+            //count the digits of the decimal part
+            var decimals = splits[1].length;
+            //determine the multiplication factor
+            var factor = Math.pow(10,decimals);
+            var float_op = parseFloat(operand.value);
+            //multiply the float with the factor and divide it again afterwards 
+            //to create a valid expression object
+            return new Expression(parseInt(float_op * factor)).divide(factor);
         }
+    }else if(operand.type === 'IDENTIFIER'){
+        return new Expression(operand.value);
+    }else {
+        return operand;
     }
-    return result;
 };
 
 /*  

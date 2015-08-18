@@ -36,6 +36,19 @@ describe("Input validity", function() {
         expect(algebra.parse(input)).toEqual(new Equation(lhs,rhs));
     });
 
+
+    it("should treat decimal numbers correctly", function(){
+        var input = "2.0 + 4.5";
+        var expr = new Expression(13).divide(2);
+        expect(algebra.parse(input)).toEqual(expr);
+    });
+
+    it("should treat decimal numbers correctly", function(){
+        var input = "0.0";
+        var expr = new Expression(0);
+        expect(algebra.parse(input)).toEqual(expr);
+    });
+
 });
 
 describe("Operators", function() {
