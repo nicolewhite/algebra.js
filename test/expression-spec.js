@@ -295,6 +295,32 @@ describe("Expression multiplication", function() {
 
         expect(answer.toString()).toEqual("xy");
     });
+
+    it("should allow for unsimplified terms - single var", function() {
+        var answer = x.multiply(x);
+        answer = answer.multiply(x, false); // x^2x
+
+        expect(answer.toString()).toEqual("x^2x");
+    });
+
+    it("should allow for unsimplified terms - var and constant", function() {
+        var answer = x.add(x, false); // x + x
+        answer = answer.multiply(5, false); // 5x + 5x
+
+        expect(answer.toString()).toEqual("5x + 5x");
+    });
+
+    it("should allow for unsimplified terms - multiple vars and constant", function() {
+        var answer = x.add(y); // x + y
+        answer = answer.multiply(2); // 2x + 2y
+        answer = answer.add(5); // 2x + 2y + 5
+
+        answer = answer.multiply(3, false); // 3 * 2x + 3 * 2y + 15
+
+        // TODO: make this work with the constant. should be 3 * 5
+        expect(answer.toString()).toEqual("3 * 2x + 3 * 2y + 15");
+        //expect(answer.toString()).toEqual("3 * 2x + 3 * 2y + 3 * 5");
+    });
 });
 
 describe("Expression division", function() {
@@ -630,8 +656,18 @@ describe("Expression simplification", function() {
 
         expect(sim.toString()).toEqual("2x + 6");
     });
-});
-describe("Expression summation", function() {
+
+    it("should combine unsimplified terms with multiple coefficients", function() {
+        var answer = new Expression("x").add("y"); // x + y
+        answer = answer.multiply(2); // 2x + 2y
+        answer = answer.add(5); // 2x + 2y + 5
+
+        answer = answer.multiply(3, false); // 3 * 2x + 3 * 2y + 15
+        answer = answer.simplify();
+
+        expect(answer.toString()).toEqual("6x + 6y + 15");
+    });
+});describe("Expression summation", function() {
 	it("should return a sum expressions whose variables have been substituted", function() {
 		var xplus3 = new Expression("x").add(3);
 		var ans = xplus3.summation(new Expression("x"), 3, 6);

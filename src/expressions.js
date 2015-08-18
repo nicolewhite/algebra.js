@@ -34,6 +34,10 @@ Expression.prototype.constant = function() {
 Expression.prototype.simplify = function() {
     var copy = this.copy();
 
+    for (var i = 0; i < copy.terms.length; i++) {
+        copy.terms[i] = copy.terms[i].simplify();
+    }
+
     copy._combineLikeTerms();
     copy._removeTermsWithCoefficientZero();
     copy.constants = (copy.constant().valueOf() === 0 ? [] : [copy.constant()]);
@@ -108,7 +112,7 @@ Expression.prototype.multiply = function(a, simplify) {
 
     if (typeof(a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
         var exp = new Expression(a);
-        return thisExp.multiply(exp);
+        return thisExp.multiply(exp, simplify);
     } else if (a instanceof Expression) {
         var thatExp = a.copy();
         var newTerms = [];
@@ -118,11 +122,11 @@ Expression.prototype.multiply = function(a, simplify) {
 
             for (var j = 0; j < thatExp.terms.length; j++) {
                 var thatTerm = thatExp.terms[j];
-                newTerms.push(thisTerm.multiply(thatTerm));
+                newTerms.push(thisTerm.multiply(thatTerm, simplify));
             }
 
             for (var j = 0; j < thatExp.constants.length; j++) {
-                newTerms.push(thisTerm.multiply(thatExp.constants[j]));
+                newTerms.push(thisTerm.multiply(thatExp.constants[j], simplify));
             }
         }
 
@@ -130,7 +134,7 @@ Expression.prototype.multiply = function(a, simplify) {
             var thatTerm = thatExp.terms[i];
 
             for (var j = 0; j < thisExp.constants.length; j++) {
-                newTerms.push(thatTerm.multiply(thisExp.constants[j]));
+                newTerms.push(thatTerm.multiply(thisExp.constants[j], simplify));
             }
         }
 
@@ -142,7 +146,7 @@ Expression.prototype.multiply = function(a, simplify) {
             for (var j = 0; j < thatExp.constants.length; j++) {
                 var thatConst = thatExp.constants[j];
 
-                newConstants.push(thisConst.multiply(thatConst));
+                newConstants.push(thisConst.multiply(thatConst, simplify));
             }
         }
 
