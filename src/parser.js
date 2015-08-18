@@ -151,10 +151,7 @@ Parser.prototype.convert_for_application = function(operand) {
 */
 Parser.prototype.apply_operator = function(op, lhs, rhs) {
     var result;  
-    //Perform operand type conversions if needed
-    lhs = this.convert_for_application(lhs);
-    rhs = this.convert_for_application(rhs);
-    
+   
     //Apply the operator
     switch(op.value){
         case 'PLUS': result = lhs.add(rhs);break;
@@ -190,7 +187,7 @@ Parser.prototype.construct_expression = function() {
         return this.apply_operator(head, lhs,rhs);
     }else{
         //If it is not an operator, it can only be a number or a variable, which are leaves in the tree
-        return head;
+        return this.convert_for_application(head);
     }
 };
 
