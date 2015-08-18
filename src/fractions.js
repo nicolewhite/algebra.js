@@ -2,6 +2,18 @@ var isInt = require('./helper').isInt;
 var gcd = require('./helper').gcd;
 var lcm = require('./helper').lcm;
 
+Math.sign = Math.sign || function(x) {
+    if( +x === x ) { // check if a number was given
+        return (x === 0) ? x : (x > 0) ? 1 : -1;
+    }
+    return NaN;
+};
+
+Math.cbrt = Math.cbrt || function(x) {
+    var y = Math.pow(Math.abs(x), 1/3);
+    return x < 0 ? -y : y;
+};
+
 var Fraction = function(a, b) {
     if (b == 0) {
         throw "DivideByZero";
@@ -55,7 +67,7 @@ Fraction.prototype.add = function(f) {
         a = f;
         b = 1;
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 
     var copy = this.copy();
@@ -86,7 +98,7 @@ Fraction.prototype.subtract = function(f) {
     } else if (isInt(f)) {
         return copy.add(new Fraction(-f, 1));
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 };
 
@@ -103,7 +115,7 @@ Fraction.prototype.multiply = function(f) {
         a = 0;
         b = 1;
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 
     var copy = this.copy();
@@ -116,7 +128,7 @@ Fraction.prototype.multiply = function(f) {
 
 Fraction.prototype.divide = function(f) {
     if (f == 0) {
-        throw "DivideByZero";
+        throw Error("DivideByZero");
     }
 
     var copy = this.copy();
@@ -126,7 +138,7 @@ Fraction.prototype.divide = function(f) {
     } else if (isInt(f)) {
         return copy.multiply(new Fraction(1, f));
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 };
 
