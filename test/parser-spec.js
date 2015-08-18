@@ -15,6 +15,11 @@ describe("Input validity", function() {
         expect(p.parse(input)).toNotEqual(new Expression("4x").add(2));
     });
 
+    it("does not accept operators without operands", function(){
+        var input = "+";
+         expect(function(){p.parse(input);}).toThrow(new Error('Missing operand'));
+    });
+
     it("should ignore newlines", function(){
  		var input = "2+z \n = 5";
         var lhs = new Expression("z").add(2);
@@ -36,6 +41,15 @@ describe("Input validity", function() {
         expect(algebra.parse(input)).toEqual(new Equation(lhs,rhs));
     });
 
+    it("should not accept incomplete decimal numbers", function(){
+        var input = "2. + x * 4";
+        expect(function(){p.parse(input);}).toThrow(new Error("Decimal point without decimal digits at position 1"));
+    });
+
+    it("should not accept short notation for decimals x with 0 > x < 1", function(){
+        var input = ".2 + x * 4";
+        expect(function(){p.parse(input);}).toThrow(new Error('Token error at character . at position 0'));
+    });
 
     it("should treat decimal numbers correctly", function(){
         var input = "2.0 + 4.5";
