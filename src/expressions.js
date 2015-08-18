@@ -30,6 +30,10 @@ Expression.prototype.copy = function() {
     return copy;
 };
 
+Expression.prototype.isConstant = function() {
+    return this.terms.length == 0 && !!this.constant;
+};
+
 Expression.prototype.add = function(a) {
     var thisExp = this.copy();
 
@@ -62,7 +66,7 @@ Expression.prototype.add = function(a) {
     } else if (isInt(a) || a instanceof Fraction) {
         thisExp.constant = thisExp.constant.add(a);
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 
     thisExp._removeTermsWithCoefficientZero();
@@ -90,8 +94,8 @@ Expression.prototype.subtract = function(a) {
         inverse = -a;
     } else if (a instanceof Fraction) {
         inverse = a.multiply(-1);
-    } else {
-        throw "InvalidArgument";
+    } else {        
+        throw Error("InvalidArgument");
     }
 
     return thisExp.add(inverse);
@@ -139,7 +143,7 @@ Expression.prototype.multiply = function(a) {
             thisExp.terms[i].coefficient = thisExp.terms[i].coefficient.multiply(a);
         }
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 
     return thisExp;
@@ -148,7 +152,7 @@ Expression.prototype.multiply = function(a) {
 Expression.prototype.divide = function(a) {
     if (a instanceof Fraction || isInt(a)) {
         if (a == 0) {
-            throw "DivideByZero";
+            throw Error("DivideByZero");
         }
 
         var copy = this.copy();
@@ -161,7 +165,7 @@ Expression.prototype.divide = function(a) {
 
         return copy;
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 };
 
@@ -180,7 +184,7 @@ Expression.prototype.pow = function(a) {
             return copy;
         }
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 };
 
@@ -410,7 +414,7 @@ Term = function(variable) {
     } else if (typeof(variable) === "undefined") {
         this.variables = [];
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 
     this.coefficient = new Fraction(1, 1);
@@ -434,7 +438,7 @@ Term.prototype.add = function(term) {
         copy.coefficient = copy.coefficient.add(term.coefficient);
         return copy;
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 };
 
@@ -444,7 +448,7 @@ Term.prototype.subtract = function(term) {
         copy.coefficient = copy.coefficient.subtract(term.coefficient);
         return copy;
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 };
 
@@ -472,7 +476,7 @@ Term.prototype.multiply = function(a) {
     } else if(isInt(a) || a instanceof Fraction) {
         thisTerm.coefficient = thisTerm.coefficient.multiply(a);
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 
     return thisTerm.sort();
@@ -484,7 +488,7 @@ Term.prototype.divide = function(a) {
         thisTerm.coefficient = thisTerm.coefficient.divide(a);
         return thisTerm;
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 };
 
@@ -507,7 +511,7 @@ Term.prototype.eval = function(values) {
                 } else if(isInt(sub)) {
                     eval = Math.pow(sub, thisVar.degree);
                 } else {
-                    throw "InvalidArgument";
+                    throw Error("InvalidArgument");
                 }
             }
         }
@@ -641,7 +645,7 @@ var Variable = function(variable) {
         this.variable = variable;
         this.degree = 1;
     } else {
-        throw "InvalidArgument";
+        throw Error("InvalidArgument");
     }
 };
 
