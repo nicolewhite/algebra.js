@@ -148,10 +148,8 @@ Parser.prototype.convert_for_application = function(operand) {
             //to create a valid expression object
             return new Expression(parseInt(float_op * factor)).divide(factor);
         }
-    }else if(operand.type === 'IDENTIFIER'){
+    } else {
         return new Expression(operand.value);
-    }else {
-        return operand;
     }
 };
 
