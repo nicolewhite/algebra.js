@@ -10,15 +10,15 @@ describe("Terms", function() {
        expect(t.variables.length).toEqual(1);
     });
 
-    it("are initialized with a coefficient of 1", function() {
-        expect(t.coefficient.equalTo(new Fraction(1, 1))).toBe(true);
+    it("are initialized with an array of coefficients", function() {
+        expect(t.coefficients[0].equalTo(new Fraction(1, 1))).toBe(true);
     });
 
     it("can be initialized with nothing", function() {
         var t = new Term();
 
         expect(t.variables.length).toEqual(0);
-        expect(t.coefficient.equalTo(new Fraction(1, 1))).toBe(true);
+        expect(t.coefficients[0].equalTo(new Fraction(1, 1))).toBe(true);
     });
 
     it("can't be initialized with an integer", function() {
@@ -62,9 +62,9 @@ describe("Term subtraction", function() {
         var t1 = new Term(x);
         var t2 = new Term(x);
 
-        t1.coefficient = new Fraction(2, 1);
+        t1.coefficients = [new Fraction(2, 1)];
 
-        answer = t1.subtract(t2);
+        var answer = t1.subtract(t2);
         expect(answer.toString()).toEqual("x")
     });
 
@@ -82,10 +82,10 @@ describe("Term multiplication", function() {
         var t1 = new Term(x);
         var t2 = new Term(x);
 
-        t1.coefficient = new Fraction(2, 1);
-        t2.coefficient = new Fraction(3, 1);
+        t1.coefficients = [new Fraction(2, 1)];
+        t2.coefficients = [new Fraction(3, 1)];
 
-        answer = t1.multiply(t2);
+        var answer = t1.multiply(t2);
         expect(answer.toString()).toEqual("6x^2");
     });
 
@@ -96,7 +96,7 @@ describe("Term multiplication", function() {
         x.degree = 3;
         var t2 = new Term(x);
 
-        answer = t1.multiply(t2);
+        var answer = t1.multiply(t2);
         expect(answer.toString()).toEqual("x^5");
     });
 
@@ -106,10 +106,10 @@ describe("Term multiplication", function() {
         var t1 = new Term(x);
         var t2 = new Term(y);
 
-        t1.coefficient = new Fraction(2, 1);
-        t2.coefficient = new Fraction(3, 1);
+        t1.coefficients = [new Fraction(2, 1)];
+        t2.coefficients = [new Fraction(3, 1)];
 
-        answer = t1.multiply(t2);
+        var answer = t1.multiply(t2);
         expect(answer.toString()).toEqual("6xy")
     });
 
@@ -117,7 +117,7 @@ describe("Term multiplication", function() {
         var x = new Variable("x");
         var t = new Term(x);
 
-        answer = t.multiply(2);
+        var answer = t.multiply(2);
         expect(answer.toString()).toEqual("2x");
     });
 
@@ -125,7 +125,7 @@ describe("Term multiplication", function() {
         var x = new Variable("x");
         var t = new Term(x);
 
-        answer = t.multiply(new Fraction(2, 3));
+        var answer = t.multiply(new Fraction(2, 3));
         expect(answer.toString()).toEqual("2/3x");
     });
 
@@ -135,6 +135,26 @@ describe("Term multiplication", function() {
 
         expect(function(){t.multiply(.5)}).toThrow("InvalidArgument");
     });
+
+    it("allows unsimplified coefficients", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+
+        t = t.multiply(5);
+        t = t.multiply(3, false);
+
+        expect(t.toString()).toEqual("3 * 5x");
+    });
+
+    it("allows unsimplified variables", function() {
+        var x = new Variable("x");
+        var t1 = new Term(x);
+        var t2 = new Term(x);
+
+        var answer = t1.multiply(t2, false);
+
+        expect(answer.toString()).toEqual("xx");
+    });
 });
 
 describe("Term division", function() {
@@ -142,7 +162,7 @@ describe("Term division", function() {
         var x = new Variable("x");
         var t = new Term(x);
 
-        answer = t.divide(3);
+        var answer = t.divide(3);
         expect(answer.toString()).toEqual("1/3x");
     });
 
@@ -150,7 +170,7 @@ describe("Term division", function() {
         var x = new Variable("x");
         var t = new Term(x);
 
-        answer = t.divide(new Fraction(2, 3));
+        var answer = t.divide(new Fraction(2, 3));
         expect(answer.toString()).toEqual("3/2x")
     });
 
@@ -169,5 +189,35 @@ describe("Term sorting", function() {
         var t = y.multiply(x).multiply(x); // yx^2
         t.sort();
         expect(t.toString()).toEqual("x^2y");
+    });
+});
+
+describe("Term simplification", function() {
+    it("should combine terms", function() {
+        var x = new Variable("x");
+        var y = new Variable("y");
+
+        var t = new Term(x);
+
+        t = t.multiply(new Term(x), false);
+        t = t.multiply(new Term(y), false);
+        t = t.multiply(new Term(x), false); // xxyx
+
+        t.combineVars();
+
+        expect(t.toString()).toEqual("x^3y");
+    });
+
+    it("should combine coefficients", function() {
+        var x = new Variable("x");
+
+        var t = new Term(x);
+
+        t = t.multiply(5, false);
+        t = t.multiply(3, false); // 3 * 5x
+
+        t = t.simplify();
+
+        expect(t.toString()).toEqual("15x");
     });
 });

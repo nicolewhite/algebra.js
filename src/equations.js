@@ -62,7 +62,7 @@ Equation.prototype.solveFor = function(variable) {
             }
         }
 
-        newRhs = newRhs.divide(newLhs.terms[0].coefficient);
+        newRhs = newRhs.divide(newLhs.terms[0].coefficient());
 
         if (newRhs.terms.length === 0) {
             return newRhs.constant().reduce();
