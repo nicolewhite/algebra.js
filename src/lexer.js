@@ -85,13 +85,28 @@ Lexer._isalphanum = function(c) {
          (c >= '0' && c <= '9');
 };
 
-Lexer.prototype._process_number = function() {
-  var endpos = this.pos + 1;
+Lexer.prototype._process_digits = function(position){
+  var endpos = position;
   while (endpos < this.buflen &&
-         Lexer._isdigit(this.buf.charAt(endpos))) {
+        (Lexer._isdigit(this.buf.charAt(endpos)))){
     endpos++;
   }
+  return endpos
+}
 
+Lexer.prototype._process_number = function() {
+  //Read characters until a non-digit character appears
+  var endpos = this._process_digits(this.pos);
+  //If it's a decimal point, continue to read digits
+  if(this.buf.charAt(endpos) === '.'){
+    endpos = this._process_digits(endpos + 1);
+  }
+  //Check if the last read character is a decimal point.
+  //If it is, ignore it and proceed
+  if(this.buf.charAt(endpos-1) === '.'){
+    throw new Error("Decimal point without decimal digits at position " + endpos);
+  } 
+  //construct the NUMBER token
   var tok = {
     type: 'NUMBER',
     value: this.buf.substring(this.pos, endpos),
