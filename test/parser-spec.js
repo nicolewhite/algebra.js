@@ -1,5 +1,5 @@
-var Parser = require('../src/algebra-parser.js'),
-    algebra = require('algebra.js'),
+var Parser = require('../src/parser.js'),
+    algebra = require('../algebra.js'),
     Expression = algebra.Expression,
     Equation = algebra.Equation;
 
@@ -28,6 +28,14 @@ describe("Input validity", function() {
         var rhs = new Expression(5);
         expect(p.parse(input)).toEqual(new Equation(lhs,rhs));
     });
+
+    it("should work from the algebra module", function(){
+        var input = "2+alpha = 5";
+        var lhs = new Expression("alpha").add(2);
+        var rhs = new Expression(5);
+        expect(algebra.parse(input)).toEqual(new Equation(lhs,rhs));
+    });
+
 });
 
 describe("Operators", function() {
