@@ -104,7 +104,7 @@ Lexer.prototype._process_number = function() {
   //Check if the last read character is a decimal point.
   //If it is, ignore it and proceed
   if(this.buf.charAt(endpos-1) === '.'){
-    throw new Error("Decimal point without decimal digits at position " + endpos);
+    throw new Error("Decimal point without decimal digits at position " + (endpos-1));
   } 
   //construct the NUMBER token
   var tok = {
