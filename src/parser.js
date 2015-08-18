@@ -190,6 +190,7 @@ Parser.prototype.apply_operator = function(op, lhs, rhs) {
 Parser.prototype.construct_expression = function() {
     //Read the stack head
     var head = this.output.pop();
+    if(head === undefined) throw new Error("Missing operand")
     //If its an operator, recursively construct the operands and apply the operator to construct the node
     if(head.type === 'OPERATOR'){
         var rhs = this.construct_expression();
