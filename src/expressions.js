@@ -160,7 +160,9 @@ Expression.prototype.multiply = function(a, simplify) {
     return (simplify ? thisExp.simplify() : thisExp);
 };
 
-Expression.prototype.divide = function(a) {
+Expression.prototype.divide = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     if (a instanceof Fraction || isInt(a)) {
 
         if (a.valueOf() === 0) {
@@ -170,11 +172,15 @@ Expression.prototype.divide = function(a) {
         var copy = this.copy();
 
         for (var i = 0; i < copy.terms.length; i++) {
-            copy.terms[i].coefficients = [copy.terms[i].coefficient().divide(a)];
+            var thisTerm = copy.terms[i];
+
+            for (var j = 0; j < thisTerm.coefficients.length; j++) {
+                thisTerm.coefficients[j] = thisTerm.coefficients[j].divide(a, simplify);
+            }
         }
 
         for (var i = 0; i < copy.constants.length; i++) {
-            copy.constants[i] = copy.constants[i].divide(a);
+            copy.constants[i] = copy.constants[i].divide(a, simplify);
         }
 
         return copy;
@@ -240,7 +246,7 @@ Expression.prototype.toString = function() {
     }
 
     for (var i = 0; i < this.constants.length; i++) {
-        var constant = this.constants[i].reduce();
+        var constant = this.constants[i];
 
         str += (constant.valueOf() < 0 ? " - " : " + ") + constant.abs().toString();
     }
@@ -266,7 +272,7 @@ Expression.prototype.toTex = function() {
     }
 
     for (var i = 0; i < this.constants.length; i++) {
-        var constant = this.constants[i].reduce();
+        var constant = this.constants[i];
 
         str += (constant.valueOf() < 0 ? " - " : " + ") + constant.abs().toTex();
     }
@@ -568,12 +574,14 @@ Term.prototype.multiply = function(a, simplify) {
     return (simplify ? thisTerm.simplify() : thisTerm);
 };
 
-Term.prototype.divide = function(a) {
+Term.prototype.divide = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     if(isInt(a) || a instanceof Fraction) {
         var thisTerm = this.copy();
 
         for (var i = 0; i < thisTerm.coefficients.length; i++) {
-            thisTerm.coefficients[i] = thisTerm.coefficients[i].divide(a);
+            thisTerm.coefficients[i] = thisTerm.coefficients[i].divide(a, simplify);
         }
 
         return thisTerm;
@@ -702,7 +710,7 @@ Term.prototype.toString = function() {
     for (var i = 0; i < this.coefficients.length; i++) {
         var coef = this.coefficients[i].abs();
 
-        if (coef.valueOf() != 1) {
+        if (!(coef.numer === 1 && coef.denom === 1)) {
             str += " * " + coef.toString()
         }
     }

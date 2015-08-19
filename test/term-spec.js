@@ -180,6 +180,16 @@ describe("Term division", function() {
 
         expect(function(){t.divide(.5)}).toThrow("InvalidArgument");
     });
+
+    it("allows unsimplified terms", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+
+        var answer = t.multiply(2); // 2x
+        answer = answer.divide(4, false); //2/4x
+
+        expect(answer.toString()).toEqual("2/4x");
+    });
 });
 
 describe("Term sorting", function() {

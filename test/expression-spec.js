@@ -345,7 +345,21 @@ describe("Expression division", function() {
 
     it("should throw an exception if dividing by zero", function() {
         expect(function(){x.divide(0)}).toThrow("DivideByZero");
-    })
+    });
+
+    it("should allow for unsimplified terms and constants", function() {
+        var exp1 = new Expression("x").multiply(2); // 2x
+        var exp2 = new Expression("x").multiply(4); // 4x
+
+        var answer = exp1.add(exp2, false); // 2x + 4x
+
+        answer = answer.add(2, false);
+        answer = answer.add(4, false); // 2x + 4x + 2 + 4
+
+        answer = answer.divide(2, false); // 2/2x + 4/2x + 2/2 + 4/2
+
+        expect(answer.toString()).toEqual("2/2x + 4/2x + 2/2 + 4/2");
+    });
 });
 
 describe("Expression printing to string", function() {
