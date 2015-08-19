@@ -121,3 +121,22 @@ describe("Parenthesis", function() {
     });
 
 });
+
+describe("Order of operations", function() {
+    var p = new Parser();
+
+    it("should execute * before +", function() {
+        var input = "2 * x + 2 + 4 * 3";
+        expect(p.parse(input)).toEqual(new Expression("x").multiply(2).add(2).add(12));
+    });
+
+    it("should execute () before +", function() {
+        var input = "2 * x * (3 + 4)";
+        expect(p.parse(input)).toEqual(new Expression("x").multiply(2).multiply(7));
+    });
+
+    it("should execute * and / in the order that they're seen", function() {
+        var input = "2 * x / (4 + 3)";
+        expect(p.parse(input)).toEqual(new Expression("x").multiply(2).divide(7));
+    });
+});
