@@ -317,9 +317,7 @@ describe("Expression multiplication", function() {
 
         answer = answer.multiply(3, false); // 3 * 2x + 3 * 2y + 15
 
-        // TODO: make this work with the constant. should be 3 * 5
-        expect(answer.toString()).toEqual("3 * 2x + 3 * 2y + 15");
-        //expect(answer.toString()).toEqual("3 * 2x + 3 * 2y + 3 * 5");
+        expect(answer.toString()).toEqual("3 * 2x + 3 * 2y + 3 * 5");
     });
 });
 
@@ -681,6 +679,19 @@ describe("Expression simplification", function() {
 
         expect(answer.toString()).toEqual("6x + 6y + 15");
     });
+
+    it("should properly move terms with no variables into the constants", function() {
+        var answer = new Expression("x").add("x", false); // x + x
+        answer = answer.multiply(2, false); // 2x + 2x
+        answer = answer.add(5, false); // 2x + 2x + 5
+        answer = answer.add(6, false); // 2x + 2x + 5 + 6
+
+        answer = answer.multiply(3, false); // 3 * 2x + 3 * 2x + 3 * 5 + 3 * 6
+
+        answer = answer.simplify(); // 12x + 33
+
+        expect(answer.toString()).toEqual("12x + 33");
+    })
 });describe("Expression summation", function() {
 	it("should return a sum expressions whose variables have been substituted", function() {
 		var xplus3 = new Expression("x").add(3);

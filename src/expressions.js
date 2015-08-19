@@ -146,7 +146,14 @@ Expression.prototype.multiply = function(a, simplify) {
             for (var j = 0; j < thatExp.constants.length; j++) {
                 var thatConst = thatExp.constants[j];
 
-                newConstants.push(thisConst.multiply(thatConst, simplify));
+                if (simplify) {
+                    newConstants.push(thisConst.multiply(thatConst, simplify));
+                } else {
+                    var t = new Term();
+                    t = t.multiply(thisConst, false);
+                    t = t.multiply(thatConst, false);
+                    newTerms.push(t);
+                }
             }
         }
 
@@ -311,6 +318,11 @@ Expression.prototype._combineLikeTerms = function() {
                 this.terms[i] = thisTerm;
                 this.terms.splice(j, 1);
             }
+        }
+
+        if (thisTerm.variables.length === 0) {
+            this.constants.push(thisTerm.coefficient());
+            this.terms.splice(i, 1);
         }
     }
 
