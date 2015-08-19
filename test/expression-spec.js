@@ -617,7 +617,13 @@ describe("Raising expressions to powers", function() {
     it("should work with power 3", function() {
         var answer = x.pow(3);
         expect(answer.toString()).toEqual("x^3 + 6x^2 + 12x + 8");
-    })
+    });
+
+    it("should allow unsimplified expression", function() {
+        var answer = x.pow(2, false);
+
+        expect(answer.toString()).toEqual("xx + 2x + 2x + 2 * 2");
+    });
 });
 
 describe("Expression sorting", function() {

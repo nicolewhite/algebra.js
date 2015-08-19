@@ -196,7 +196,9 @@ Expression.prototype.divide = function(a, simplify) {
     }
 };
 
-Expression.prototype.pow = function(a) {
+Expression.prototype.pow = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     if (isInt(a)) {
         var copy = this.copy();
 
@@ -204,7 +206,7 @@ Expression.prototype.pow = function(a) {
             return new Expression().add(1);
         } else {
             for (var i = 1; i < a; i++) {
-                copy = copy.multiply(this);
+                copy = copy.multiply(this, simplify);
             }
 
             copy._sort();
