@@ -582,6 +582,43 @@ describe("Expression evaulation with other expressions", function() {
     });
 });
 
+describe("Expression evaluation with unsimplified expressions", function() {
+    it("works with multiple of the same variable", function() {
+        var exp = new Expression("x").add("x", false); // x + x
+        var answer = exp.eval({x:2}, false);
+
+        expect(answer.toString()).toEqual("2 + 2");
+    });
+
+    it("works with multiples of different variables", function() {
+        var exp = new Expression("x").add("x", false).add("y", false); // x + x + y
+        var answer = exp.eval({x:2}, false);
+        expect(answer.toString()).toEqual("y + 2 + 2");
+    });
+
+    it("works with cross products", function() {
+        var exp = new Expression("x").multiply("y"); // xy
+        exp = exp.add(exp, false); // xy + xy
+        var answer = exp.eval({x:2}, false);
+        expect(answer.toString()).toEqual("2y + 2y");
+    });
+
+    it("works when there's multiple coefficients", function() {
+        var exp = new Expression("x").multiply(5).multiply(4, false); // 4 * 5x
+        var answer = exp.eval({x:2}, false);
+        expect(answer.toString()).toEqual("4 * 5 * 2");
+
+    });
+
+    it("works when substituting in another expression", function() {
+        var exp = new Expression("x").multiply("x", false); // xx
+        var sub = new Expression("y").add(4); // y + 4
+
+        var answer = exp.eval({x: sub}, false);
+        expect(answer.toString()).toEqual("yy + 4y + 4y + 4 * 4");
+    });
+});
+
 describe("Checking for cross products in expressions", function() {
     it("should return true if there are no cross products", function() {
         var expr = new Expression("x").add("y");

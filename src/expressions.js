@@ -150,8 +150,8 @@ Expression.prototype.multiply = function(a, simplify) {
                     newConstants.push(thisConst.multiply(thatConst, simplify));
                 } else {
                     var t = new Term();
-                    t = t.multiply(thisConst, false);
                     t = t.multiply(thatConst, false);
+                    t = t.multiply(thisConst, false);
                     newTerms.push(t);
                 }
             }
@@ -217,15 +217,16 @@ Expression.prototype.pow = function(a, simplify) {
     }
 };
 
-Expression.prototype.eval = function(values) {
+Expression.prototype.eval = function(values, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     var exp = new Expression();
+    exp.constants = (simplify ? [this.constant()] : this.constants.slice());
 
     for(var i = 0; i < this.terms.length; i++) {
         var thisTerm = this.terms[i];
-        exp = exp.add(thisTerm.eval(values));
+        exp = exp.add(thisTerm.eval(values, simplify), simplify);
     }
-
-    exp = exp.add(this.constant());
 
     return exp;
 };
@@ -604,10 +605,16 @@ Term.prototype.divide = function(a, simplify) {
     }
 };
 
-Term.prototype.eval = function(values) {
+Term.prototype.eval = function(values, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     var copy = this.copy();
     var keys = Object.keys(values);
-    var exp = new Expression(this.coefficient());
+    var exp = new Expression(1);
+
+    for (var i = 0; i < this.coefficients.length; i++) {
+        exp = exp.multiply(this.coefficients[i], simplify);
+    }
 
     for(var i = 0; i < copy.variables.length; i++) {
         var thisVar = copy.variables[i];
@@ -628,7 +635,7 @@ Term.prototype.eval = function(values) {
             }
         }
 
-        exp = exp.multiply(eval);
+        exp = exp.multiply(eval, simplify);
     }
 
     return exp;

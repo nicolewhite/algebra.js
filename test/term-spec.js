@@ -231,3 +231,48 @@ describe("Term simplification", function() {
         expect(t.toString()).toEqual("15x");
     });
 });
+
+describe("Term evaluation", function() {
+    it("should work when there is one coefficient and simplify = false", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+        t = t.multiply(3);
+        t = t.multiply(5, false); // 5 * 3x
+
+        var e = t.eval({x:2}, false);
+
+        expect(e.toString()).toEqual("5 * 3 * 2");
+    });
+
+    it("should work when there is more than 1 coefficient and more than 1 variable and simplify = false", function() {
+        var x = new Variable("x");
+        var y = new Variable("y");
+        var t = new Term(x);
+
+        t = t.multiply(new Term(y)); // xy
+        t = t.multiply(3); // 3xy
+        t = t.multiply(5, false); // 5 * 3xy
+        t = t.multiply(6, false); // 6 * 5 * 3xy
+
+        var answer = t.eval({x:2}, false); // 6 * 5 * 3 * 2y
+        expect(answer.toString()).toEqual("6 * 5 * 3 * 2y");
+    });
+
+    it("works with negative numbers", function() {
+        var x = new Variable("x");
+        var y = new Variable("y");
+        var t = new Term(x);
+
+        t = t.multiply(new Term(y)); // xy
+        t = t.multiply(3); // 3xy
+        t = t.multiply(5, false); // 5 * 3xy
+
+        t = t.multiply(6, false); // 6 * 5 * 3xy
+
+        var answer = t.eval({x:-2}, false); // 6 * 5 * 3 * 2y
+
+        // TODO: should probably put the negative on the specific coefficient
+        expect(answer.toString()).toEqual("-6 * 5 * 3 * 2y");
+        //expect(answer.toString()).toEqual("6 * 5 * 3 * -2y");
+    });
+});
