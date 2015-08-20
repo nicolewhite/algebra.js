@@ -2,17 +2,17 @@ var Fraction = require('./fractions');
 var isInt = require('./helper').isInt;
 
 var Expression = function(variable) {
-    this.constant = new Fraction(0, 1);
+    this.constants = [];
 
     if(typeof(variable) === "string") {
         var v = new Variable(variable);
         var t = new Term(v);
         this.terms = [t];
     } else if(isInt(variable)) {
-        this.constant = new Fraction(variable, 1);
+        this.constants = [new Fraction(variable, 1)];
         this.terms = [];
     } else if(variable instanceof Fraction) {
-        this.constant = variable;
+        this.constants = [variable];
         this.terms = [];
     } else if(variable instanceof Term) {
         this.terms = [variable];
@@ -20,28 +20,51 @@ var Expression = function(variable) {
         this.terms = [];
     }
 };
-Expression.prototype.copy = function() {
-    var copy = new Expression();
-    copy.constant = this.constant.copy();
 
-    copy.terms = [];
-    this.terms.forEach(function(t) {copy.terms.push(t.copy());} );
+Expression.prototype.constant = function() {
+    var sum = new Fraction(0, 1);
+
+    for (var i = 0; i < this.constants.length; i++) {
+        sum = sum.add(this.constants[i]);
+    }
+
+    return sum;
+};
+
+Expression.prototype.simplify = function() {
+    var copy = this.copy();
+
+    for (var i = 0; i < copy.terms.length; i++) {
+        copy.terms[i] = copy.terms[i].simplify();
+    }
+
+    copy._combineLikeTerms();
+    copy._removeTermsWithCoefficientZero();
+    copy.constants = (copy.constant().valueOf() === 0 ? [] : [copy.constant()]);
+    copy._sort();
 
     return copy;
 };
 
-Expression.prototype.add = function(a) {
+Expression.prototype.copy = function() {
+    var copy = new Expression();
+    copy.constants = [];
+    this.constants.forEach(function(c) {copy.constants.push(c.copy());});
+
+    copy.terms = [];
+    this.terms.forEach(function(t) {copy.terms.push(t.copy());});
+
+    return copy;
+};
+
+Expression.prototype.add = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
     var thisExp = this.copy();
 
-    if (typeof(a) === "string") {
+    if (typeof(a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
         var exp = new Expression(a);
-        return thisExp.add(exp);
-    } else if (a instanceof Term) {
-        var exp = new Expression();
-        exp.terms = [a.copy()];
-        return thisExp.add(exp);
+        return thisExp.add(exp, simplify);
     } else if (a instanceof Expression) {
-        thisExp.constant = thisExp.constant.add(a.constant);
         var keepTerms = a.copy().terms;
 
         for (var i = 0; i < thisExp.terms.length; i++) {
@@ -50,7 +73,7 @@ Expression.prototype.add = function(a) {
             for (var j = 0; j < keepTerms.length; j++) {
                 var thatTerm = keepTerms[j];
 
-                if (thisTerm.canBeCombinedWith(thatTerm)) {
+                if (thisTerm.canBeCombinedWith(thatTerm) && simplify) {
                     thisExp.terms[i] = thisTerm.add(thatTerm);
                     keepTerms.splice(j, 1);
                 }
@@ -58,55 +81,38 @@ Expression.prototype.add = function(a) {
         }
 
         thisExp.terms = thisExp.terms.concat(keepTerms);
-
-    } else if (isInt(a) || a instanceof Fraction) {
-        thisExp.constant = thisExp.constant.add(a);
+        thisExp.constants = thisExp.constants.concat(a.constants);
+        thisExp._sort();
     } else {
         throw "InvalidArgument";
     }
 
-    thisExp._removeTermsWithCoefficientZero();
-    thisExp._sort();
-    return thisExp;
+    return (simplify ? thisExp.simplify() : thisExp);
 };
 
-Expression.prototype.subtract = function(a) {
+Expression.prototype.subtract = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
     var thisExp = this.copy();
-    var inverse;
+    var negative;
 
-    if (typeof(a) === "string") {
-        inverse = new Expression(a).multiply(-1);
-    } else if (a instanceof Term) {
-        inverse = new Expression();
-        inverse.terms = [a.copy().multiply(-1)];
+    if (typeof(a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
+        negative = new Expression(a).multiply(-1);
     } else if (a instanceof Expression) {
-        inverse = a.copy();
-        inverse.constant = inverse.constant.multiply(-1);
-
-        for (var i = 0; i < inverse.terms.length; i++) {
-            inverse.terms[i] = inverse.terms[i].multiply(-1);
-        }
-    } else if (isInt(a)) {
-        inverse = -a;
-    } else if (a instanceof Fraction) {
-        inverse = a.multiply(-1);
+        negative = a.multiply(-1);
     } else {
         throw "InvalidArgument";
     }
 
-    return thisExp.add(inverse);
+    return thisExp.add(negative, simplify);
 };
 
-Expression.prototype.multiply = function(a) {
+Expression.prototype.multiply = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
     var thisExp = this.copy();
 
-    if (typeof(a) === "string") {
+    if (typeof(a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
         var exp = new Expression(a);
-        return thisExp.multiply(exp);
-    } else if (a instanceof Term) {
-        var exp = new Expression();
-        exp.terms = [a.copy()];
-        return thisExp.multiply(exp);
+        return thisExp.multiply(exp, simplify);
     } else if (a instanceof Expression) {
         var thatExp = a.copy();
         var newTerms = [];
@@ -116,47 +122,72 @@ Expression.prototype.multiply = function(a) {
 
             for (var j = 0; j < thatExp.terms.length; j++) {
                 var thatTerm = thatExp.terms[j];
-                newTerms.push(thisTerm.multiply(thatTerm));
+                newTerms.push(thisTerm.multiply(thatTerm, simplify));
             }
 
-            newTerms.push(thisTerm.multiply(thatExp.constant));
+            for (var j = 0; j < thatExp.constants.length; j++) {
+                newTerms.push(thisTerm.multiply(thatExp.constants[j], simplify));
+            }
         }
 
         for (var i = 0; i < thatExp.terms.length; i++) {
             var thatTerm = thatExp.terms[i];
-            newTerms.push(thatTerm.multiply(thisExp.constant));
+
+            for (var j = 0; j < thisExp.constants.length; j++) {
+                newTerms.push(thatTerm.multiply(thisExp.constants[j], simplify));
+            }
         }
 
-        thisExp.constant = thisExp.constant.multiply(thatExp.constant);
+        var newConstants = [];
+
+        for (var i = 0; i < thisExp.constants.length; i++) {
+            var thisConst = thisExp.constants[i];
+
+            for (var j = 0; j < thatExp.constants.length; j++) {
+                var thatConst = thatExp.constants[j];
+
+                if (simplify) {
+                    newConstants.push(thisConst.multiply(thatConst, simplify));
+                } else {
+                    var t = new Term();
+                    t = t.multiply(thatConst, false);
+                    t = t.multiply(thisConst, false);
+                    newTerms.push(t);
+                }
+            }
+        }
+
+        thisExp.constants = newConstants;
         thisExp.terms = newTerms;
-        thisExp._combineLikeTerms();
-        thisExp._removeTermsWithCoefficientZero();
         thisExp._sort();
-    } else if (a instanceof Fraction || isInt(a)) {
-        thisExp.constant = thisExp.constant.multiply(a);
-
-        for (var i = 0; i < thisExp.terms.length; i++) {
-            thisExp.terms[i].coefficient = thisExp.terms[i].coefficient.multiply(a);
-        }
     } else {
         throw "InvalidArgument";
     }
 
-    return thisExp;
+    return (simplify ? thisExp.simplify() : thisExp);
 };
 
-Expression.prototype.divide = function(a) {
+Expression.prototype.divide = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     if (a instanceof Fraction || isInt(a)) {
-        if (a == 0) {
+
+        if (a.valueOf() === 0) {
             throw "DivideByZero";
         }
 
         var copy = this.copy();
 
-        copy.constant = copy.constant.divide(a);
-
         for (var i = 0; i < copy.terms.length; i++) {
-            copy.terms[i].coefficient = copy.terms[i].coefficient.divide(a);
+            var thisTerm = copy.terms[i];
+
+            for (var j = 0; j < thisTerm.coefficients.length; j++) {
+                thisTerm.coefficients[j] = thisTerm.coefficients[j].divide(a, simplify);
+            }
+        }
+
+        for (var i = 0; i < copy.constants.length; i++) {
+            copy.constants[i] = copy.constants[i].divide(a, simplify);
         }
 
         return copy;
@@ -165,7 +196,9 @@ Expression.prototype.divide = function(a) {
     }
 };
 
-Expression.prototype.pow = function(a) {
+Expression.prototype.pow = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     if (isInt(a)) {
         var copy = this.copy();
 
@@ -173,7 +206,7 @@ Expression.prototype.pow = function(a) {
             return new Expression().add(1);
         } else {
             for (var i = 1; i < a; i++) {
-                copy = copy.multiply(this);
+                copy = copy.multiply(this, simplify);
             }
 
             copy._sort();
@@ -184,15 +217,18 @@ Expression.prototype.pow = function(a) {
     }
 };
 
-Expression.prototype.eval = function(values) {
+Expression.prototype.eval = function(values, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     var exp = new Expression();
+    exp.constants = (simplify ? [this.constant()] : this.constants.slice());
 
     for(var i = 0; i < this.terms.length; i++) {
         var thisTerm = this.terms[i];
-        exp = exp.add(thisTerm.eval(values));
+        exp = exp.add(thisTerm.eval(values, simplify), simplify);
     }
 
-    return exp.add(this.constant);
+    return exp;
 };
 
 Expression.prototype.summation = function(variable, lower, upper) {
@@ -207,56 +243,66 @@ Expression.prototype.summation = function(variable, lower, upper) {
 }
 
 Expression.prototype.toString = function() {
-    if (this.terms.length == 0) {
-        return this.constant.toString();
+    if (this.terms.length === 0 && this.constants.length === 0) {
+        return "0";
     }
 
-    var firstTermCoefficient = this.terms[0].coefficient.reduce();
-    var str = (firstTermCoefficient.numer < 0 ? "-": "") + this.terms[0].toString();
+    var str = "";
 
-    for (var i = 1; i < this.terms.length; i++) {
-        var coefficient = this.terms[i].coefficient.reduce();
+    for (var i = 0; i < this.terms.length; i++) {
+        var term = this.terms[i];
 
-        str += (coefficient.numer < 0 ? " - " : " + ") + this.terms[i].toString();
+        str += (term.coefficients[0].valueOf() < 0 ? " - " : " + ") + term.toString();
     }
 
-    var constant = this.constant.reduce();
+    for (var i = 0; i < this.constants.length; i++) {
+        var constant = this.constants[i];
 
-    if (constant.numer) {
-        str += (constant.numer < 0 ? " - " : " + ") + constant.abs().toString();
+        str += (constant.valueOf() < 0 ? " - " : " + ") + constant.abs().toString();
     }
 
-    return str;
+    if (str.substring(0, 3) === " - ") {
+        return "-" + str.substring(3, str.length);
+    } else if (str.substring(0, 3) === " + ") {
+        return str.substring(3, str.length);
+    } else {
+        return str;
+    }
 };
 
-Expression.prototype.toTex = function() {
-    if (this.terms.length == 0) {
-        return this.constant.toTex();
+Expression.prototype.toTex = function(dict) {
+    if (this.terms.length === 0 && this.constants.length === 0) {
+        return "0";
     }
 
-    var firstTermCoefficient = this.terms[0].coefficient.reduce();
-    var str = (firstTermCoefficient.numer < 0 ? "-": "") + this.terms[0].toTex();
+    var str = "";
 
-    for (var i = 1; i < this.terms.length; i++) {
-        var coefficient = this.terms[i].coefficient.reduce();
+    for (var i = 0; i < this.terms.length; i++) {
+        var term = this.terms[i];
 
-        str += (coefficient.numer < 0 ? " - " : " + ") + this.terms[i].toTex();
+        str += (term.coefficients[0].valueOf() < 0 ? " - " : " + ") + term.toTex(dict);
     }
 
-    var constant = this.constant.reduce();
+    for (var i = 0; i < this.constants.length; i++) {
+        var constant = this.constants[i];
 
-    if (constant.numer) {
-        str += (constant.numer < 0 ? " - " : " + ") + constant.abs().toTex();
+        str += (constant.valueOf() < 0 ? " - " : " + ") + constant.abs().toTex();
     }
 
-    return str;
+    if (str.substring(0, 3) === " - ") {
+        return "-" + str.substring(3, str.length);
+    } else if (str.substring(0, 3) === " + ") {
+        return str.substring(3, str.length);
+    } else {
+        return str;
+    }
 };
 
 Expression.prototype._removeTermsWithCoefficientZero = function() {
     var keep = [];
 
     for (var i = 0; i < this.terms.length; i++) {
-        var coefficient = this.terms[i].coefficient.reduce();
+        var coefficient = this.terms[i].coefficient().reduce();
 
         if (coefficient.numer != 0) {
             keep.push(this.terms[i]);
@@ -279,6 +325,11 @@ Expression.prototype._combineLikeTerms = function() {
                 this.terms[i] = thisTerm;
                 this.terms.splice(j, 1);
             }
+        }
+
+        if (thisTerm.variables.length === 0) {
+            this.constants.push(thisTerm.coefficient());
+            this.terms.splice(i, 1);
         }
     }
 
@@ -378,16 +429,20 @@ Expression.prototype._quadraticCoefficients = function() {
     // This function isn't used until everything has been moved to the LHS in Equation.solve.
     var a;
     var b = new Fraction(0, 1);
-    var c = this.constant.copy();
-
     for (var i = 0; i < this.terms.length; i++) {
         var thisTerm = this.terms[i];
 
         if (thisTerm.maxDegree() === 2) {
-            a = thisTerm.coefficient.copy();
+            a = thisTerm.coefficient().copy();
         } else if (thisTerm.maxDegree() === 1) {
-            b = thisTerm.coefficient.copy();
+            b = thisTerm.coefficient().copy();
         }
+    }
+
+    var c = new Fraction(0, 1);
+
+    for (var i = 0; i < this.constants.length; i++) {
+        c = c.add(this.constants[i]);
     }
 
     return {a:a, b:b, c:c}
@@ -398,18 +453,23 @@ Expression.prototype._cubicCoefficients = function() {
     var a;
     var b = new Fraction(0, 1);
     var c = new Fraction(0, 1);
-    var d = this.constant.copy();
 
     for (var i = 0; i < this.terms.length; i++) {
         var thisTerm = this.terms[i];
 
         if (thisTerm.maxDegree() === 3) {
-            a = thisTerm.coefficient.copy();
+            a = thisTerm.coefficient().copy();
         } else if (thisTerm.maxDegree() === 2) {
-            b = thisTerm.coefficient.copy();
+            b = thisTerm.coefficient().copy();
         } else if (thisTerm.maxDegree() === 1) {
-            c = thisTerm.coefficient.copy();
+            c = thisTerm.coefficient().copy();
         }
+    }
+
+    var d = new Fraction(0, 1);
+
+    for (var i = 0; i < this.constants.length; i++) {
+        d = d.add(this.constants[i]);
     }
 
     return {a:a, b:b, c:c, d:d}
@@ -424,25 +484,72 @@ Term = function(variable) {
         throw "InvalidArgument";
     }
 
-    this.coefficient = new Fraction(1, 1);
+    this.coefficients = [new Fraction(1, 1)];
+};
+
+Term.prototype.coefficient = function() {
+    var prod = new Fraction(1, 1);
+
+    for (var i = 0; i < this.coefficients.length; i++) {
+        prod = prod.multiply(this.coefficients[i]);
+    }
+
+    return prod;
+};
+
+Term.prototype.simplify = function() {
+    var copy = this.copy();
+    copy.coefficients = [this.coefficient()];
+    copy.combineVars();
+    return copy.sort();
+};
+
+Term.prototype.combineVars = function() {
+    var uniqueVars = {};
+
+    for (var i = 0; i < this.variables.length; i++) {
+        var thisVar = this.variables[i];
+
+        if (thisVar.variable in uniqueVars) {
+            uniqueVars[thisVar.variable] += thisVar.degree;
+        } else {
+            uniqueVars[thisVar.variable] = thisVar.degree;
+        }
+    }
+
+    var newVars = [];
+
+    for (var v in uniqueVars) {
+        var newVar = new Variable(v);
+        newVar.degree = uniqueVars[v];
+        newVars.push(newVar);
+    }
+
+    this.variables = newVars;
+    return this;
 };
 
 Term.prototype.copy = function() {
     var copy = new Term();
+
+    copy.coefficients = [];
     copy.variables = [];
 
-    for(var i = 0; i < this.variables.length; i++) {
+    for (var i = 0; i < this.variables.length; i++) {
         copy.variables.push(this.variables[i].copy());
     }
 
-    copy.coefficient = this.coefficient.copy();
+    for (var i = 0; i < this.coefficients.length; i++) {
+        copy.coefficients.push(this.coefficients[i].copy());
+    }
+
     return copy;
 };
 
 Term.prototype.add = function(term) {
     if(term instanceof Term && this.canBeCombinedWith(term)) {
         var copy = this.copy();
-        copy.coefficient = copy.coefficient.add(term.coefficient);
+        copy.coefficients = [copy.coefficient().add(term.coefficient())];
         return copy;
     } else {
         throw "InvalidArgument";
@@ -452,57 +559,66 @@ Term.prototype.add = function(term) {
 Term.prototype.subtract = function(term) {
     if (term instanceof Term && this.canBeCombinedWith(term)) {
         var copy = this.copy();
-        copy.coefficient = copy.coefficient.subtract(term.coefficient);
+        copy.coefficients = [copy.coefficient().subtract(term.coefficient())];
         return copy;
     } else {
         throw "InvalidArgument";
     }
 };
 
-Term.prototype.multiply = function(a) {
+Term.prototype.multiply = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
     var thisTerm = this.copy();
 
     if (a instanceof Term) {
         var thatTerm = a.copy();
 
-        var keepVars = thatTerm.variables;
-        var thisVars = thisTerm.variables;
-        var thatVars = thatTerm.variables;
+        thisTerm.variables = thisTerm.variables.concat(thatTerm.variables);
 
-        for (var i = 0; i < thisVars.length; i++) {
-            for (var j = 0; j < thatVars.length; j++) {
-                if (thisVars[i].variable === thatVars[j].variable) {
-                    thisVars[i].degree += thatVars[j].degree;
-                    keepVars.splice(j, 1);
-                }
-            }
+        for (var i = 0; i < thatTerm.coefficients.length; i++) {
+            thisTerm.coefficients.unshift(thatTerm.coefficients[i]);
         }
+    } else if (isInt(a) || a instanceof Fraction) {
+        var newCoef = (isInt(a) ? new Fraction(a, 1) : a);
 
-        thisTerm.variables = thisTerm.variables.concat(keepVars);
-        thisTerm.coefficient = thisTerm.coefficient.multiply(thatTerm.coefficient);
-    } else if(isInt(a) || a instanceof Fraction) {
-        thisTerm.coefficient = thisTerm.coefficient.multiply(a);
+        if (thisTerm.variables.length === 0) {
+            thisTerm.coefficients.push(newCoef);
+        } else {
+            thisTerm.coefficients.unshift(newCoef);
+        }
     } else {
         throw "InvalidArgument";
     }
 
-    return thisTerm.sort();
+    return (simplify ? thisTerm.simplify() : thisTerm);
 };
 
-Term.prototype.divide = function(a) {
+Term.prototype.divide = function(a, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     if(isInt(a) || a instanceof Fraction) {
         var thisTerm = this.copy();
-        thisTerm.coefficient = thisTerm.coefficient.divide(a);
+
+        for (var i = 0; i < thisTerm.coefficients.length; i++) {
+            thisTerm.coefficients[i] = thisTerm.coefficients[i].divide(a, simplify);
+        }
+
         return thisTerm;
     } else {
         throw "InvalidArgument";
     }
 };
 
-Term.prototype.eval = function(values) {
+Term.prototype.eval = function(values, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     var copy = this.copy();
     var keys = Object.keys(values);
-    var exp = new Expression(this.coefficient);
+    var exp = new Expression(1);
+
+    for (var i = 0; i < this.coefficients.length; i++) {
+        exp = exp.multiply(this.coefficients[i], simplify);
+    }
 
     for(var i = 0; i < copy.variables.length; i++) {
         var thisVar = copy.variables[i];
@@ -523,7 +639,7 @@ Term.prototype.eval = function(values) {
             }
         }
 
-        exp = exp.multiply(eval);
+        exp = exp.multiply(eval, simplify);
     }
 
     return exp;
@@ -614,35 +730,53 @@ Term.prototype.sort = function() {
 };
 
 Term.prototype.toString = function() {
-    var str;
-    var coefficient = this.coefficient.reduce().abs();
+    var str = "";
 
-    if(coefficient.valueOf() === 1) {
-        str = "";
-    } else {
-        str = coefficient.toString();
+    for (var i = 0; i < this.coefficients.length; i++) {
+        var coef = this.coefficients[i];
+
+        if (!(coef.abs().numer === 1 && coef.abs().denom === 1)) {
+            str += " * " + coef.toString()
+        }
     }
 
     for(var i = 0; i < this.variables.length; i++) {
         str += this.variables[i].toString();
     }
 
+    str = (str.substring(0, 3) === " * " ? str.substring(3, str.length) : str);
+    str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
+
     return str;
 };
 
-Term.prototype.toTex = function() {
-    var str;
-    var coefficient = this.coefficient.reduce().abs();
+Term.prototype.toTex = function(dict) {
+    if (dict === undefined) {
+        var dict = {};
+    }
 
-    if(coefficient.valueOf() === 1) {
-        str = "";
-    } else {
-        str = coefficient.toTex();
+    if(!("multiplication" in dict)) {
+        dict["multiplication"] = "cdot"
+    }
+
+    var op =  " \\" + dict["multiplication"] + " ";
+
+    var str = "";
+
+    for (var i = 0; i < this.coefficients.length; i++) {
+        var coef = this.coefficients[i];
+
+        if (!(coef.abs().numer === 1 && coef.abs().denom === 1)) {
+            str += op + coef.toTex()
+        }
     }
 
     for(var i = 0; i < this.variables.length; i++) {
         str += this.variables[i].toTex();
     }
+
+    str = (str.substring(0, op.length) === op ? str.substring(op.length, str.length) : str);
+    str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
 
     return str;
 };
