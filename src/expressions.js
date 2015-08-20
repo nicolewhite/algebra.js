@@ -252,7 +252,7 @@ Expression.prototype.toString = function() {
     for (var i = 0; i < this.terms.length; i++) {
         var term = this.terms[i];
 
-        str += (term.coefficient().valueOf() < 0 ? " - " : " + ") + term.toString();
+        str += (term.coefficients[0].valueOf() < 0 ? " - " : " + ") + term.toString();
     }
 
     for (var i = 0; i < this.constants.length; i++) {
@@ -265,6 +265,8 @@ Expression.prototype.toString = function() {
         return "-" + str.substring(3, str.length);
     } else if (str.substring(0, 3) === " + ") {
         return str.substring(3, str.length);
+    } else {
+        return str;
     }
 };
 
@@ -278,7 +280,7 @@ Expression.prototype.toTex = function() {
     for (var i = 0; i < this.terms.length; i++) {
         var term = this.terms[i];
 
-        str += (term.coefficient().valueOf() < 0 ? " - " : " + ") + term.toTex();
+        str += (term.coefficients[0].valueOf() < 0 ? " - " : " + ") + term.toTex();
     }
 
     for (var i = 0; i < this.constants.length; i++) {
@@ -291,6 +293,8 @@ Expression.prototype.toTex = function() {
         return "-" + str.substring(3, str.length);
     } else if (str.substring(0, 3) === " + ") {
         return str.substring(3, str.length);
+    } else {
+        return str;
     }
 };
 
@@ -729,9 +733,9 @@ Term.prototype.toString = function() {
     var str = "";
 
     for (var i = 0; i < this.coefficients.length; i++) {
-        var coef = this.coefficients[i].abs();
+        var coef = this.coefficients[i];
 
-        if (!(coef.numer === 1 && coef.denom === 1)) {
+        if (!(coef.abs().numer === 1 && coef.abs().denom === 1)) {
             str += " * " + coef.toString()
         }
     }
@@ -740,16 +744,19 @@ Term.prototype.toString = function() {
         str += this.variables[i].toString();
     }
 
-    return (str.substring(0, 3) === " * " ? str.substring(3, str.length) : str);
+    str = (str.substring(0, 3) === " * " ? str.substring(3, str.length) : str);
+    str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
+
+    return str;
 };
 
 Term.prototype.toTex = function() {
     var str = "";
 
     for (var i = 0; i < this.coefficients.length; i++) {
-        var coef = this.coefficients[i].abs();
+        var coef = this.coefficients[i];
 
-        if (coef.valueOf() != 1) {
+        if (!(coef.abs().numer === 1 && coef.abs().denom === 1)) {
             str += " * " + coef.toTex()
         }
     }
@@ -758,7 +765,10 @@ Term.prototype.toTex = function() {
         str += this.variables[i].toTex();
     }
 
-    return (str.substring(0, 3) === " * " ? str.substring(3, str.length) : str);
+    str = (str.substring(0, 3) === " * " ? str.substring(3, str.length) : str);
+    str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
+
+    return str;
 };
 
 var Variable = function(variable) {

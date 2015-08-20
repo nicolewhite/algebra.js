@@ -438,6 +438,15 @@ describe("Expression printing to tex", function() {
 
         expect(answer.toTex()).toEqual("-3");
     });
+
+    it("prints unsimplified expressions correctly", function() {
+        var exp = new Expression("x").add("x", false);
+        exp = exp.multiply(new Fraction(3, 4), false); // 3/4x + 3/4x
+        exp = exp.add(2, false);
+        exp = exp.add(5, false); // 3/4x + 3/4x + 2 + 5
+
+        expect(exp.toTex()).toEqual("\\frac{3}{4}x + \\frac{3}{4}x + 2 + 5");
+    });
 });
 
 describe("Expression evaluation with one variable - linear", function() {

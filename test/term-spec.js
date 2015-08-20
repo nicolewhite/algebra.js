@@ -269,10 +269,20 @@ describe("Term evaluation", function() {
 
         t = t.multiply(6, false); // 6 * 5 * 3xy
 
-        var answer = t.eval({x:-2}, false); // 6 * 5 * 3 * 2y
+        var answer = t.eval({x:-2}, false); // 6 * 5 * 3 * -2y
 
-        // TODO: should probably put the negative on the specific coefficient
-        expect(answer.toString()).toEqual("-6 * 5 * 3 * 2y");
-        //expect(answer.toString()).toEqual("6 * 5 * 3 * -2y");
+        expect(answer.toString()).toEqual("6 * 5 * 3 * -2y");
+    });
+});
+
+describe("Term printing to TeX", function() {
+    it("works with unsimplified coefficients", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+
+        t = t.multiply(new Fraction(2, 3));
+        t = t.multiply(new Fraction(3, 4), false); // 3/4 * 2/3x
+
+        expect(t.toTex()).toEqual("\\frac{3}{4} * \\frac{2}{3}x");
     });
 });
