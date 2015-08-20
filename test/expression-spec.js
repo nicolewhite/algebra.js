@@ -573,3 +573,11 @@ describe("Expression sorting", function() {
         expect(exp.toString()).toEqual("x^2y + x^2");
     });
 });
+
+describe("Summation using a one-variable expression", function() {
+	it("should return a sum expressions whose variables have been substituted", function() {
+		var xplus3 = new Expression("x").add(3);
+		var ans = xplus3.summation(new Expression("x"), 3, 6);
+		expect(ans.toString()).toEqual("30");
+	});
+});

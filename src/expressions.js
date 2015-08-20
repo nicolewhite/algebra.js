@@ -195,6 +195,17 @@ Expression.prototype.eval = function(values) {
     return exp.add(this.constant);
 };
 
+Expression.prototype.summation = function(variable, lower, upper) {
+	var thisExpr = this.copy();
+	var newExpr = new Expression();
+	for(var i = lower; i < (upper + 1); i++) {
+		var sub = {};
+		sub[variable] = i;
+		newExpr = newExpr.add(thisExpr.eval(sub));
+	}
+	return newExpr;
+}
+
 Expression.prototype.toString = function() {
     if (this.terms.length == 0) {
         return this.constant.toString();
