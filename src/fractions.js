@@ -45,7 +45,9 @@ Fraction.prototype.equalTo = function(fraction) {
     return false;
 };
 
-Fraction.prototype.add = function(f) {
+Fraction.prototype.add = function(f, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     var a, b;
 
     if (f instanceof Fraction) {
@@ -75,22 +77,26 @@ Fraction.prototype.add = function(f) {
         copy.numer += a;
     }
 
-    return copy.reduce();
+    return (simplify ? copy.reduce() : copy);
 };
 
-Fraction.prototype.subtract = function(f) {
+Fraction.prototype.subtract = function(f, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     var copy = this.copy();
 
     if (f instanceof Fraction) {
-        return copy.add(new Fraction(-f.numer, f.denom));
+        return copy.add(new Fraction(-f.numer, f.denom), simplify);
     } else if (isInt(f)) {
-        return copy.add(new Fraction(-f, 1));
+        return copy.add(new Fraction(-f, 1), simplify);
     } else {
         throw "InvalidArgument";
     }
 };
 
-Fraction.prototype.multiply = function(f) {
+Fraction.prototype.multiply = function(f, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     var a, b;
 
     if (f instanceof Fraction) {
@@ -111,37 +117,45 @@ Fraction.prototype.multiply = function(f) {
     copy.numer *= a;
     copy.denom *= b;
 
-    return copy.reduce();
+    return (simplify ? copy.reduce() : copy);
 };
 
-Fraction.prototype.divide = function(f) {
-    if (f == 0) {
+Fraction.prototype.divide = function(f, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
+    if (f.valueOf() === 0) {
         throw "DivideByZero";
     }
 
     var copy = this.copy();
 
     if (f instanceof Fraction) {
-        return copy.multiply(new Fraction(f.denom, f.numer));
+        return copy.multiply(new Fraction(f.denom, f.numer), simplify);
     } else if (isInt(f)) {
-        return copy.multiply(new Fraction(1, f));
+        return copy.multiply(new Fraction(1, f), simplify);
     } else {
         throw "InvalidArgument";
     }
 };
 
-Fraction.prototype.pow = function(n) {
+Fraction.prototype.pow = function(n, simplify) {
+    simplify = (simplify === undefined ? true : simplify);
+
     var copy = this.copy();
+
     copy.numer = Math.pow(copy.numer, n);
     copy.denom = Math.pow(copy.denom, n);
-    return copy.reduce();
+
+    return (simplify ? copy.reduce() : copy);
 };
 
 Fraction.prototype.abs = function() {
     var copy = this.copy();
+
     copy.numer = Math.abs(copy.numer);
     copy.denom = Math.abs(copy.denom);
-    return copy.reduce();
+
+    return copy;
 };
 
 Fraction.prototype.valueOf = function() {
@@ -149,30 +163,26 @@ Fraction.prototype.valueOf = function() {
 };
 
 Fraction.prototype.toString = function() {
-    var frac = this.reduce();
-
-    if (frac.numer == 0) {
+    if (this.numer === 0) {
         return "0";
-    } else if (frac.denom == 1) {
-        return frac.numer.toString();
-    } else if (frac.denom == -1) {
-        return (-frac.numer).toString();
+    } else if (this.denom === 1) {
+        return this.numer.toString();
+    } else if (this.denom === -1) {
+        return (-this.numer).toString();
     } else {
-        return frac.numer + "/" + frac.denom;
+        return this.numer + "/" + this.denom;
     }
 };
 
 Fraction.prototype.toTex = function() {
-    var frac = this.reduce();
-
-    if (frac.numer == 0) {
+    if (this.numer === 0) {
         return "0";
-    } else if (frac.denom == 1) {
-        return frac.numer.toString();
-    } else if (frac.denom == -1) {
-        return (-frac.numer).toString();
+    } else if (this.denom === 1) {
+        return this.numer.toString();
+    } else if (this.denom === -1) {
+        return (-this.numer).toString();
     } else {
-        return "\\frac{" + frac.numer + "}{" + frac.denom + "}";
+        return "\\frac{" + this.numer + "}{" + this.denom + "}";
     }
 };
 

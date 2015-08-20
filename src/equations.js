@@ -11,7 +11,7 @@ var Equation = function(lhs, rhs) {
         if (rhs instanceof Expression) {
             this.rhs = rhs;
         } else if (rhs instanceof Fraction || isInt(rhs)) {
-            this.rhs = new Expression().add(rhs);
+            this.rhs = new Expression(rhs);
         } else {
             throw "InvalidArgument";
         }
@@ -51,21 +51,21 @@ Equation.prototype.solveFor = function(variable) {
             }
         }
 
-        newRhs = newRhs.subtract(this.lhs.constant);
-        newRhs = newRhs.add(this.rhs.constant);
+        newRhs = newRhs.subtract(this.lhs.constant());
+        newRhs = newRhs.add(this.rhs.constant());
 
         if (newLhs.terms.length === 0) {
-            if (newLhs.constant.equalTo(newRhs.constant)) {
+            if (newLhs.constant().equalTo(newRhs.constant())) {
                 return new Fraction(1, 1);
             } else {
                 throw "NoSolution";
             }
         }
 
-        newRhs = newRhs.divide(newLhs.terms[0].coefficient);
+        newRhs = newRhs.divide(newLhs.terms[0].coefficient());
 
         if (newRhs.terms.length === 0) {
-            return newRhs.constant.reduce();
+            return newRhs.constant().reduce();
         }
 
         newRhs._sort();
@@ -77,8 +77,13 @@ Equation.prototype.solveFor = function(variable) {
         newLhs = newLhs.subtract(this.rhs);
 
         // If there are no terms left after this rearrangement and the constant is 0, there are infinite solutions.
-        if (newLhs.terms.length === 0 && newLhs.constant.valueOf() === 0) {
+        // Otherwise, there are no solutions.
+        if (newLhs.terms.length === 0) {
+            if (newLhs.constant().valueOf() === 0) {
                 return [new Fraction(1, 1)];
+            } else {
+                throw "NoSolution";
+            }
 
         // Otherwise, check degree and solve.
         } else if (this._isQuadratic(variable)) {
@@ -125,18 +130,6 @@ Equation.prototype.solveFor = function(variable) {
                 return [];
             }
         } else if (this._isCubic(variable)) {
-            // Move everything to the lhs so we have the form ax^3 + bx^2 + cx + d = 0.
-            var newLhs = this.lhs.copy();
-            newLhs = newLhs.subtract(this.rhs);
-
-            // If there are no terms left after this rearrangement and the constant is 0, there are infinite solutions.
-            if (newLhs.terms.length === 0) {
-                if (newLhs.constant.valueOf() === 0) {
-                    return new Fraction(1, 1);
-                }
-            }
-
-            // Extract the coefficients a, b, c, and d into a dict.
             var coefs = newLhs._cubicCoefficients();
 
             var a = coefs.a;
@@ -176,6 +169,7 @@ Equation.prototype.solveFor = function(variable) {
 
                 // Otherwise, if D != 0, reduce to a depressed cubic.
             } else {
+                // TODO: Make this work with non-integer rationals.
                 // Reduce to a depressed cubic with the Tschirnhaus transformation, x = t - b/3a.
                 var t = new Expression("t").subtract(b.divide(a.multiply(3)));
                 var params = {};
@@ -234,11 +228,10 @@ Equation.prototype.solveFor = function(variable) {
                     // x2 = t2 - b/3a;
                     // x3 = t3 - b/3a;
 
-                    var x1 = t1 + t.constant.valueOf();
-                    var x2 = t2 + t.constant.valueOf();
-                    var x3 = t3 + t.constant.valueOf();
+                    var x1 = t1 + t.constant().valueOf();
+                    var x2 = t2 + t.constant().valueOf();
+                    var x3 = t3 + t.constant().valueOf();
 
-                    // TODO: Make this work with non-integer rationals.
                     x1 = (isInt(x1) ? new Fraction(x1, 1) : x1);
                     x2 = (isInt(x2) ? new Fraction(x2, 1) : x2);
                     x3 = (isInt(x3) ? new Fraction(x3, 1) : x3);
