@@ -447,6 +447,14 @@ describe("Expression printing to tex", function() {
 
         expect(exp.toTex()).toEqual("\\frac{3}{4}x + \\frac{3}{4}x + 2 + 5");
     });
+
+    it("allows you to pass in options", function() {
+        var exp = new Expression("x");
+        exp = exp.multiply(new Fraction(3, 4)); // 3/4x
+        exp = exp.multiply(new Fraction(2, 3), false); // 2/3 * 3/4x
+
+        expect(exp.toTex({multiplication:"times"})).toEqual("\\frac{2}{3} \\times \\frac{3}{4}x");
+    });
 });
 
 describe("Expression evaluation with one variable - linear", function() {

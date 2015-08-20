@@ -270,7 +270,7 @@ Expression.prototype.toString = function() {
     }
 };
 
-Expression.prototype.toTex = function() {
+Expression.prototype.toTex = function(dict) {
     if (this.terms.length === 0 && this.constants.length === 0) {
         return "0";
     }
@@ -280,7 +280,7 @@ Expression.prototype.toTex = function() {
     for (var i = 0; i < this.terms.length; i++) {
         var term = this.terms[i];
 
-        str += (term.coefficients[0].valueOf() < 0 ? " - " : " + ") + term.toTex();
+        str += (term.coefficients[0].valueOf() < 0 ? " - " : " + ") + term.toTex(dict);
     }
 
     for (var i = 0; i < this.constants.length; i++) {
@@ -750,14 +750,24 @@ Term.prototype.toString = function() {
     return str;
 };
 
-Term.prototype.toTex = function() {
+Term.prototype.toTex = function(dict) {
+    if (dict === undefined) {
+        var dict = {};
+    }
+
+    if(!("multiplication" in dict)) {
+        dict["multiplication"] = "cdot"
+    }
+
+    var op =  " \\" + dict["multiplication"] + " ";
+
     var str = "";
 
     for (var i = 0; i < this.coefficients.length; i++) {
         var coef = this.coefficients[i];
 
         if (!(coef.abs().numer === 1 && coef.abs().denom === 1)) {
-            str += " * " + coef.toTex()
+            str += op + coef.toTex()
         }
     }
 
@@ -765,7 +775,7 @@ Term.prototype.toTex = function() {
         str += this.variables[i].toTex();
     }
 
-    str = (str.substring(0, 3) === " * " ? str.substring(3, str.length) : str);
+    str = (str.substring(0, op.length) === op ? str.substring(op.length, str.length) : str);
     str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
 
     return str;

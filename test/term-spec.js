@@ -276,13 +276,23 @@ describe("Term evaluation", function() {
 });
 
 describe("Term printing to TeX", function() {
-    it("works with unsimplified coefficients", function() {
+    it("works with unsimplified coefficients and uses cdot by default", function() {
         var x = new Variable("x");
         var t = new Term(x);
 
         t = t.multiply(new Fraction(2, 3));
         t = t.multiply(new Fraction(3, 4), false); // 3/4 * 2/3x
 
-        expect(t.toTex()).toEqual("\\frac{3}{4} * \\frac{2}{3}x");
+        expect(t.toTex()).toEqual("\\frac{3}{4} \\cdot \\frac{2}{3}x");
+    });
+
+    it("allows you to pass in options", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+
+        t = t.multiply(new Fraction(2, 3));
+        t = t.multiply(new Fraction(3, 4), false); // 3/4 * 2/3x
+
+        expect(t.toTex({multiplication:"times"})).toEqual("\\frac{3}{4} \\times \\frac{2}{3}x");
     });
 });
