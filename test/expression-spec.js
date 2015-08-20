@@ -574,10 +574,18 @@ describe("Expression sorting", function() {
     });
 });
 
-describe("Summation using a one-variable expression", function() {
+describe("Expression summation", function() {
 	it("should return a sum expressions whose variables have been substituted", function() {
 		var xplus3 = new Expression("x").add(3);
 		var ans = xplus3.summation(new Expression("x"), 3, 6);
 		expect(ans.toString()).toEqual("30");
 	});
+
+    it("should sum over expressions with multiple variables", function() {
+        var exp = new Expression("x").add("y").add(3); // x + y + 3
+
+        var answer = exp.summation("x", 3, 6);
+
+        expect(answer.toString()).toEqual("4y + 30");
+    });
 });
