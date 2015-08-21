@@ -48,6 +48,7 @@ x = 7/2
         - [Add / Subtract](#expressions-add-subtract)
         - [Multiply](#expressions-multiply)
         - [Divide](#expressions-divide)
+        - [Summation](#expressions-summation)
         - [Raise](#expressions-raise)
         - [Evaluate](#expressions-evaluate)
     - [Equations](#equations)
@@ -247,6 +248,27 @@ console.log(x.toString());
 
 ```
 5/2x
+```
+
+### <a name="expressions-summation"></a> Summation
+
+Sum expressions over a particular variable and range with `Expression.summation(variable, lower, upper)`.
+
+```js
+var exp = new Expression("x");
+exp = exp.add("y");
+exp = exp.add(3);
+
+console.log(exp.toString());
+
+var sum = exp.summation("x", 3, 6);
+
+console.log(sum.toString());
+```
+
+```
+x + y + 3
+4y + 30
 ```
 
 ### <a name="expressions-raise"></a> Raise
