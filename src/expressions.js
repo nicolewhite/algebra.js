@@ -39,6 +39,7 @@ Expression.prototype.simplify = function() {
     }
 
     copy._combineLikeTerms();
+    copy._moveTermsWithDegreeZeroToConstants();
     copy._removeTermsWithCoefficientZero();
     copy.constants = (copy.constant().valueOf() === 0 ? [] : [copy.constant()]);
     copy._sort();
@@ -326,13 +327,27 @@ Expression.prototype._combineLikeTerms = function() {
                 this.terms.splice(j, 1);
             }
         }
+    }
+
+    return this;
+};
+
+Expression.prototype._moveTermsWithDegreeZeroToConstants = function() {
+    var keepTerms = [];
+    var constant = new Fraction(0, 1);
+
+    for (var i = 0; i < this.terms.length; i++) {
+        var thisTerm = this.terms[i];
 
         if (thisTerm.variables.length === 0) {
-            this.constants.push(thisTerm.coefficient());
-            this.terms.splice(i, 1);
+            constant = constant.add(thisTerm.coefficient());
+        } else {
+            keepTerms.push(thisTerm);
         }
     }
 
+    this.constants.push(constant);
+    this.terms = keepTerms;
     return this;
 };
 

@@ -751,8 +751,20 @@ describe("Expression simplification", function() {
         answer = answer.simplify(); // 12x + 33
 
         expect(answer.toString()).toEqual("12x + 33");
-    })
-});describe("Expression summation", function() {
+    });
+
+    it("should properly simplify if there are only constants", function() {
+        var exp = new Expression("x").add(3); // x + 3
+        exp = exp.pow(2, false); // xx + 3x + 3x + 3 * 3
+        exp = exp.eval({x: 2}, false); // 2 * 2 + 3 * 2 + 3 * 2 + 3 * 3
+
+        var ans = exp.simplify();
+
+        expect(ans.toString()).toEqual("25");
+    });
+});
+
+describe("Expression summation", function() {
 	it("should return a sum expressions whose variables have been substituted", function() {
 		var xplus3 = new Expression("x").add(3);
 		var ans = xplus3.summation(new Expression("x"), 3, 6);
