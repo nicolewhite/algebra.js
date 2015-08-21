@@ -51,6 +51,7 @@ x = 7/2
         - [Summation](#expressions-summation)
         - [Raise](#expressions-raise)
         - [Evaluate](#expressions-evaluate)
+        - [Simplification](#expressions-simplification)
     - [Equations](#equations)
         - [Build an Equation](#equations-build)
         - [Solve Linear Equations](#equations-linear)
@@ -58,6 +59,9 @@ x = 7/2
         - [Solve Cubic Equations](#equations-cubic)
         - [Solve Quartic Equations](#equations-quartic)
         - [Solve Anything Else](#equations-anything-else)
+    - [Parser](#parser)
+        - [Expressions](#parse-expressions)
+        - [Equations](#parse-equations)
 - [LaTeX](#latex)
     - [Example](#latex-example)
     - [Greek Letters](#latex-greek-letters)
@@ -335,6 +339,91 @@ x + 2
 y + 6
 ```
 
+### <a name="expressions-simplification"></a> Simplification
+
+All expression operations accept a `simplify` argument that will yield an unsimplified expression when set to `false`. 
+You can then get a simplified expression with `Expression.simplify`.
+
+```js
+var exp = new Expression("x").add(2);
+
+console.log(exp.toString());
+```
+
+```
+x + 2
+```
+
+```js
+exp = exp.multiply(5, false);
+
+console.log(exp.toString());
+```
+
+```
+5x + 5 * 2
+```
+
+```js
+exp = exp.simplify();
+
+console.log(exp.toString());
+```
+
+```
+5x + 10
+```
+
+```js
+exp = exp.add(5, false);
+
+console.log(exp.toString());
+```
+
+```
+5x + 10 + 5
+```
+
+```js
+exp = exp.divide(5, false);
+
+console.log(exp.toString());
+```
+
+```
+5/5x + 10/5 + 5/5
+```
+
+```js
+exp = exp.simplify();
+
+console.log(exp.toString());
+```
+
+```
+x + 3
+```
+
+```js
+exp = exp.pow(2, false);
+
+console.log(exp.toString());
+```
+
+```
+xx + 3x + 3x + 3 * 3
+```
+
+```js
+exp = exp.simplify();
+
+console.log(exp.toString());
+```
+
+```
+x^2 + 6x + 9
+```
+
 ## <a name="equations"></a> Equations
 
 ### <a name="equations-build"></a> Build an Equation
@@ -506,6 +595,53 @@ console.log("y = " + yAnswer.toString());
 x^2 + x + y = 3
 x = undefined
 y = -x^2 - x + 3
+```
+
+## <a name="parser"></a> Parser
+
+Use `algebra.parse` to parse expressions and equations from strings.
+
+### <a name="parse-expressions"></a> Parse Expressions
+
+You must use the `*` operator between coefficients and variables.
+
+```js
+var exp = new algebra.parse("2 * x^2 + 4 * x + 4");
+
+console.log(exp.toString());
+```
+
+```
+2x^2 + 4x + 4
+```
+
+You also must use the `*` operator between cross products; otherwise, they'll be interpreted as a single variable.
+
+```js
+var exp = algebra.parse("x * y + 4");
+
+console.log(exp.toString());
+```
+
+```
+xy + 4
+```
+
+### <a name="parse-expressions"></a> Parse Expressions
+
+```js
+var eq = algebra.parse("x^2 + 4 * x + 4 = 0");
+
+console.log(eq.toString());
+
+var ans = eq.solveFor("x");
+
+console.log("x = " + ans.toString());
+```
+
+```
+x^2 + 4x + 4 = 0
+x = -2
 ```
 
 # <a name="latex"></a> LaTeX
