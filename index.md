@@ -254,6 +254,8 @@ console.log(x.toString());
 
 Sum expressions over a particular variable and range with `Expression.summation(variable, lower, upper)`.
 
+$$\sum\limits_{x=3}^6 (x + y + 3) = 4y + 30$$
+
 ```js
 var exp = new Expression("x");
 exp = exp.add("y");
