@@ -42,7 +42,7 @@ Tests are written in [Jasmine](http://jasmine.github.io/edge/introduction.html).
 
 ### New Features
 
-If you're adding someting completely new, it's probably best if you first [create an issue](https://github.com/nicolewhite/algebra.js/issues) to describe the feature you want to add so that it can be discussed.
+If you're adding something completely new, it's probably best if you first [create an issue](https://github.com/nicolewhite/algebra.js/issues) to describe the feature you want to add so that it can be discussed. 
 
 ### Bug Fixes
 
