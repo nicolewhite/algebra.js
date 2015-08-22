@@ -21,6 +21,7 @@ var Parser = function() {
      * term   -> term * factor
      *        | term factor
      *        | term / factor
+     *        | term ^ factor
      *        | factor
      *
      * factor -> (expr)
