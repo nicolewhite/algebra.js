@@ -70,28 +70,6 @@ describe("Input validity", function() {
         var eqn = new Equation(new Expression("x"),new Expression(-4));
         expect(algebra.parse(input)).toEqual(eqn);
     });
-
-    it("should consecutive expressions as multiplication", function(){
-        var input = "(x + 2)(x + 2)";
-        var e1 = new Expression("x").add(2);
-        e1 = e1.multiply(e1);
-        expect(algebra.parse(input)).toEqual(e1);
-    });
-
-    it("should consecutive expressions as multiplication", function(){
-        var input = "5(x+2)";
-        var e1 = new Expression("x").add(2);
-        e1 = e1.multiply(5);
-        expect(algebra.parse(input)).toEqual(e1);
-    });
-
-    it("should consecutive expressions as multiplication", function(){
-        var input = "(x+2)5";
-        var e1 = new Expression("x").add(2);
-        e1 = e1.multiply(5);
-        expect(algebra.parse(input)).toEqual(e1);
-    });
-
 });
 
 describe("Operators", function() {
@@ -167,5 +145,33 @@ describe("Order of operations", function() {
     it("should execute * and / in the order that they're seen", function() {
         var input = "2 * x / (4 + 3)";
         expect(p.parse(input)).toEqual(new Expression("x").multiply(2).divide(7));
+    });
+
+    it("should treat consecutive parentheses as multiplication", function(){
+        var input = "(x + 2)(x + 2)";
+        var e1 = new Expression("x").add(2);
+        e1 = e1.multiply(e1);
+        expect(algebra.parse(input)).toEqual(e1);
+    });
+
+    it("should treat integers adjacent to parentheses as multiplication", function(){
+        var input = "5(x+2)";
+        var e1 = new Expression("x").add(2);
+        e1 = e1.multiply(5);
+        expect(algebra.parse(input)).toEqual(e1);
+    });
+
+    it("should treat integers adjacent to parentheses as multiplication", function(){
+        var input = "(x+2)5";
+        var e1 = new Expression("x").add(2);
+        e1 = e1.multiply(5);
+        expect(algebra.parse(input)).toEqual(e1);
+    });
+
+    it("should be able to raise expressions wrapped in parentheses", function() {
+        var input = "(x+2)^2";
+        var exp = new Expression("x").add(2).pow(2);
+
+        expect(algebra.parse(input)).toEqual(exp);
     });
 });
