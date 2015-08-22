@@ -72,7 +72,7 @@ describe("Input validity", function() {
     });
 
     it("should consecutive expressions as multiplication", function(){
-        var input = "(x + 2) * (x + 2)";
+        var input = "(x + 2)(x + 2)";
         var e1 = new Expression("x").add(2);
         e1 = e1.multiply(e1);
         expect(algebra.parse(input)).toEqual(e1);
