@@ -762,6 +762,14 @@ describe("Expression simplification", function() {
 
         expect(ans.toString()).toEqual("25");
     });
+
+    it("should properly simplify expressions where terms show up >= 2 times", function() {
+        var exp = new Expression("x").add("y").add(3);
+        var unsimplified = exp.pow(3, false);
+        var simplified = unsimplified.simplify();
+
+        expect(simplified.toString()).toEqual("x^3 + y^3 + 3x^2y + 3y^2x + 9x^2 + 9y^2 + 18xy + 27x + 27y + 27");
+    });
 });
 
 describe("Expression summation", function() {

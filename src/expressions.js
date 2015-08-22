@@ -38,11 +38,11 @@ Expression.prototype.simplify = function() {
         copy.terms[i] = copy.terms[i].simplify();
     }
 
+    copy._sort();
     copy._combineLikeTerms();
     copy._moveTermsWithDegreeZeroToConstants();
     copy._removeTermsWithCoefficientZero();
     copy.constants = (copy.constant().valueOf() === 0 ? [] : [copy.constant()]);
-    copy._sort();
 
     return copy;
 };
@@ -211,11 +211,12 @@ Expression.prototype.pow = function(a, simplify) {
             }
 
             copy._sort();
-            return copy;
         }
     } else {
         throw "InvalidArgument";
     }
+
+    return (simplify ? copy.simplify() : copy);
 };
 
 Expression.prototype.eval = function(values, simplify) {
@@ -315,20 +316,40 @@ Expression.prototype._removeTermsWithCoefficientZero = function() {
 };
 
 Expression.prototype._combineLikeTerms = function() {
+    function alreadyEncountered(term, encountered) {
+        for (var i = 0; i < encountered.length; i++) {
+            if (term.canBeCombinedWith(encountered[i])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    var newTerms = [];
+    var encountered = [];
+
     for (var i = 0; i < this.terms.length; i++) {
         var thisTerm = this.terms[i];
 
-        for (var j = i + 1; j < this.terms.length; j++) {
-            var thatTerm = this.terms[j];
+        if (alreadyEncountered(thisTerm, encountered)) {
+            continue;
+        } else {
+            for (var j = i + 1; j < this.terms.length; j++) {
+                var thatTerm = this.terms[j];
 
-            if (thisTerm.canBeCombinedWith(thatTerm)) {
-                thisTerm = thisTerm.add(thatTerm);
-                this.terms[i] = thisTerm;
-                this.terms.splice(j, 1);
+                if (thisTerm.canBeCombinedWith(thatTerm)) {
+                    thisTerm = thisTerm.add(thatTerm);
+                }
             }
+
+            newTerms.push(thisTerm);
+            encountered.push(thisTerm);
         }
+
     }
 
+    this.terms = newTerms;
     return this;
 };
 
