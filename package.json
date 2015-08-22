@@ -1,6 +1,6 @@
 {
   "name": "algebra.js",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Build, display, and solve algebraic equations.",
   "main": "algebra.js",
   "scripts": {
