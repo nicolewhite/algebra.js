@@ -1,5 +1,7 @@
-var Parser = require('../src/parser.js'),
-    algebra = require('../algebra.js'),
+"use strict";
+
+var Parser = require("../src/parser.js"),
+    algebra = require("../algebra.js"),
     Expression = algebra.Expression,
     Equation = algebra.Equation;
 
@@ -7,7 +9,7 @@ describe("Input validity", function() {
     var p = new Parser();
     it("does not accept special characters", function(){
         var input = "2+4*x-€";
-        expect(function(){p.parse(input);}).toThrow(new Error('Token error at character € at position 6'));
+        expect(function(){p.parse(input);}).toThrow(new Error("Token error at character € at position 6"));
     });
 
     it("does not accept variable names with numbers", function(){
@@ -17,7 +19,7 @@ describe("Input validity", function() {
 
     it("does not accept operators without operands", function(){
         var input = "+";
-         expect(function(){p.parse(input);}).toThrow(new Error('Missing operand'));
+         expect(function(){p.parse(input);}).toThrow(new Error("Missing operand"));
     });
 
     it("should ignore newlines", function(){
@@ -48,7 +50,7 @@ describe("Input validity", function() {
 
     it("should not accept short notation for decimals x with 0 > x < 1", function(){
         var input = ".2 + x * 4";
-        expect(function(){p.parse(input);}).toThrow(new Error('Token error at character . at position 0'));
+        expect(function(){p.parse(input);}).toThrow(new Error("Token error at character . at position 0"));
     });
 
     it("should treat decimal numbers correctly", function(){
@@ -61,6 +63,33 @@ describe("Input validity", function() {
         var input = "0.0";
         var expr = new Expression(0);
         expect(algebra.parse(input)).toEqual(expr);
+    });
+
+    it("should treat negative numbers correctly", function(){
+        var input = "x = -4";
+        var eqn = new Equation(new Expression("x"),new Expression(-4));
+        expect(algebra.parse(input)).toEqual(eqn);
+    });
+
+    it("should consecutive expressions as multiplication", function(){
+        var input = "(x + 2)(x + 2)";
+        var e1 = new Expression("x").add(2);
+        e1 = e1.multiply(e1);
+        expect(algebra.parse(input)).toEqual(e1);
+    });
+
+    it("should consecutive expressions as multiplication", function(){
+        var input = "5(x+2)";
+        var e1 = new Expression("x").add(2);
+        e1 = e1.multiply(5);
+        expect(algebra.parse(input)).toEqual(e1);
+    });
+
+    it("should consecutive expressions as multiplication", function(){
+        var input = "(x+2)5";
+        var e1 = new Expression("x").add(2);
+        e1 = e1.multiply(5);
+        expect(algebra.parse(input)).toEqual(e1);
     });
 
 });
@@ -78,7 +107,7 @@ describe("Operators", function() {
         var input = "2-x = 5";
         var lhs = new Expression(2).subtract(new Expression("x"));
         var rhs = new Expression(5);
-        expect(p.parse(input)).toEqual(new Equation(lhs,rhs));
+        expect(p.parse(input).toString()).toEqual(new Equation(lhs,rhs).toString());
     });
 
     it("should parse / correctly", function(){
@@ -112,12 +141,12 @@ describe("Parenthesis", function() {
 
     it("should throw an errow if there is an extra opening parenthesis", function(){
     	var input = "2-(4*x";
-        expect(function(){p.parse(input);}).toThrow(new Error('Unbalanced Parenthesis'));
+        expect(function(){p.parse(input);}).toThrow(new Error("Unbalanced Parenthesis"));
     });
 
     it("should throw an errow if there is an extra closing parenthesis", function(){
     	var input = "2+4*x)";
-        expect(function(){p.parse(input);}).toThrow(new Error('Unbalanced Parenthesis'));
+        expect(function(){p.parse(input);}).toThrow(new Error("Unbalanced Parenthesis"));
     });
 
 });
