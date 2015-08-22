@@ -78,6 +78,20 @@ describe("Input validity", function() {
         expect(algebra.parse(input)).toEqual(e1);
     });
 
+    it("should consecutive expressions as multiplication", function(){
+        var input = "5(x+2)";
+        var e1 = new Expression("x").add(2);
+        e1 = e1.multiply(5);
+        expect(algebra.parse(input)).toEqual(e1);
+    });
+
+    it("should consecutive expressions as multiplication", function(){
+        var input = "(x+2)5";
+        var e1 = new Expression("x").add(2);
+        e1 = e1.multiply(5);
+        expect(algebra.parse(input)).toEqual(e1);
+    });
+
 });
 
 describe("Operators", function() {
