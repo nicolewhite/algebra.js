@@ -106,6 +106,23 @@ describe("Fractions with 1 in the denominator", function() {
     });
 });
 
+describe("A Fraction representing zero", function() {
+    var frac = new Fraction(0, 1);
+
+    it("should initialize", function() {
+        expect(frac.numer).toBeDefined();
+        expect(frac.denom).toBeDefined();
+    });
+
+    it("should print to string with zero", function() {
+        expect(frac.toString()).toEqual("0");
+    });
+
+    it("should print to tex with zero", function() {
+        expect(frac.toTex()).toEqual("0");
+    });
+});
+
 describe("Fractions with -1 in the denominator", function() {
     var frac = new Fraction(5, -1);
 
@@ -119,7 +136,7 @@ describe("Fractions with -1 in the denominator", function() {
     });
 
     it("should print to tex with negative integers", function() {
-        expect(frac.toString()).toEqual("-5");
+        expect(frac.toTex()).toEqual("-5");
     });
 });
 
@@ -212,6 +229,12 @@ describe("Fraction multiplication", function() {
     it("should not allow multiplication of floats", function() {
         expect(function(){x.multiply(0.25)}).toThrow("InvalidArgument");
     });
+
+    it("should allow multiplication of zero", function() {
+        var answer = x.multiply(0);
+
+        expect(answer.toString()).toEqual('0');
+    });
 });
 
 describe("Fraction division", function() {
@@ -232,6 +255,10 @@ describe("Fraction division", function() {
 
     it("should not allow division of floats", function() {
         expect(function(){x.divide(0.25)}).toThrow("InvalidArgument");
+    });
+
+    it("should not allow division by zero", function() {
+        expect(function(){x.divide(0)}).toThrow("DivideByZero");
     });
 });
 
