@@ -245,10 +245,6 @@ Expression.prototype.summation = function(variable, lower, upper) {
 }
 
 Expression.prototype.toString = function() {
-    if (this.terms.length === 0 && this.constants.length === 0) {
-        return "0";
-    }
-
     var str = "";
 
     for (var i = 0; i < this.terms.length; i++) {
@@ -268,15 +264,11 @@ Expression.prototype.toString = function() {
     } else if (str.substring(0, 3) === " + ") {
         return str.substring(3, str.length);
     } else {
-        return str;
+        return "0";
     }
 };
 
 Expression.prototype.toTex = function(dict) {
-    if (this.terms.length === 0 && this.constants.length === 0) {
-        return "0";
-    }
-
     var str = "";
 
     for (var i = 0; i < this.terms.length; i++) {
@@ -296,7 +288,7 @@ Expression.prototype.toTex = function(dict) {
     } else if (str.substring(0, 3) === " + ") {
         return str.substring(3, str.length);
     } else {
-        return str;
+        return "0";
     }
 };
 
