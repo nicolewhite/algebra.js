@@ -18,6 +18,8 @@ var Expression = function(variable) {
         this.terms = [variable];
     } else if(typeof(variable) === "undefined") {
         this.terms = [];
+    }else{
+        throw "InvalidArgument";
     }
 };
 

@@ -17,6 +17,10 @@ describe("A linear equation with one variable", function() {
         expect(eq.toString()).toEqual("1/5x + 4/5 = x - 1/6");
     });
 
+    it("should print to Tex properly", function() {
+        expect(eq.toTex()).toEqual("\\frac{1}{5}x + \\frac{4}{5} = x - \\frac{1}{6}");
+    });
+
     it("should return a fraction when solving for the one variable", function() {
         var answer = eq.solveFor("x");
         expect(answer instanceof Fraction).toBe(true);
@@ -327,6 +331,13 @@ describe("Solving a cubic equation", function() {
 
         var answers = cubic.solveFor("x");
         expect(answers[0].equalTo(new Fraction(1, 1))).toBe(true);
+    });
+
+    it("should throw an exception when there's no solution", function() {
+        var x = new Expression("x").pow(3);
+        var eq = new Equation(x, x.add(2)); // x^3 = x^3 + 2
+
+        expect(function(){eq.solveFor("x")}).toThrow("NoSolution");
     });
 });
 
