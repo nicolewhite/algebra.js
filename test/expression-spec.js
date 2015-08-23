@@ -51,6 +51,13 @@ describe("An expression initialized with nothing", function() {
     });
 });
 
+describe("An expression initialized with an invalid variable", function() {
+    it("should throw InvalidArgument",function(){
+        expect(function(){new Expression([1,2,3]);}).toThrow("InvalidArgument");
+    });
+});
+
+
 describe("Expression addition", function() {
     var x = new Expression("x");
     var y = new Expression("y");
@@ -480,6 +487,10 @@ describe("Expression evaluation with one variable - linear", function() {
         var answer = x.eval({'x': new Fraction(1, 5)});
 
         expect(answer.toString()).toEqual("16/5");
+    });
+
+    it("should not allow evaluating at floats", function() {
+        expect(function(){x.eval({'x': 1.2})}).toThrow("InvalidArgument");
     });
 });
 
