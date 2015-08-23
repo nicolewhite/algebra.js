@@ -252,6 +252,10 @@ describe("Expression multiplication", function() {
         expect(answer.toString()).toEqual("5x");
     });
 
+    it("should not allow multiplying by floats", function() {
+        expect(function(){x.multiply(0.25)}).toThrow("InvalidArgument");
+    });
+
     it("should allow multiplying by another expression", function() {
         var newX = x.add(y); // x + y
         var newY = y.add(x); // y + x
@@ -437,6 +441,11 @@ describe("Expression printing to tex", function() {
         var answer = expr1.subtract(expr2); // x + y - 3 - (x + y) = -3
 
         expect(answer.toTex()).toEqual("-3");
+    });
+
+    it("should print 0 if the expression was initialized with nothing", function() {
+        var x = new Expression();
+        expect(x.toTex()).toEqual("0");
     });
 
     it("prints unsimplified expressions correctly", function() {
@@ -677,6 +686,10 @@ describe("Raising expressions to powers", function() {
         var answer = x.pow(2, false);
 
         expect(answer.toString()).toEqual("xx + 2x + 2x + 2 * 2");
+    });
+
+    it("should not allow floats", function() {
+        expect(function(){x.pow(0.25)}).toThrow("InvalidArgument");
     });
 });
 
