@@ -1,6 +1,24 @@
 var Fraction = require('../src/fractions');
 var Complex = require('../src/complex');
 
+
+describe("Complex number initialization", function(){
+
+    it("should be defined when initialized correctly", function() {
+        var c = new Complex(new Fraction(2, 1), new Fraction(3, 1)); // 2 + 3i
+        expect(c).toBeDefined();
+    });
+
+    it("should throw an error if initialized with an integer for the real part", function() {
+        expect(function(){new Complex(2, new Fraction(3, 1))}).toThrow("InvalidArgument");
+    });
+
+    it("should throw an error if initialized with an integer for the imaginary part", function() {
+        expect(function(){new Complex(new Fraction(3, 1),2)}).toThrow("InvalidArgument");
+    });
+
+});
+
 describe("Complex number addition", function() {
     var c = new Complex(new Fraction(2, 1), new Fraction(3, 1)); // 2 + 3i
 
@@ -14,6 +32,10 @@ describe("Complex number addition", function() {
         var answer = c.add(new Fraction(1, 2)); // 5/2 + 3i
         expect(answer.real.toString()).toEqual("5/2");
         expect(answer.imaginary.toString()).toEqual("3");
+    });
+
+    it("does not work with adding floats", function() {
+        expect(function(){c.add(0.1);}).toThrow("InvalidArgument");
     });
 
     it("works with adding other complex numbers", function() {
@@ -39,6 +61,10 @@ describe("Complex number subtraction", function() {
         expect(answer.imaginary.toString()).toEqual("3");
     });
 
+    it("does not work with subtracting floats", function() {
+        expect(function(){c.subtract(0.1);}).toThrow("InvalidArgument");
+    });
+
     it("works with other complex numbers", function() {
         var other = new Complex(new Fraction(5, 1), new Fraction(3, 1)); // 5 + 3i
         var answer = c.subtract(other); // -3 + 0i
@@ -60,6 +86,10 @@ describe("Complex number multiplication", function() {
         var answer = c.multiply(new Fraction(1, 3)); // 1/3(2 + 3i) = 2/3 + i
         expect(answer.real.toString()).toEqual("2/3");
         expect(answer.imaginary.toString()).toEqual("1");
+    });
+
+    it("does not work with multiplying floats", function() {
+        expect(function(){c.multiply(0.1);}).toThrow("InvalidArgument");
     });
 
     it("works with other complex numbers, positive sign", function() {
@@ -102,6 +132,10 @@ describe("Complex number division", function() {
         var answer = c.divide(new Fraction(1, 2)); // (2 + 3i) / (1/2) = 4 + 6i
         expect(answer.real.toString()).toEqual("4");
         expect(answer.imaginary.toString()).toEqual("6");
+    });
+
+    it("does not work with floats", function() {
+        expect(function(){c.divide(0.1);}).toThrow("InvalidArgument");
     });
 
     it("works with other complex numbers, positive sign", function() {
