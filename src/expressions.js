@@ -235,13 +235,15 @@ Expression.prototype.eval = function(values, simplify) {
     return exp;
 };
 
-Expression.prototype.summation = function(variable, lower, upper) {
+Expression.prototype.summation = function(variable, lower, upper, simplify) {
+	simplify = (simplify === undefined ? true : simplify);
+	
 	var thisExpr = this.copy();
 	var newExpr = new Expression();
 	for(var i = lower; i < (upper + 1); i++) {
 		var sub = {};
 		sub[variable] = i;
-		newExpr = newExpr.add(thisExpr.eval(sub));
+		newExpr = newExpr.add(thisExpr.eval(sub, simplify), simplify);
 	}
 	return newExpr;
 }
