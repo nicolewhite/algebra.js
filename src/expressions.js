@@ -529,7 +529,7 @@ Expression.prototype._quarticCoefficients = function() {
          
     }
 
-    var d = new Fraction(0, 1);
+    //var d = new Fraction(0, 1);
 
     for (var i = 0; i < this.constants.length; i++) {
         e = e.add(this.constants[i]);

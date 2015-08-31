@@ -717,6 +717,27 @@ describe("Raising expressions to powers", function() {
         expect(answer.toString()).toEqual("x^4 + 8x^3 + 24x^2 + 32x + 16");
     });    
 
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x_16 
+        expect(answer._quarticCoefficients().a.toString()).toEqual("1"); ;
+    });
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x_16 
+        expect(answer._quarticCoefficients().b.toString()).toEqual("8"); ;
+    });
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x_16 
+        expect(answer._quarticCoefficients().c.toString()).toEqual("24"); ;
+    });
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x+16 
+        expect(answer._quarticCoefficients().d.toString()).toEqual("32"); ;
+    });
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x+16 
+        expect(answer._quarticCoefficients().e.toString()).toEqual("16"); ;
+    });
+
     it("should allow unsimplified expression", function() {
         var answer = x.pow(2, false);
 
