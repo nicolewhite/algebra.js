@@ -505,6 +505,39 @@ Expression.prototype._cubicCoefficients = function() {
     return {a:a, b:b, c:c, d:d}
 };
 
+
+Expression.prototype._quarticCoefficients = function() {
+    // This function isn't used until everything has been moved to the LHS in Equation.solve.
+    var a;
+    var b = new Fraction(0, 1);
+    var c = new Fraction(0, 1);
+    var d = new Fraction(0, 1); 
+    var e = new Fraction(0 , 1);
+
+    for (var i = 0; i < this.terms.length; i++) {
+        var thisTerm = this.terms[i];
+
+        if (thisTerm.maxDegree() === 4) {
+            a = thisTerm.coefficient().copy();
+        } else if (thisTerm.maxDegree() === 3) {
+            b = thisTerm.coefficient().copy();
+        } else if (thisTerm.maxDegree() === 2) {
+            c = thisTerm.coefficient().copy();
+        }else if (thisTerm.maxDegree() === 1) {
+            d = thisTerm.coefficient().copy();
+        } 
+         
+    }
+
+    var d = new Fraction(0, 1);
+
+    for (var i = 0; i < this.constants.length; i++) {
+        e = e.add(this.constants[i]);
+    }
+
+    return {a:a, b:b, c:c, d:d,e:e};
+};
+
 Term = function(variable) {
     if (variable instanceof Variable) {
         this.variables = [variable.copy()];

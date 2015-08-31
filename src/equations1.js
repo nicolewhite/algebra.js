@@ -72,7 +72,8 @@ Equation.prototype.solveFor = function(variable) {
         return newRhs;
 
     // Otherwise, move everything to the LHS.
-    } else {
+    } 
+    else {
         var newLhs = this.lhs.copy();
         newLhs = newLhs.subtract(this.rhs);
 
@@ -252,6 +253,16 @@ Equation.prototype.solveFor = function(variable) {
                     return [x3, x2, x1];
                 }
             }
+        } else if(this._isQuartic(variable))
+        {
+
+            var coefs = newLhs._quadraticCoefficients();
+
+            var a = coefs.a;
+            var b = coefs.b;
+            var c = coefs.c;
+            var d = coefs.d;
+            var e = coefs.e;      
         }
     }
 };
@@ -304,6 +315,10 @@ Equation.prototype._isQuadratic = function(variable) {
 
 Equation.prototype._isCubic = function(variable) {
     return this._maxDegree() === 3 && this._onlyHasVariable(variable);
+};
+
+Equation.prototype._isQuartic = function(variable) {
+    return this._maxDegree() === 4 && this._onlyHasVariable(variable);
 };
 
 module.exports = Equation;
