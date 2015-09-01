@@ -842,7 +842,7 @@ describe("Expression simplification", function() {
 });
 
 describe("Expression summation", function() {
-	it("should return a sum expressions whose variables have been substituted", function() {
+	it("should sum over expressions with one variable", function() {
 		var xplus3 = new Expression("x").add(3);
 		var ans = xplus3.summation(new Expression("x"), 3, 6);
 		expect(ans.toString()).toEqual("30");
