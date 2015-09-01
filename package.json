@@ -15,11 +15,12 @@
     "src/"
   ],
   "devDependencies": {
-    "jasmine-node": "1.14.5",
     "browserify": "10.2.1",
-    "uglifyjs": "2.4.10",
     "coveralls": "^2.11.2",
-    "istanbul": "0.3.15"
+    "istanbul": "0.3.15",
+    "jasmine-node": "1.14.5",
+    "jshint": "^2.8.0",
+    "uglifyjs": "2.4.10"
   },
   "keywords": [
     "algebra",
