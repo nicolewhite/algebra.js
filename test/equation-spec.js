@@ -360,4 +360,20 @@ describe("Equation evaluation", function() {
 
         expect(answer.toString()).toEqual("y + 4 = 2");
     });
+
+});
+
+describe("testing a specfic quartic", function() {
+    //(x-1)(x-2)(x-3)(x-4)
+    var x = new Expression("x")
+    x = x.subtract(1);
+    x= x.multiply(x.subtract(1))
+        .multiply(x.subtract(2))
+        .multiply(x.subtract(3));
+    var eq = new Equation(x,0);  
+    var eq1= eq.solveFor("x");
+    it("i can get ", function() {
+        expect(eq1.toString()).toEqual("1");
+    });
+
 });

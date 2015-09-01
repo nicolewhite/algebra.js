@@ -252,6 +252,74 @@ Equation.prototype.solveFor = function(variable) {
                     return [x3, x2, x1];
                 }
             }
+        } 
+        else if(this._isQuartic(variable)){
+
+            var coefs = newLhs._quarticCoefficients();
+            //the orrignal coeffiencts
+            //these are from the wikipedia article
+            var a4 = coefs.a;
+            var a3 = coefs.b;
+            var a2 = coefs.c;
+            var a1 = coefs.d;
+            var a0 = coefs.e; 
+
+
+            var a = a3/a4; 
+            var b = a2/a4; 
+            var c = a1/a4; 
+            var d = a0/a4;
+
+            var p = new Fraction(8*b -3*Math.pow(a,2),8);
+            var q = new Fraction(Math.pow(a,3)-4*a*b+8*c,8);
+            var r = new Fraction(-3*Math.pow(a,4)+256*d-64*c*a+16*Math.pow(a,2)*b,256);
+
+            //I think this turns the quartic into a "depressed quartic"
+            //with that looks like y^4+ py^3+qy+r = 0
+
+            //now I want to use Ferrari's solution to find the actual roots
+
+            var alpha = p;
+            var alpha1 = (8*b -3*Math.pow(a,2))/8;
+            var beta = q;
+            var beta1 = (Math.pow(a,3)-4*a*b+8*c)/8;
+            var gamma = r;
+            var gamma1 = (-3*Math.pow(a,4)+256*d-64*c*a+16*Math.pow(a,2)*b)/256;
+
+            /*
+                inside of Ferrari's solution i need to find the solution of a different polynomial;
+                y^3+5/2*alpha*y^2 +(2*alpha^2-gamma)y+(alpha^3/2-alpha*gamma/2-beta^2/8)=0
+
+            */
+
+            var yFunction = new Expression("y");
+                yFunction = yFunction.multiply("y");
+            yFunction = yFunction.multiply("y");
+            y1Function = new Expression("y");
+            y1Function =y1Function.multiply("y"); 
+            y1Function =y1Function.multiply(5);
+            y1Function =y1Function.multiply(alpha);
+             y1Function =y1Function.divide(2);
+            yFunction = yFunction.add(y1Function);                           
+             
+                          
+            yfunction = yFunction.add("y");
+            y1Function=2*Math.pow(8*b -3*Math.pow(a,2)/8,2);
+            
+            yfunction = yFunction.multiply(Math.round(2*Math.pow(8*b -3*Math.pow(a,2)/8,2) -(-3*Math.pow(a,4)+256*d-64*c*a+16*Math.pow(a,2)*b)/256));
+            yfunction = yFunction.add(Math.round(Math.pow(alpha1,3)/2-gamma1*alpha1/2-Math.pow(beta1,2)/8));
+
+             var eq2 =new Equation(yFunction,0);
+             var y = eq2.solveFor("y");
+
+
+            //Console.log(y);
+            return y;
+
+
+
+
+            ;
         }
     }
 };
@@ -306,4 +374,7 @@ Equation.prototype._isCubic = function(variable) {
     return this._maxDegree() === 3 && this._onlyHasVariable(variable);
 };
 
+Equation.prototype._isQuartic = function(variable) {
+    return this._maxDegree() === 4 && this._onlyHasVariable(variable);
+};
 module.exports = Equation;
