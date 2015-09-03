@@ -377,7 +377,7 @@ describe("testing a specfic quartic", function() {
     });
 
     it("i can get ", function() {
-        expect(eq1.toString()).toEqual("1");
+        expect(eq1.toString()).toEqual("1,2,3,4");
     });
 
 });

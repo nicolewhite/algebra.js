@@ -280,11 +280,11 @@ Equation.prototype.solveFor = function(variable) {
             //now I want to use Ferrari's solution to find the actual roots
 
             var alpha = p;
-            //var alpha1 = (8*b -3*Math.pow(a,2))/8;
+            var alpha1 = (8*b -3*Math.pow(a,2))/8;
             var beta = q;
-            //var beta1 = (Math.pow(a,3)-4*a*b+8*c)/8;
+            var beta1 = (Math.pow(a,3)-4*a*b+8*c)/8;
             var gamma = r;
-            //var gamma1 = (-3*Math.pow(a,4)+256*d-64*c*a+16*Math.pow(a,2)*b)/256;
+            var gamma1 = (-3*Math.pow(a,4)+256*d-64*c*a+16*Math.pow(a,2)*b)/256;
 
             /*
                 inside of Ferrari's solution i need to find the solution of a different polynomial;
@@ -323,11 +323,57 @@ Equation.prototype.solveFor = function(variable) {
             //yfunction = yFunction.add(Math.round(Math.pow(alpha1,3)/2-gamma1*alpha1/2-Math.pow(beta1,2)/8));
 
              var eq2 =new Equation(yFunction,0);
-             var y = eq2.solveFor("y");
+             var y1= eq2.solveFor("y");
 
 
             //Console.log(y);
-            return y;
+
+            var arraylength = y1.length;
+            var y; 
+            for(var i = 0; i < arraylength; i++)
+            {
+                if (Math.abs(alpha + 2*y1[i]) > Math.pow(10,-7))
+                {
+
+                        y = y1[i];
+                        break;
+                } 
+
+            }
+
+            //y9fuction = new Fraction(2*,1)
+
+            //y8Function =alpha.add(y9fuction);
+            //y8Function = y8Function.multiply(alpha);
+            //y8Function = y8Function.pow(.5);
+            //squarerooty8function = y8Function.pow(.5);
+
+            //if(alpha.multiply(3).add(2*y).add(beta.divide().multiply(2)
+
+            var ans = []; 
+             if(-1*(3*alpha1+2*y+2*beta1/(Math.sqrt(alpha1+2*y))) >=0)
+             {
+                    //ans.push((Math.sqrt(alpha1+2*y)+Math.sqrt((-(3*alpha1+2*y+2*beta1/(Math.sqrt(alpha1+2*y)))))/2+a3/(-4*a4)));
+                    ans.push((Math.sqrt(alpha1+2*y)+Math.sqrt((-(3*alpha1+2*y+2*beta1/(Math.sqrt(alpha1+2*y))))))/2+a3/(-4*a4));
+                    ans.push((Math.sqrt(alpha1+2*y)-Math.sqrt((-(3*alpha1+2*y+2*beta1/(Math.sqrt(alpha1+2*y))))))/2+a3/(-4*a4));
+                    
+
+             }
+
+            if(-1*(3*alpha1+2*y-2*beta1/(Math.sqrt(alpha1+2*y)))>=0)
+            {
+
+                ans.push((-1*Math.sqrt(alpha1+2*y)+Math.sqrt((-(3*alpha1+2*y-2*beta1/(Math.sqrt(alpha1+2*y))))))/2+a3/(-4*a4));
+                ans.push((-1*Math.sqrt(alpha1+2*y)-Math.sqrt((-(3*alpha1+2*y-2*beta1/(Math.sqrt(alpha1+2*y))))))/2+a3/(-4*a4));
+            }
+
+            ans.sort();
+            var anslength = ans.length;
+            for(var i = 0; i < anslength; i++ )
+            {
+                ans[i]=Math.round(ans[i]); 
+            }
+            return ans ;
 
 
 
