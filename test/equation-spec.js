@@ -372,6 +372,10 @@ describe("testing a specfic quartic", function() {
         .multiply(x.subtract(3));
     var eq = new Equation(x,0);  
     var eq1= eq.solveFor("x");
+    it("the testing polnomial is ", function() {
+        expect(x.toString()).toEqual("x^4 - 10x^3 + 35x^2 - 50x + 24");
+    });
+
     it("i can get ", function() {
         expect(eq1.toString()).toEqual("1");
     });

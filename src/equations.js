@@ -280,11 +280,11 @@ Equation.prototype.solveFor = function(variable) {
             //now I want to use Ferrari's solution to find the actual roots
 
             var alpha = p;
-            var alpha1 = (8*b -3*Math.pow(a,2))/8;
+            //var alpha1 = (8*b -3*Math.pow(a,2))/8;
             var beta = q;
-            var beta1 = (Math.pow(a,3)-4*a*b+8*c)/8;
+            //var beta1 = (Math.pow(a,3)-4*a*b+8*c)/8;
             var gamma = r;
-            var gamma1 = (-3*Math.pow(a,4)+256*d-64*c*a+16*Math.pow(a,2)*b)/256;
+            //var gamma1 = (-3*Math.pow(a,4)+256*d-64*c*a+16*Math.pow(a,2)*b)/256;
 
             /*
                 inside of Ferrari's solution i need to find the solution of a different polynomial;
@@ -295,19 +295,32 @@ Equation.prototype.solveFor = function(variable) {
             var yFunction = new Expression("y");
                 yFunction = yFunction.multiply("y");
             yFunction = yFunction.multiply("y");
+           
             y1Function = new Expression("y");
             y1Function =y1Function.multiply("y"); 
             y1Function =y1Function.multiply(5);
             y1Function =y1Function.multiply(alpha);
-             y1Function =y1Function.divide(2);
+            y1Function =y1Function.divide(2);
             yFunction = yFunction.add(y1Function);                           
              
-                          
-            yfunction = yFunction.add("y");
-            y1Function=2*Math.pow(8*b -3*Math.pow(a,2)/8,2);
-            
-            yfunction = yFunction.multiply(Math.round(2*Math.pow(8*b -3*Math.pow(a,2)/8,2) -(-3*Math.pow(a,4)+256*d-64*c*a+16*Math.pow(a,2)*b)/256));
-            yfunction = yFunction.add(Math.round(Math.pow(alpha1,3)/2-gamma1*alpha1/2-Math.pow(beta1,2)/8));
+            y2Function = new Expression("y");
+            y3Function =new Expression(alpha.pow(2))
+            y3Function = y3Function.multiply(2);             
+            y3Function = y3Function.subtract(gamma);
+            y4Function = y2Function.multiply(y3Function);
+            yFunction = yFunction.add(y4Function)
+            //y1Function=2*Math.pow(8*b -3*Math.pow(a,2)/8,2);
+           
+             y5Function = new Expression(alpha.multiply(alpha).multiply(alpha).divide(2));
+             y6Function = new Expression(alpha.multiply(gamma).divide(2));
+             y7Function = new Expression(beta.multiply(beta).divide(8));
+            // y4Function = new Expression(0);
+            // y4Function = y4function.add(y1Function.subtract(y2Function).subtract(y3Function));
+            // // y2Function= new Fraction(alpha)
+             yFunction= yFunction.add(y5Function).subtract(y6Function).subtract(y7Function);
+
+            // yfunction = yFunction.multiply(Math.round(2*Math.pow(8*b -3*Math.pow(a,2)/8,2) -(-3*Math.pow(a,4)+256*d-64*c*a+16*Math.pow(a,2)*b)/256));
+            //yfunction = yFunction.add(Math.round(Math.pow(alpha1,3)/2-gamma1*alpha1/2-Math.pow(beta1,2)/8));
 
              var eq2 =new Equation(yFunction,0);
              var y = eq2.solveFor("y");
