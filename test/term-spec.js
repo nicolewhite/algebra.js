@@ -22,16 +22,16 @@ describe("Terms", function() {
     });
 
     it("can't be initialized with an integer", function() {
-        expect(function(){new Term(5)}).toThrow("InvalidArgument");
+        expect(function(){new Term(5);}).toThrow("InvalidArgument");
     });
 
     it("can't be initialized with a float", function() {
-        expect(function(){new Term(5.1)}).toThrow("InvalidArgument");
+        expect(function(){new Term(5.1);}).toThrow("InvalidArgument");
     });
 
     it("can't be initialized with a string", function() {
-        expect(function(){new Term("x")}).toThrow("InvalidArgument");
-    })
+        expect(function(){new Term("x");}).toThrow("InvalidArgument");
+    });
 });
 
 describe("Term addition", function() {
@@ -43,14 +43,14 @@ describe("Term addition", function() {
         var t2 = new Term(x);
 
         answer = t1.add(t2);
-        expect(answer.toString()).toEqual("2x")
+        expect(answer.toString()).toEqual("2x");
     });
 
     it("throws an error if trying to combine unlike terms", function() {
         var t1 = new Term(x);
         var t2 = new Term(y);
 
-        expect(function(){t1.add(t2)}).toThrow("InvalidArgument");
+        expect(function(){t1.add(t2);}).toThrow("InvalidArgument");
     });
 });
 
@@ -65,14 +65,14 @@ describe("Term subtraction", function() {
         t1.coefficients = [new Fraction(2, 1)];
 
         var answer = t1.subtract(t2);
-        expect(answer.toString()).toEqual("x")
+        expect(answer.toString()).toEqual("x");
     });
 
     it("throws an error if trying to combine unlike terms", function() {
         var t1 = new Term(x);
         var t2 = new Term(y);
 
-        expect(function(){t1.subtract(t2)}).toThrow("InvalidArgument");
+        expect(function(){t1.subtract(t2);}).toThrow("InvalidArgument");
     });
 });
 
@@ -110,7 +110,7 @@ describe("Term multiplication", function() {
         t2.coefficients = [new Fraction(3, 1)];
 
         var answer = t1.multiply(t2);
-        expect(answer.toString()).toEqual("6xy")
+        expect(answer.toString()).toEqual("6xy");
     });
 
     it("allows multiplication of integers", function() {
@@ -133,7 +133,7 @@ describe("Term multiplication", function() {
         var x = new Variable("x");
         var t = new Term(x);
 
-        expect(function(){t.multiply(.5)}).toThrow("InvalidArgument");
+        expect(function(){t.multiply(0.5);}).toThrow("InvalidArgument");
     });
 
     it("allows unsimplified coefficients", function() {
@@ -171,14 +171,14 @@ describe("Term division", function() {
         var t = new Term(x);
 
         var answer = t.divide(new Fraction(2, 3));
-        expect(answer.toString()).toEqual("3/2x")
+        expect(answer.toString()).toEqual("3/2x");
     });
 
     it("doesn't allow division of floats", function() {
         var x = new Variable("x");
         var t = new Term(x);
 
-        expect(function(){t.divide(.5)}).toThrow("InvalidArgument");
+        expect(function(){t.divide(0.5);}).toThrow("InvalidArgument");
     });
 
     it("allows unsimplified terms", function() {
