@@ -1,5 +1,7 @@
 {
-	"indent"   : 4,
-	"shadow"   : true,
-	"jasmine"  : true
+  "indent"   : 4,
+  "shadow"   : true,
+  "jasmine"  : true,
+  "strict"   : false,
+  "node"     : true
 }
