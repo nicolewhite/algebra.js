@@ -4,12 +4,11 @@ var Equation = require('./src/equations');
 var Parser = require('./src/parser');
 
 
-
 var parse = function(input){
 	var parser = new Parser();
 	var result = parser.parse(input);
 	return result;
-}
+};
 
 module.exports = {
     Fraction: Fraction,
