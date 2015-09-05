@@ -27,7 +27,7 @@ describe("A linear equation with one variable", function() {
     });
 
     it("should throw an exception when solving for a variable that isn't there", function() {
-        expect(function(){eq.solveFor("y")}).toThrow("InvalidArgument");
+        expect(function(){eq.solveFor("y");}).toThrow("InvalidArgument");
     });
 
     it("should get the right answer", function() {
@@ -58,7 +58,7 @@ describe("An equation with multiple variables", function() {
     });
 
     it("should throw an exception when solving for a variable that isn't there", function() {
-        expect(function(){eq.solveFor("y")}).toThrow("InvalidArgument");
+        expect(function(){eq.solveFor("y");}).toThrow("InvalidArgument");
     });
 
     it("should get the right answer", function() {
@@ -172,7 +172,7 @@ describe("An equation built with an expression and an integer or fraction", func
     });
 
     it("should print properly", function() {
-        expect(eq.toString()).toEqual("1/5x + 4/5 = 3/4")
+        expect(eq.toString()).toEqual("1/5x + 4/5 = 3/4");
     });
 });
 
@@ -180,16 +180,16 @@ describe("An invalid equation", function() {
     var x = new Expression("x");
 
     it("should throw an exception with a float on the lhs", function() {
-        expect(function(){new Equation(0.25, x)}).toThrow("InvalidArgument");
+        expect(function(){new Equation(0.25, x);}).toThrow("InvalidArgument");
     });
 
     it("should throw an exception with a float on the rhs", function() {
-        expect(function(){new Equation(x, 0.25)}).toThrow("InvalidArgument");
+        expect(function(){new Equation(x, 0.25);}).toThrow("InvalidArgument");
     });
 
     it("should throw an exception if neither args are expressions", function() {
-        expect(function(){new Equation(1, 2)}).toThrow("InvalidArgument");
-    })
+        expect(function(){new Equation(1, 2);}).toThrow("InvalidArgument");
+    });
 });
 
 describe("Checking the type of an equation", function() {
@@ -236,7 +236,7 @@ describe("Solving linear equations with no / infinite solution", function() {
         var x = new Expression("x");
         var eq = new Equation(x, x.add(2)); // x = x + 2
 
-        expect(function(){eq.solveFor("x")}).toThrow("NoSolution");
+        expect(function(){eq.solveFor("x");}).toThrow("NoSolution");
     });
 
     it("should return 1 when there's infinite solutions", function() {
@@ -337,7 +337,7 @@ describe("Solving a cubic equation", function() {
         var x = new Expression("x").pow(3);
         var eq = new Equation(x, x.add(2)); // x^3 = x^3 + 2
 
-        expect(function(){eq.solveFor("x")}).toThrow("NoSolution");
+        expect(function(){eq.solveFor("x");}).toThrow("NoSolution");
     });
 });
 
