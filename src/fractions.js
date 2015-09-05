@@ -3,7 +3,7 @@ var gcd = require('./helper').gcd;
 var lcm = require('./helper').lcm;
 
 var Fraction = function(a, b) {
-    if (b == 0) {
+    if (b === 0) {
         throw "DivideByZero";
     } else if (isInt(a) && isInt(b)) {
         this.numer = a;
@@ -105,7 +105,7 @@ Fraction.prototype.multiply = function(f, simplify) {
     } else if (isInt(f) && f) {
         a = f;
         b = 1;
-    } else if (f == 0) {
+    } else if (f === 0) {
         a = 0;
         b = 1;
     } else {
