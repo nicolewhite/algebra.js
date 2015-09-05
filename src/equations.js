@@ -270,7 +270,7 @@ Equation.prototype.toTex = function() {
 Equation.prototype._maxDegree = function() {
     var lhsMax = this.lhs._maxDegree();
     var rhsMax = this.rhs._maxDegree();
-    return Math.max(lhsMax, rhsMax)
+    return Math.max(lhsMax, rhsMax);
 };
 
 Equation.prototype._maxDegreeOfVariable = function(variable) {
