@@ -13,16 +13,20 @@ var Equation = function(lhs, rhs) {
         } else if (rhs instanceof Fraction || isInt(rhs)) {
             this.rhs = new Expression(rhs);
         } else {
-            throw "InvalidArgument";
+            throw "RightHandSideOfEquationIsNotOfTypeEquation";
         }
-    } else {
-        throw "InvalidArgument";
+    } else if(rhs instanceof Expression){
+        throw "LeftHandSideOfEquationIsNotOfTypeEquation";
     }
+     else
+     {
+        throw "LeftAndRightHandSideOfEquationIsNotOfTypeEquation"
+     }
 };
 
 Equation.prototype.solveFor = function(variable) {
     if (!this.lhs._hasVariable(variable) && !this.rhs._hasVariable(variable)) {
-        throw "InvalidArgument";
+        throw "VariableNotFound";
     }
 
     // If the equation is linear and the variable in question can be isolated through arithmetic, solve.
