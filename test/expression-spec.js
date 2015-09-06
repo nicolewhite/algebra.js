@@ -687,10 +687,55 @@ describe("Raising expressions to powers", function() {
         var answer = x.pow(2);
         expect(answer.toString()).toEqual("x^2 + 4x + 4");
     });
+    /*
+    * I wanted to see how the quadratic coefficients worked
+    */
+    // it("should give coefficients of quadratic", function() {
+    //     var answer = x.pow(2); // x^2+4x+4
+    //     //console.log(answer._quadraticCoefficients.toString());
+    //     expect((answer._quadraticCoefficients()).a.toString()).toEqual("1");
+    // });
+    // it("should give coefficients of quadratic", function() {
+    //     var answer = x.pow(2); // x^2+4x+4
+    //     //console.log(answer._quadraticCoefficients.toString());
+    //     expect((answer._quadraticCoefficients()).b.toString()).toEqual("4");
+    // });
+    // it("should give coefficients of quadratic", function() {
+    //     var answer = x.pow(2); // x^2+4x+4
+    //     //console.log(answer._quadraticCoefficients.toString());
+    //     expect((answer._quadraticCoefficients()).c.toString()).toEqual("4");
+    // });
+
 
     it("should work with power 3", function() {
         var answer = x.pow(3);
         expect(answer.toString()).toEqual("x^3 + 6x^2 + 12x + 8");
+    });
+
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x_16 
+        expect(answer.toString()).toEqual("x^4 + 8x^3 + 24x^2 + 32x + 16");
+    });    
+
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x_16 
+        expect(answer._quarticCoefficients().a.toString()).toEqual("1"); ;
+    });
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x_16 
+        expect(answer._quarticCoefficients().b.toString()).toEqual("8"); ;
+    });
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x_16 
+        expect(answer._quarticCoefficients().c.toString()).toEqual("24"); ;
+    });
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x+16 
+        expect(answer._quarticCoefficients().d.toString()).toEqual("32"); ;
+    });
+    it("should work with power 4", function() {
+        var answer = x.pow(4); //x^4 +8x^3+24x^2+32x+16 
+        expect(answer._quarticCoefficients().e.toString()).toEqual("16"); ;
     });
 
     it("should allow unsimplified expression", function() {

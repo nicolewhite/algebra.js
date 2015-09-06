@@ -360,4 +360,24 @@ describe("Equation evaluation", function() {
 
         expect(answer.toString()).toEqual("y + 4 = 2");
     });
+
+});
+
+describe("testing a specfic quartic", function() {
+    //(x-1)(x-2)(x-3)(x-4)
+    var x = new Expression("x")
+    x = x.subtract(1);
+    x= x.multiply(x.subtract(1))
+        .multiply(x.subtract(2))
+        .multiply(x.subtract(3));
+    var eq = new Equation(x,0);  
+    var eq1= eq.solveFor("x");
+    it("the testing polnomial is ", function() {
+        expect(x.toString()).toEqual("x^4 - 10x^3 + 35x^2 - 50x + 24");
+    });
+
+    it("i can get ", function() {
+        expect(eq1.toString()).toEqual("1,2,3,4");
+    });
+
 });
