@@ -512,7 +512,7 @@ Term = function(variable) {
     } else if (typeof(variable) === "undefined") {
         this.variables = [];
     } else {
-        throw "InvalidArgument";
+        throw "NotAVaildVariable";
     }
 
     this.coefficients = [new Fraction(1, 1)];
@@ -583,7 +583,7 @@ Term.prototype.add = function(term) {
         copy.coefficients = [copy.coefficient().add(term.coefficient())];
         return copy;
     } else {
-        throw "InvalidArgument";
+        throw "UnlikeTermsCan'tBeAdded";
     }
 };
 
@@ -593,7 +593,7 @@ Term.prototype.subtract = function(term) {
         copy.coefficients = [copy.coefficient().subtract(term.coefficient())];
         return copy;
     } else {
-        throw "InvalidArgument";
+        throw "UnlikeTermsCan'tBeSubtracted";
     }
 };
 
@@ -618,7 +618,7 @@ Term.prototype.multiply = function(a, simplify) {
             thisTerm.coefficients.unshift(newCoef);
         }
     } else {
-        throw "InvalidArgument";
+        throw "InvaidTypeToMultiplyBy";
     }
 
     return (simplify ? thisTerm.simplify() : thisTerm);
@@ -636,7 +636,7 @@ Term.prototype.divide = function(a, simplify) {
 
         return thisTerm;
     } else {
-        throw "InvalidArgument";
+        throw "InvalidTypeToDivideBy"; 
     }
 };
 
@@ -664,7 +664,7 @@ Term.prototype.eval = function(values, simplify) {
             } else if(isInt(sub)) {
                 ev = Math.pow(sub, thisVar.degree);
             } else {
-                throw "InvalidArgument";
+                throw "NotAValueToEvalueWith";
             }
         } else {
             ev = new Expression(thisVar.variable).pow(thisVar.degree);
@@ -817,7 +817,7 @@ var Variable = function(variable) {
         this.variable = variable;
         this.degree = 1;
     } else {
-        throw "InvalidArgument";
+        throw "VaribleNotAString";
     }
 };
 

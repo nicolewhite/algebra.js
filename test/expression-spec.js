@@ -490,7 +490,7 @@ describe("Expression evaluation with one variable - linear", function() {
     });
 
     it("should not allow evaluating at floats", function() {
-        expect(function(){x.eval({'x': 1.2});}).toThrow("InvalidArgument");
+        expect(function(){x.eval({'x': 1.2});}).toThrow("NotAValueToEvalueWith");
     });
 });
 
