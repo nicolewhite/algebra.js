@@ -214,11 +214,11 @@ Expression.prototype.pow = function(a, simplify) {
 
             copy._sort();
         }
+
+        return (simplify ? copy.simplify() : copy);
     } else {
         throw "InvalidArgument";
     }
-
-    return (simplify ? copy.simplify() : copy);
 };
 
 Expression.prototype.eval = function(values, simplify) {
@@ -245,7 +245,7 @@ Expression.prototype.summation = function(variable, lower, upper, simplify) {
 		newExpr = newExpr.add(thisExpr.eval(sub, simplify), simplify);
 	}
 	return newExpr;
-}
+};
 
 Expression.prototype.toString = function() {
     var str = "";
@@ -301,7 +301,7 @@ Expression.prototype._removeTermsWithCoefficientZero = function() {
     for (var i = 0; i < this.terms.length; i++) {
         var coefficient = this.terms[i].coefficient().reduce();
 
-        if (coefficient.numer != 0) {
+        if (coefficient.numer !== 0) {
             keep.push(this.terms[i]);
         }
     }
@@ -435,7 +435,7 @@ Expression.prototype._maxDegree = function() {
         var maxDegree = this.terms[i].maxDegree();
 
         if (maxDegree > max) {
-            max = maxDegree
+            max = maxDegree;
         }
     }
 
@@ -476,7 +476,7 @@ Expression.prototype._quadraticCoefficients = function() {
         c = c.add(this.constants[i]);
     }
 
-    return {a:a, b:b, c:c}
+    return {a:a, b:b, c:c};
 };
 
 Expression.prototype._cubicCoefficients = function() {
@@ -503,7 +503,7 @@ Expression.prototype._cubicCoefficients = function() {
         d = d.add(this.constants[i]);
     }
 
-    return {a:a, b:b, c:c, d:d}
+    return {a:a, b:b, c:c, d:d};
 };
 
 Term = function(variable) {
@@ -654,23 +654,23 @@ Term.prototype.eval = function(values, simplify) {
     for(var i = 0; i < copy.variables.length; i++) {
         var thisVar = copy.variables[i];
 
-        var eval = new Expression(thisVar.variable).pow(thisVar.degree);
+        var ev;
 
-        for(var j = 0; j < keys.length; j++) {
-            if(thisVar.variable == keys[j]) {
-                var sub = values[keys[j]];
+        if (thisVar.variable in values) {
+            var sub = values[thisVar.variable];
 
-                if(sub instanceof Fraction || sub instanceof Expression) {
-                    eval = sub.pow(thisVar.degree);
-                } else if(isInt(sub)) {
-                    eval = Math.pow(sub, thisVar.degree);
-                } else {
-                    throw "InvalidArgument";
-                }
+            if(sub instanceof Fraction || sub instanceof Expression) {
+                ev = sub.pow(thisVar.degree);
+            } else if(isInt(sub)) {
+                ev = Math.pow(sub, thisVar.degree);
+            } else {
+                throw "InvalidArgument";
             }
+        } else {
+            ev = new Expression(thisVar.variable).pow(thisVar.degree);
         }
 
-        exp = exp.multiply(eval, simplify);
+        exp = exp.multiply(ev, simplify);
     }
 
     return exp;
@@ -767,7 +767,7 @@ Term.prototype.toString = function() {
         var coef = this.coefficients[i];
 
         if (!(coef.abs().numer === 1 && coef.abs().denom === 1)) {
-            str += " * " + coef.toString()
+            str += " * " + coef.toString();
         }
     }
 
@@ -787,10 +787,10 @@ Term.prototype.toTex = function(dict) {
     }
 
     if(!("multiplication" in dict)) {
-        dict["multiplication"] = "cdot"
+        dict.multiplication = "cdot";
     }
 
-    var op =  " \\" + dict["multiplication"] + " ";
+    var op =  " \\" + dict.multiplication + " ";
 
     var str = "";
 
@@ -798,7 +798,7 @@ Term.prototype.toTex = function(dict) {
         var coef = this.coefficients[i];
 
         if (!(coef.abs().numer === 1 && coef.abs().denom === 1)) {
-            str += op + coef.toTex()
+            str += op + coef.toTex();
         }
     }
 
