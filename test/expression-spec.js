@@ -52,8 +52,8 @@ describe("An expression initialized with nothing", function() {
 });
 
 describe("An expression initialized with an invalid variable", function() {
-    it("should throw InvalidArgument",function(){
-        expect(function(){new Expression([1,2,3]);}).toThrow("InvalidArgument");
+    it("should throw ExpressionCan'tBeParsed",function(){
+        expect(function(){new Expression([1,2,3]);}).toThrow("ExpressionCan'tBeParsed");
     });
 });
 
@@ -126,7 +126,7 @@ describe("Expression addition", function() {
     });
 
     it("should not allow adding floats", function() {
-        expect(function(){x.add(0.25);}).toThrow("InvalidArgument");
+        expect(function(){x.add(0.25);}).toThrow("ParameterIsNotATypeThatCanBeAddedToExpression");
     });
 
     it("should allow adding variables passed in as strings - same var", function() {
@@ -215,7 +215,7 @@ describe("Expression subtraction", function() {
     });
 
     it("should not allow subtracting floats", function() {
-        expect(function(){x.subtract(0.25);}).toThrow("InvalidArgument");
+        expect(function(){x.subtract(0.25);}).toThrow("ParameterIsNotATypeThatCanBeSubtractedToExpression");
     });
 
     it("should allow subtracting variables passed in as strings - same var", function() {
@@ -260,7 +260,7 @@ describe("Expression multiplication", function() {
     });
 
     it("should not allow multiplying by floats", function() {
-        expect(function(){x.multiply(0.25);}).toThrow("InvalidArgument");
+        expect(function(){x.multiply(0.25);}).toThrow("ParameterIsNotATypeThatCanBeMultipliedToExpression");
     });
 
     it("should allow multiplying by another expression", function() {
@@ -349,7 +349,7 @@ describe("Expression division", function() {
     });
 
     it("should not allow dividing by another expression", function() {
-        expect(function(){x.divide(y);}).toThrow("InvalidArgument");
+        expect(function(){x.divide(y);}).toThrow("ParameterIsNotATypeThatCanBeDividedToExpression");
     });
 
     it("should throw an exception if dividing by zero", function() {
@@ -490,7 +490,7 @@ describe("Expression evaluation with one variable - linear", function() {
     });
 
     it("should not allow evaluating at floats", function() {
-        expect(function(){x.eval({'x': 1.2});}).toThrow("InvalidArgument");
+        expect(function(){x.eval({'x': 1.2});}).toThrow("NotAValueToEvalueWith");
     });
 });
 
@@ -700,7 +700,7 @@ describe("Raising expressions to powers", function() {
     });
 
     it("should not allow floats", function() {
-        expect(function(){x.pow(0.25);}).toThrow("InvalidArgument");
+        expect(function(){x.pow(0.25);}).toThrow("ParameterIsNotAInt");
     });
 });
 

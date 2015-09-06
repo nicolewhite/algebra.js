@@ -13,11 +13,11 @@ describe("A variable", function() {
     });
 
     it("should throw an error if initialized with an integer", function() {
-        expect(function(){new Variable(5);}).toThrow("InvalidArgument");
+        expect(function(){new Variable(5);}).toThrow("VaribleNotAString");
     });
 
     it("should throw an error if initialized with a float", function() {
-        expect(function(){new Variable(5.1);}).toThrow("InvalidArgument");
+        expect(function(){new Variable(5.1);}).toThrow("VaribleNotAString");
     });
 });
 
