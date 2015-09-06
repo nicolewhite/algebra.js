@@ -10,11 +10,11 @@ describe("Complex number initialization", function(){
     });
 
     it("should throw an error if initialized with an integer for the real part", function() {
-        expect(function(){new Complex(2, new Fraction(3, 1))}).toThrow("InvalidArgument");
+        expect(function(){new Complex(2, new Fraction(3, 1));}).toThrow("InvalidArgument");
     });
 
     it("should throw an error if initialized with an integer for the imaginary part", function() {
-        expect(function(){new Complex(new Fraction(3, 1),2)}).toThrow("InvalidArgument");
+        expect(function(){new Complex(new Fraction(3, 1),2);}).toThrow("InvalidArgument");
     });
 
 });

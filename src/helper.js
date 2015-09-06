@@ -36,7 +36,7 @@ Array.prototype.toTex = function() {
     var tex = [];
 
     for (var i = 0; i < this.length; i++) {
-        tex.push(this[i].toTex())
+        tex.push(this[i].toTex());
     }
 
     return tex.join();

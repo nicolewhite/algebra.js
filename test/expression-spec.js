@@ -126,7 +126,7 @@ describe("Expression addition", function() {
     });
 
     it("should not allow adding floats", function() {
-        expect(function(){x.add(0.25)}).toThrow("InvalidArgument");
+        expect(function(){x.add(0.25);}).toThrow("InvalidArgument");
     });
 
     it("should allow adding variables passed in as strings - same var", function() {
@@ -171,7 +171,7 @@ describe("Expression subtraction", function() {
 
         var answer = newx.subtract(newy);          // x - 3 - y - (-1/4) => x - y - 12/4 + 1/4 => x - y - 11/4
 
-        expect(answer.toString()).toEqual("x - y - 11/4")
+        expect(answer.toString()).toEqual("x - y - 11/4");
     });
 
     it("should properly combine the terms of two expressions - nonlinear", function() {
@@ -215,7 +215,7 @@ describe("Expression subtraction", function() {
     });
 
     it("should not allow subtracting floats", function() {
-        expect(function(){x.subtract(0.25)}).toThrow("InvalidArgument");
+        expect(function(){x.subtract(0.25);}).toThrow("InvalidArgument");
     });
 
     it("should allow subtracting variables passed in as strings - same var", function() {
@@ -260,7 +260,7 @@ describe("Expression multiplication", function() {
     });
 
     it("should not allow multiplying by floats", function() {
-        expect(function(){x.multiply(0.25)}).toThrow("InvalidArgument");
+        expect(function(){x.multiply(0.25);}).toThrow("InvalidArgument");
     });
 
     it("should allow multiplying by another expression", function() {
@@ -292,7 +292,7 @@ describe("Expression multiplication", function() {
                                           // x^2 - xy + xy - y^2 =
                                           // x^2 - y^2
 
-        expect(answer.toString()).toEqual("x^2 - y^2")
+        expect(answer.toString()).toEqual("x^2 - y^2");
     });
 
     it("should multiply by variables passed in as strings - same var", function() {
@@ -349,11 +349,11 @@ describe("Expression division", function() {
     });
 
     it("should not allow dividing by another expression", function() {
-        expect(function(){x.divide(y)}).toThrow("InvalidArgument");
+        expect(function(){x.divide(y);}).toThrow("InvalidArgument");
     });
 
     it("should throw an exception if dividing by zero", function() {
-        expect(function(){x.divide(0)}).toThrow("DivideByZero");
+        expect(function(){x.divide(0);}).toThrow("DivideByZero");
     });
 
     it("should allow for unsimplified terms and constants", function() {
@@ -490,7 +490,7 @@ describe("Expression evaluation with one variable - linear", function() {
     });
 
     it("should not allow evaluating at floats", function() {
-        expect(function(){x.eval({'x': 1.2})}).toThrow("InvalidArgument");
+        expect(function(){x.eval({'x': 1.2});}).toThrow("InvalidArgument");
     });
 });
 
@@ -745,7 +745,7 @@ describe("Raising expressions to powers", function() {
     });
 
     it("should not allow floats", function() {
-        expect(function(){x.pow(0.25)}).toThrow("InvalidArgument");
+        expect(function(){x.pow(0.25);}).toThrow("InvalidArgument");
     });
 });
 

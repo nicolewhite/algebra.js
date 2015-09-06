@@ -2,19 +2,19 @@ var Fraction = require('../src/fractions');
 
 describe("An invalid fraction", function() {
     it("should throw an exception with a denominator of 0", function() {
-        expect(function(){new Fraction(1, 0)}).toThrow("DivideByZero");
+        expect(function(){new Fraction(1, 0);}).toThrow("DivideByZero");
     });
 
     it("should not initialize with decimals in the numerator", function() {
-        expect(function(){new Fraction(0.25, 1)}).toThrow("InvalidArgument");
+        expect(function(){new Fraction(0.25, 1);}).toThrow("InvalidArgument");
     });
 
     it("should not initialize with decimals in the denominator", function() {
-        expect(function(){new Fraction(1, 0.25)}).toThrow("InvalidArgument");
+        expect(function(){new Fraction(1, 0.25);}).toThrow("InvalidArgument");
     });
 
     it("should not initialize with decimals in both the numerator and denominator", function() {
-        expect(function(){new Fraction(0.75, 0.25)}).toThrow("InvalidArgument");
+        expect(function(){new Fraction(0.75, 0.25);}).toThrow("InvalidArgument");
     });
 });
 
@@ -57,7 +57,7 @@ describe("A valid fraction with a negative numerator", function() {
 
     it("should coerce to a valueOf properly", function() {
         expect(frac.valueOf()).toEqual(-0.5);
-    })
+    });
 });
 
 describe("A valid fraction with a negative denominator", function() {
@@ -157,7 +157,7 @@ describe("Fraction addition", function() {
     });
 
     it("should not allow addition of floats", function() {
-        expect(function(){x.add(0.25)}).toThrow("InvalidArgument");
+        expect(function(){x.add(0.25);}).toThrow("InvalidArgument");
     });
 
     it("should return a reduced version of the answer", function() {
@@ -192,7 +192,7 @@ describe("Fraction subtraction", function() {
     });
 
     it("should not allow subtraction of floats", function() {
-        expect(function(){x.subtract(0.25)}).toThrow("InvalidArgument");
+        expect(function(){x.subtract(0.25);}).toThrow("InvalidArgument");
     });
 
     it("should return a reduced version of the answer", function() {
@@ -227,7 +227,7 @@ describe("Fraction multiplication", function() {
     });
 
     it("should not allow multiplication of floats", function() {
-        expect(function(){x.multiply(0.25)}).toThrow("InvalidArgument");
+        expect(function(){x.multiply(0.25);}).toThrow("InvalidArgument");
     });
 
     it("should allow multiplication of zero", function() {
@@ -254,11 +254,11 @@ describe("Fraction division", function() {
     });
 
     it("should not allow division of floats", function() {
-        expect(function(){x.divide(0.25)}).toThrow("InvalidArgument");
+        expect(function(){x.divide(0.25);}).toThrow("InvalidArgument");
     });
 
     it("should not allow division by zero", function() {
-        expect(function(){x.divide(0)}).toThrow("DivideByZero");
+        expect(function(){x.divide(0);}).toThrow("DivideByZero");
     });
 });
 
@@ -273,7 +273,7 @@ describe("Fraction equality", function() {
     it("should be false when the fractions are not equal", function() {
         var y = new Fraction(2, 3);
         expect(x.equalTo(y)).toBe(false);
-    })
+    });
 });
 
 describe("Fraction exponentiation", function() {
@@ -308,7 +308,7 @@ describe("Fraction exponentiation", function() {
         var squareFrac = frac.pow(2); // 2^2/4^2 = 4/16 = 1/4
         expect(squareFrac.numer).toEqual(1);
         expect(squareFrac.denom).toEqual(4);
-    })
+    });
 });
 
 describe("Checking if the square root of a fraction is rational", function() {

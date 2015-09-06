@@ -91,8 +91,8 @@ Lexer.prototype._process_digits = function(position){
         (Lexer._isdigit(this.buf.charAt(endpos)))){
     endpos++;
   }
-  return endpos
-}
+  return endpos;
+};
 
 Lexer.prototype._process_number = function() {
   //Read characters until a non-digit character appears

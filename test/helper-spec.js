@@ -17,7 +17,7 @@ describe("Greatest common divisor", function() {
     it("returns 1 when the arguments are 5 and 7", function() {
         var g = gcd(5, 7);
         expect(g).toEqual(1);
-    })
+    });
 });
 
 describe("Least common multiple", function() {
@@ -32,7 +32,7 @@ describe("Least common multiple", function() {
 
 describe("isInt", function() {
     it("should return false if it's a float", function() {
-        expect(isInt(.5)).toBe(false);
+        expect(isInt(0.5)).toBe(false);
     });
 
     it("should return false if it's a string", function() {
@@ -71,8 +71,8 @@ describe("round", function() {
 });
 
 describe("Numbers to tex", function() {
-    it("should return numbers as strings", function() {
-        var x = new Number(5.55);
+    it("should return floats as strings", function() {
+        var x = 5.55;
         expect(x.toTex()).toEqual(x.toString());
-    })
+    });
 });

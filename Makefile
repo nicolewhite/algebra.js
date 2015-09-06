@@ -13,6 +13,9 @@ sync: minify
 	git checkout gh-pages
 	cp build/algebra.min.js javascripts/algebra.min.js
 
-test-coveralls:
+coveralls:
 	./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine-node --captureExceptions test && \
 	cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+
+lint:
+	./node_modules/jshint/bin/jshint algebra.js src/*.js test/*.js
