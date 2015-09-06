@@ -69,3 +69,10 @@ describe("round", function() {
         expect(round(5.55, 4)).toEqual(5.55);
     });
 });
+
+describe("Numbers to tex", function() {
+    it("should return floats as strings", function() {
+        var x = 5.55;
+        expect(x.toTex()).toEqual(x.toString());
+    });
+});
