@@ -14,7 +14,7 @@ var Complex = function(real, imaginary) {
         throw "RealPartOfFunctionNotOfTypeFraction";
     }
 
-    else if (real instanceof Fraction) {
+    else {
         throw "RealAndImaginaryPartOfFunctionNotOFTypeFraction";
     }
 

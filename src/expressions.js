@@ -19,7 +19,7 @@ var Expression = function(variable) {
     } else if(typeof(variable) === "undefined") {
         this.terms = [];
     }else{
-        throw "InvalidArgument";
+        throw "ExpressionCan'tBeParsed";
     }
 };
 
@@ -87,7 +87,7 @@ Expression.prototype.add = function(a, simplify) {
         thisExp.constants = thisExp.constants.concat(a.constants);
         thisExp._sort();
     } else {
-        throw "InvalidArgument";
+        throw "ParameterIsNotATypeThatCanBeAddedToExpression";
     }
 
     return (simplify ? thisExp.simplify() : thisExp);
@@ -103,7 +103,7 @@ Expression.prototype.subtract = function(a, simplify) {
     } else if (a instanceof Expression) {
         negative = a.multiply(-1);
     } else {
-        throw "InvalidArgument";
+        throw "ParameterIsNotATypeThatCanBeSubtractedToExpression";
     }
 
     return thisExp.add(negative, simplify);
@@ -164,7 +164,7 @@ Expression.prototype.multiply = function(a, simplify) {
         thisExp.terms = newTerms;
         thisExp._sort();
     } else {
-        throw "InvalidArgument";
+        throw "ParameterIsNotATypeThatCanBeMultipliedToExpression";
     }
 
     return (simplify ? thisExp.simplify() : thisExp);
@@ -195,7 +195,7 @@ Expression.prototype.divide = function(a, simplify) {
 
         return copy;
     } else {
-        throw "InvalidArgument";
+        throw "ParameterIsNotATypeThatCanBeDividedToExpression";
     }
 };
 
@@ -217,7 +217,7 @@ Expression.prototype.pow = function(a, simplify) {
 
         return (simplify ? copy.simplify() : copy);
     } else {
-        throw "InvalidArgument";
+        throw "ParameterIsNotAInt";
     }
 };
 
