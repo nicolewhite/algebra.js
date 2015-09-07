@@ -24,21 +24,14 @@ var Expression = function(variable) {
 };
 
 Expression.prototype.constant = function() {
-    var sum = new Fraction(0, 1);
-
-    for (var i = 0; i < this.constants.length; i++) {
-        sum = sum.add(this.constants[i]);
-    }
-
-    return sum;
+    return this.constants.reduce(function(p,c){return p.add(c)},new Fraction(0, 1));
 };
 
 Expression.prototype.simplify = function() {
     var copy = this.copy();
 
-    for (var i = 0; i < copy.terms.length; i++) {
-        copy.terms[i] = copy.terms[i].simplify();
-    }
+    //simplify all terms
+    copy.terms = copy.terms.map(function(t){return t.simplify()});
 
     copy._sort();
     copy._combineLikeTerms();
@@ -51,17 +44,16 @@ Expression.prototype.simplify = function() {
 
 Expression.prototype.copy = function() {
     var copy = new Expression();
-    copy.constants = [];
-    this.constants.forEach(function(c) {copy.constants.push(c.copy());});
-
-    copy.terms = [];
-    this.terms.forEach(function(t) {copy.terms.push(t.copy());});
+    
+    //copy all constants
+    copy.constants = this.constants.map(function(c){return c.copy()});
+    //copy all terms
+    copy.terms = this.terms.map(function(t){return t.copy()});
 
     return copy;
 };
 
 Expression.prototype.add = function(a, simplify) {
-    simplify = (simplify === undefined ? true : simplify);
     var thisExp = this.copy();
 
     if (typeof(a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
@@ -77,7 +69,7 @@ Expression.prototype.add = function(a, simplify) {
         throw "InvalidArgument";
     }
 
-    return (simplify ? thisExp.simplify() : thisExp);
+    return (simplify || simplify === undefined) ? thisExp.simplify() : thisExp;
 };
 
 Expression.prototype.subtract = function(a, simplify) {
@@ -86,7 +78,6 @@ Expression.prototype.subtract = function(a, simplify) {
 };
 
 Expression.prototype.multiply = function(a, simplify) {
-    simplify = (simplify === undefined ? true : simplify);
     var thisExp = this.copy();
 
     if (typeof(a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
@@ -124,15 +115,10 @@ Expression.prototype.multiply = function(a, simplify) {
 
             for (var j = 0; j < thatExp.constants.length; j++) {
                 var thatConst = thatExp.constants[j];
-
-                if (simplify) {
-                    newConstants.push(thisConst.multiply(thatConst, simplify));
-                } else {
-                    var t = new Term();
-                    t = t.multiply(thatConst, false);
-                    t = t.multiply(thisConst, false);
-                    newTerms.push(t);
-                }
+                var t = new Term();
+                t = t.multiply(thatConst, false);
+                t = t.multiply(thisConst, false);
+                newTerms.push(t);
             }
         }
 
@@ -143,12 +129,10 @@ Expression.prototype.multiply = function(a, simplify) {
         throw "InvalidArgument";
     }
 
-    return (simplify ? thisExp.simplify() : thisExp);
+    return (simplify || simplify === undefined) ? thisExp.simplify() : thisExp;
 };
 
 Expression.prototype.divide = function(a, simplify) {
-    simplify = (simplify === undefined ? true : simplify);
-
     if (a instanceof Fraction || isInt(a)) {
 
         if (a.valueOf() === 0) {
@@ -165,9 +149,8 @@ Expression.prototype.divide = function(a, simplify) {
             }
         }
 
-        for (var i = 0; i < copy.constants.length; i++) {
-            copy.constants[i] = copy.constants[i].divide(a, simplify);
-        }
+        //divide every constant by a
+        copy.constants = copy.constants.map(function(c){return c.divide(a,simplify)});
 
         return copy;
     } else {
@@ -176,8 +159,6 @@ Expression.prototype.divide = function(a, simplify) {
 };
 
 Expression.prototype.pow = function(a, simplify) {
-    simplify = (simplify === undefined ? true : simplify);
-
     if (isInt(a)) {
         var copy = this.copy();
 
@@ -191,28 +172,23 @@ Expression.prototype.pow = function(a, simplify) {
             copy._sort();
         }
 
-        return (simplify ? copy.simplify() : copy);
+        return (simplify || simplify === undefined) ? copy.simplify() : copy;
     } else {
         throw "InvalidArgument";
     }
 };
 
 Expression.prototype.eval = function(values, simplify) {
-    simplify = (simplify === undefined ? true : simplify);
-
     var exp = new Expression();
     exp.constants = (simplify ? [this.constant()] : this.constants.slice());
 
-    for(var i = 0; i < this.terms.length; i++) {
-        var thisTerm = this.terms[i];
-        exp = exp.add(thisTerm.eval(values, simplify), simplify);
-    }
+    //add all evaluated terms of this to exp
+    exp = this.terms.reduce(function(p,c){return p.add(c.eval(values,simplify),simplify)},exp);
 
     return exp;
 };
 
 Expression.prototype.summation = function(variable, lower, upper, simplify) {
-	simplify = (simplify === undefined ? true : simplify);
 	var thisExpr = this.copy();
 	var newExpr = new Expression();
 	for(var i = lower; i < (upper + 1); i++) {
@@ -272,17 +248,7 @@ Expression.prototype.toTex = function(dict) {
 };
 
 Expression.prototype._removeTermsWithCoefficientZero = function() {
-    var keep = [];
-
-    for (var i = 0; i < this.terms.length; i++) {
-        var coefficient = this.terms[i].coefficient().reduce();
-
-        if (coefficient.numer !== 0) {
-            keep.push(this.terms[i]);
-        }
-    }
-
-    this.terms = keep;
+    this.terms = this.terms.filter(function(t){return t.coefficient().reduce().numer !== 0;});;
     return this;
 };
 
@@ -405,31 +371,11 @@ Expression.prototype._noCrossProducts = function() {
 };
 
 Expression.prototype._maxDegree = function() {
-    var max = 1;
-
-    for (var i = 0; i < this.terms.length; i++) {
-        var maxDegree = this.terms[i].maxDegree();
-
-        if (maxDegree > max) {
-            max = maxDegree;
-        }
-    }
-
-    return max;
+    return this.terms.reduce(function(p,c){return Math.max(p,c.maxDegree());},1);
 };
 
 Expression.prototype._maxDegreeOfVariable = function(variable) {
-    var max = 1;
-
-    for (var i = 0; i < this.terms.length; i++) {
-        var maxDegreeOfVariable = this.terms[i].maxDegreeOfVariable(variable);
-
-        if (maxDegreeOfVariable > max) {
-            max = maxDegreeOfVariable;
-        }
-    }
-
-    return max;
+    return this.terms.reduce(function(p,c){return Math.max(p,c.maxDegreeOfVariable(variable));},1);
 };
 
 Expression.prototype._quadraticCoefficients = function() {
@@ -438,19 +384,10 @@ Expression.prototype._quadraticCoefficients = function() {
     var b = new Fraction(0, 1);
     for (var i = 0; i < this.terms.length; i++) {
         var thisTerm = this.terms[i];
-
-        if (thisTerm.maxDegree() === 2) {
-            a = thisTerm.coefficient().copy();
-        } else if (thisTerm.maxDegree() === 1) {
-            b = thisTerm.coefficient().copy();
-        }
+        a = (thisTerm.maxDegree() === 2) ? thisTerm.coefficient().copy() : a;
+        b = (thisTerm.maxDegree() === 1) ? thisTerm.coefficient().copy() : b;
     }
-
-    var c = new Fraction(0, 1);
-
-    for (var i = 0; i < this.constants.length; i++) {
-        c = c.add(this.constants[i]);
-    }
+    var c = this.constant();
 
     return {a:a, b:b, c:c};
 };
@@ -463,22 +400,12 @@ Expression.prototype._cubicCoefficients = function() {
 
     for (var i = 0; i < this.terms.length; i++) {
         var thisTerm = this.terms[i];
-
-        if (thisTerm.maxDegree() === 3) {
-            a = thisTerm.coefficient().copy();
-        } else if (thisTerm.maxDegree() === 2) {
-            b = thisTerm.coefficient().copy();
-        } else if (thisTerm.maxDegree() === 1) {
-            c = thisTerm.coefficient().copy();
-        }
+        a = (thisTerm.maxDegree() === 3) ? thisTerm.coefficient().copy() : a;
+        b = (thisTerm.maxDegree() === 2) ? thisTerm.coefficient().copy() : b;
+        c = (thisTerm.maxDegree() === 1) ? thisTerm.coefficient().copy() : c;
     }
 
-    var d = new Fraction(0, 1);
-
-    for (var i = 0; i < this.constants.length; i++) {
-        d = d.add(this.constants[i]);
-    }
-
+    var d = this.constant();
     return {a:a, b:b, c:c, d:d};
 };
 
@@ -495,13 +422,8 @@ Term = function(variable) {
 };
 
 Term.prototype.coefficient = function() {
-    var prod = new Fraction(1, 1);
-
-    for (var i = 0; i < this.coefficients.length; i++) {
-        prod = prod.multiply(this.coefficients[i]);
-    }
-
-    return prod;
+    //calculate the product of all coefficients
+    return this.coefficients.reduce(function(p,c){return p.multiply(c);}, new Fraction(1,1));
 };
 
 Term.prototype.simplify = function() {
@@ -538,18 +460,8 @@ Term.prototype.combineVars = function() {
 
 Term.prototype.copy = function() {
     var copy = new Term();
-
-    copy.coefficients = [];
-    copy.variables = [];
-
-    for (var i = 0; i < this.variables.length; i++) {
-        copy.variables.push(this.variables[i].copy());
-    }
-
-    for (var i = 0; i < this.coefficients.length; i++) {
-        copy.coefficients.push(this.coefficients[i].copy());
-    }
-
+    copy.coefficients = this.coefficients.map(function(c){return c.copy()});
+    copy.variables = this.variables.map(function(v){return v.copy()});
     return copy;
 };
 
@@ -574,17 +486,12 @@ Term.prototype.subtract = function(term) {
 };
 
 Term.prototype.multiply = function(a, simplify) {
-    simplify = (simplify === undefined ? true : simplify);
     var thisTerm = this.copy();
 
     if (a instanceof Term) {
-        var thatTerm = a.copy();
+        thisTerm.variables = thisTerm.variables.concat(a.variables);
+        thisTerm.coefficients = a.coefficients.concat(thisTerm.coefficients);
 
-        thisTerm.variables = thisTerm.variables.concat(thatTerm.variables);
-
-        for (var i = 0; i < thatTerm.coefficients.length; i++) {
-            thisTerm.coefficients.unshift(thatTerm.coefficients[i]);
-        }
     } else if (isInt(a) || a instanceof Fraction) {
         var newCoef = (isInt(a) ? new Fraction(a, 1) : a);
 
@@ -597,19 +504,13 @@ Term.prototype.multiply = function(a, simplify) {
         throw "InvalidArgument";
     }
 
-    return (simplify ? thisTerm.simplify() : thisTerm);
+    return (simplify || simplify === undefined) ? thisTerm.simplify() : thisTerm;
 };
 
 Term.prototype.divide = function(a, simplify) {
-    simplify = (simplify === undefined ? true : simplify);
-
     if(isInt(a) || a instanceof Fraction) {
         var thisTerm = this.copy();
-
-        for (var i = 0; i < thisTerm.coefficients.length; i++) {
-            thisTerm.coefficients[i] = thisTerm.coefficients[i].divide(a, simplify);
-        }
-
+        thisTerm.coefficients = thisTerm.coefficients.map(function(c){return c.divide(a,simplify)});
         return thisTerm;
     } else {
         throw "InvalidArgument";
@@ -617,15 +518,9 @@ Term.prototype.divide = function(a, simplify) {
 };
 
 Term.prototype.eval = function(values, simplify) {
-    simplify = (simplify === undefined ? true : simplify);
-
     var copy = this.copy();
     var keys = Object.keys(values);
-    var exp = new Expression(1);
-
-    for (var i = 0; i < this.coefficients.length; i++) {
-        exp = exp.multiply(this.coefficients[i], simplify);
-    }
+    var exp = copy.coefficients.reduce(function(p,c){return p.multiply(c,simplify);}, new Expression(1));
 
     for(var i = 0; i < copy.variables.length; i++) {
         var thisVar = copy.variables[i];
@@ -663,58 +558,32 @@ Term.prototype.hasVariable = function(variable) {
 };
 
 Term.prototype.maxDegree = function() {
-    var max = 1;
-
-    for(var i = 0; i < this.variables.length; i++) {
-        if(this.variables[i].degree > max) {
-            max = this.variables[i].degree;
-        }
-    }
-
-    return max;
+    return this.variables.reduce(function(p,c){return Math.max(p,c.degree);},1);
 };
 
 Term.prototype.maxDegreeOfVariable = function(variable) {
-    var max = 1;
-
-    for (var i = 0; i < this.variables.length; i++) {
-        var thisVar = this.variables[i];
-
-        if (thisVar.variable === variable) {
-            if (thisVar.degree > max) {
-                max = thisVar.degree;
-            }
-        }
-    }
-
-    return max;
+    return this.variables.reduce(function(p,c){return (c.variable === variable) ? Math.max(p,c.degree) : p;},1);
 };
 
 Term.prototype.canBeCombinedWith = function(term) {
-    if(term instanceof Term) {
-        var thisVars = this.variables;
-        var thatVars = term.variables;
+    var thisVars = this.variables;
+    var thatVars = term.variables;
 
-        if(thisVars.length != thatVars.length) {
-            return false;
-        }
+    if(thisVars.length != thatVars.length) {
+        return false;
+    }
 
-        matches = 0;
+    matches = 0;
 
-        for(var i = 0; i < thisVars.length; i++) {
-            for(var j = 0; j < thatVars.length; j++) {
-                if(thisVars[i].variable === thatVars[j].variable && thisVars[i].degree === thatVars[j].degree) {
-                    matches += 1;
-                }
+    for(var i = 0; i < thisVars.length; i++) {
+        for(var j = 0; j < thatVars.length; j++) {
+            if(thisVars[i].variable === thatVars[j].variable && thisVars[i].degree === thatVars[j].degree) {
+                matches += 1;
             }
-        }
-
-        if(matches != thisVars.length) {
-            return false;
         }
     }
 
-    return true;
+    return (matches === thisVars.length);
 };
 
 Term.prototype.onlyHasVariable = function(variable) {
@@ -742,15 +611,12 @@ Term.prototype.toString = function() {
     for (var i = 0; i < this.coefficients.length; i++) {
         var coef = this.coefficients[i];
 
-        if (!(coef.abs().numer === 1 && coef.abs().denom === 1)) {
+        if (coef.abs().numer !== 1 || coef.abs().denom !== 1) {
             str += " * " + coef.toString();
         }
     }
 
-    for(var i = 0; i < this.variables.length; i++) {
-        str += this.variables[i].toString();
-    }
-
+    str = this.variables.reduce(function(p,c){return p.concat(c.toString())},str);
     str = (str.substring(0, 3) === " * " ? str.substring(3, str.length) : str);
     str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
 
@@ -758,14 +624,9 @@ Term.prototype.toString = function() {
 };
 
 Term.prototype.toTex = function(dict) {
-    if (dict === undefined) {
-        var dict = {};
-    }
-
-    if(!("multiplication" in dict)) {
-        dict.multiplication = "cdot";
-    }
-
+    var dict = (dict === undefined) ? {} : dict;
+    dict.multiplication = !("multiplication" in dict) ? "cdot" : dict.multiplication;
+    
     var op =  " \\" + dict.multiplication + " ";
 
     var str = "";
@@ -777,11 +638,7 @@ Term.prototype.toTex = function(dict) {
             str += op + coef.toTex();
         }
     }
-
-    for(var i = 0; i < this.variables.length; i++) {
-        str += this.variables[i].toTex();
-    }
-
+    str = this.variables.reduce(function(p,c){return p.concat(c.toTex())},str);
     str = (str.substring(0, op.length) === op ? str.substring(op.length, str.length) : str);
     str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
 

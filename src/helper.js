@@ -13,13 +13,7 @@ function lcm(x, y) {
 }
 
 function isInt(thing) {
-    if (typeof thing == "number") {
-        if (thing % 1 === 0) {
-            return true;
-        }
-    }
-
-    return false;
+    return (typeof thing == "number") && (thing % 1 === 0);
 }
 
 function round(decimal, places) {
@@ -33,13 +27,7 @@ Number.prototype.toTex = function() {
 };
 
 Array.prototype.toTex = function() {
-    var tex = [];
-
-    for (var i = 0; i < this.length; i++) {
-        tex.push(this[i].toTex());
-    }
-
-    return tex.join();
+    return this.map(function(e){return e.toTex()}).join();
 };
 
 GREEK_LETTERS = [
