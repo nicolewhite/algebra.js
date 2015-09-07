@@ -9,7 +9,7 @@ var Fraction = function(a, b) {
         this.numer = a;
         this.denom = b;
     } else {
-        throw "InvalidArgument";
+        throw "Invalid Argument ("+a.toString()+ ","+ b.toString() +"): Divisor and dividend must be of type Integer.";
     }
 };
 
@@ -57,7 +57,7 @@ Fraction.prototype.add = function(f, simplify) {
         a = f;
         b = 1;
     } else {
-        throw "InvalidArgument";
+        throw "Invalid Argument (" + f.toString() + "): Summand must be of type Fraction or Integer.";
     }
 
     var copy = this.copy();
@@ -90,7 +90,7 @@ Fraction.prototype.subtract = function(f, simplify) {
     } else if (isInt(f)) {
         return copy.add(new Fraction(-f, 1), simplify);
     } else {
-        throw "InvalidArgument";
+        throw "Invalid Argument (" + f.toString() + "): Subtrahend must be of type Fraction or Integer.";
     }
 };
 
@@ -109,7 +109,7 @@ Fraction.prototype.multiply = function(f, simplify) {
         a = 0;
         b = 1;
     } else {
-        throw "InvalidArgument";
+        throw "Invalid Argument (" + f.toString() + "): Multiplicand must be of type Fraction or Integer.";
     }
 
     var copy = this.copy();
@@ -134,7 +134,7 @@ Fraction.prototype.divide = function(f, simplify) {
     } else if (isInt(f)) {
         return copy.multiply(new Fraction(1, f), simplify);
     } else {
-        throw "InvalidArgument";
+        throw "Invalid Argument (" + f.toString() + "): Divisor must be of type Fraction or Integer.";
     }
 };
 

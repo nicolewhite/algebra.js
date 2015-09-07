@@ -7,7 +7,7 @@ var Complex = function(real, imaginary) {
         this.real = real;
         this.imaginary = imaginary;
     } else {
-        throw "InvalidArgument";
+        throw "Invalid Argument (" + real.toString() + ", " + imaginary.toString() + "): Real and imaginary parts must be of type Fraction.";
     }
 };
 
@@ -24,7 +24,7 @@ Complex.prototype.add = function(a) {
         copy.real = copy.real.add(a.real);
         copy.imaginary = copy.imaginary.add(a.imaginary);
     } else {
-        throw "InvalidArgument";
+        throw "Invalid Argument (" + a.toString() + "): Summand must be of type Complex, Fraction or Integer.";
     }
 
     return copy;
@@ -39,7 +39,7 @@ Complex.prototype.subtract = function(a) {
         copy.real = copy.real.subtract(a.real);
         copy.imaginary = copy.imaginary.subtract(a.imaginary);
     } else {
-        throw "InvalidArgument";
+        throw "Invalid Argument (" + a.toString() + "): Subtrahend must be of type Complex, Fraction or Integer.";
     }
 
     return copy;
@@ -63,7 +63,7 @@ Complex.prototype.multiply = function(a) {
         var real = a.multiply(-1).add(c);
         return new Complex(real, b);
     } else {
-        throw "InvalidArgument";
+        throw "Invalid Argument (" + a.toString() + "): Multiplicand must be of type Complex, Fraction or Integer.";
     }
 };
 
@@ -79,7 +79,7 @@ Complex.prototype.divide = function(a) {
         var denominator = a.multiply(conjugate).real;
         return numerator.divide(denominator);
     } else {
-        throw "InvalidArgument";
+        throw "Invalid Argument (" + a.toString() + "): Divisor must be of type Complex, Fraction or Integer.";
     }
 };
 

@@ -6,15 +6,15 @@ describe("An invalid fraction", function() {
     });
 
     it("should not initialize with decimals in the numerator", function() {
-        expect(function(){new Fraction(0.25, 1);}).toThrow("InvalidArgument");
+        expect(function(){new Fraction(0.25, 1);}).toThrow("Invalid Argument (0.25,1): Divisor and dividend must be of type Integer.");
     });
 
     it("should not initialize with decimals in the denominator", function() {
-        expect(function(){new Fraction(1, 0.25);}).toThrow("InvalidArgument");
+        expect(function(){new Fraction(1, 0.25);}).toThrow("Invalid Argument (1,0.25): Divisor and dividend must be of type Integer.");
     });
 
     it("should not initialize with decimals in both the numerator and denominator", function() {
-        expect(function(){new Fraction(0.75, 0.25);}).toThrow("InvalidArgument");
+        expect(function(){new Fraction(0.75, 0.25);}).toThrow("Invalid Argument (0.75,0.25): Divisor and dividend must be of type Integer.");
     });
 });
 
@@ -157,7 +157,7 @@ describe("Fraction addition", function() {
     });
 
     it("should not allow addition of floats", function() {
-        expect(function(){x.add(0.25);}).toThrow("InvalidArgument");
+        expect(function(){x.add(0.25);}).toThrow("Invalid Argument (0.25): Summand must be of type Fraction or Integer.");
     });
 
     it("should return a reduced version of the answer", function() {
@@ -192,7 +192,7 @@ describe("Fraction subtraction", function() {
     });
 
     it("should not allow subtraction of floats", function() {
-        expect(function(){x.subtract(0.25);}).toThrow("InvalidArgument");
+        expect(function(){x.subtract(0.25);}).toThrow("Invalid Argument (0.25): Subtrahend must be of type Fraction or Integer.");
     });
 
     it("should return a reduced version of the answer", function() {
@@ -227,7 +227,7 @@ describe("Fraction multiplication", function() {
     });
 
     it("should not allow multiplication of floats", function() {
-        expect(function(){x.multiply(0.25);}).toThrow("InvalidArgument");
+        expect(function(){x.multiply(0.25);}).toThrow("Invalid Argument (0.25): Multiplicand must be of type Fraction or Integer.");
     });
 
     it("should allow multiplication of zero", function() {
@@ -254,7 +254,7 @@ describe("Fraction division", function() {
     });
 
     it("should not allow division of floats", function() {
-        expect(function(){x.divide(0.25);}).toThrow("InvalidArgument");
+        expect(function(){x.divide(0.25);}).toThrow("Invalid Argument (0.25): Divisor must be of type Fraction or Integer.");
     });
 
     it("should not allow division by zero", function() {

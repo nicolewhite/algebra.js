@@ -27,7 +27,7 @@ describe("A linear equation with one variable", function() {
     });
 
     it("should throw an exception when solving for a variable that isn't there", function() {
-        expect(function(){eq.solveFor("y");}).toThrow("InvalidArgument");
+        expect(function(){eq.solveFor("y");}).toThrow("Invalid Argument (y): Variable does not exist in the equation.");
     });
 
     it("should get the right answer", function() {
@@ -58,7 +58,7 @@ describe("An equation with multiple variables", function() {
     });
 
     it("should throw an exception when solving for a variable that isn't there", function() {
-        expect(function(){eq.solveFor("y");}).toThrow("InvalidArgument");
+        expect(function(){eq.solveFor("y");}).toThrow("Invalid Argument (y): Variable does not exist in the equation.");
     });
 
     it("should get the right answer", function() {
@@ -180,15 +180,15 @@ describe("An invalid equation", function() {
     var x = new Expression("x");
 
     it("should throw an exception with a float on the lhs", function() {
-        expect(function(){new Equation(0.25, x);}).toThrow("InvalidArgument");
+        expect(function(){new Equation(0.25, x);}).toThrow("Invalid Argument (0.25): Left-hand side must be of type Expression.");
     });
 
     it("should throw an exception with a float on the rhs", function() {
-        expect(function(){new Equation(x, 0.25);}).toThrow("InvalidArgument");
+        expect(function(){new Equation(x, 0.25);}).toThrow("Invalid Argument (0.25): Right-hand side must be of type Expression, Fraction or Integer.");
     });
 
     it("should throw an exception if neither args are expressions", function() {
-        expect(function(){new Equation(1, 2);}).toThrow("InvalidArgument");
+        expect(function(){new Equation(1, 2);}).toThrow("Invalid Argument (1): Left-hand side must be of type Expression.");
     });
 });
 
