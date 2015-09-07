@@ -27,7 +27,7 @@ Number.prototype.toTex = function() {
 };
 
 Array.prototype.toTex = function() {
-    return this.map(function(e){return e.toTex()}).join();
+    return this.map(function(e){return e.toTex();}).join();
 };
 
 GREEK_LETTERS = [

@@ -24,14 +24,14 @@ var Expression = function(variable) {
 };
 
 Expression.prototype.constant = function() {
-    return this.constants.reduce(function(p,c){return p.add(c)},new Fraction(0, 1));
+    return this.constants.reduce(function(p,c){return p.add(c);},new Fraction(0, 1));
 };
 
 Expression.prototype.simplify = function() {
     var copy = this.copy();
 
     //simplify all terms
-    copy.terms = copy.terms.map(function(t){return t.simplify()});
+    copy.terms = copy.terms.map(function(t){return t.simplify();});
 
     copy._sort();
     copy._combineLikeTerms();
@@ -46,9 +46,9 @@ Expression.prototype.copy = function() {
     var copy = new Expression();
     
     //copy all constants
-    copy.constants = this.constants.map(function(c){return c.copy()});
+    copy.constants = this.constants.map(function(c){return c.copy();});
     //copy all terms
-    copy.terms = this.terms.map(function(t){return t.copy()});
+    copy.terms = this.terms.map(function(t){return t.copy();});
 
     return copy;
 };
@@ -150,7 +150,7 @@ Expression.prototype.divide = function(a, simplify) {
         }
 
         //divide every constant by a
-        copy.constants = copy.constants.map(function(c){return c.divide(a,simplify)});
+        copy.constants = copy.constants.map(function(c){return c.divide(a,simplify);});
 
         return copy;
     } else {
@@ -183,7 +183,7 @@ Expression.prototype.eval = function(values, simplify) {
     exp.constants = (simplify ? [this.constant()] : this.constants.slice());
 
     //add all evaluated terms of this to exp
-    exp = this.terms.reduce(function(p,c){return p.add(c.eval(values,simplify),simplify)},exp);
+    exp = this.terms.reduce(function(p,c){return p.add(c.eval(values,simplify),simplify);},exp);
 
     return exp;
 };
@@ -248,7 +248,7 @@ Expression.prototype.toTex = function(dict) {
 };
 
 Expression.prototype._removeTermsWithCoefficientZero = function() {
-    this.terms = this.terms.filter(function(t){return t.coefficient().reduce().numer !== 0;});;
+    this.terms = this.terms.filter(function(t){return t.coefficient().reduce().numer !== 0;});
     return this;
 };
 
@@ -460,8 +460,8 @@ Term.prototype.combineVars = function() {
 
 Term.prototype.copy = function() {
     var copy = new Term();
-    copy.coefficients = this.coefficients.map(function(c){return c.copy()});
-    copy.variables = this.variables.map(function(v){return v.copy()});
+    copy.coefficients = this.coefficients.map(function(c){return c.copy();});
+    copy.variables = this.variables.map(function(v){return v.copy();});
     return copy;
 };
 
@@ -510,7 +510,7 @@ Term.prototype.multiply = function(a, simplify) {
 Term.prototype.divide = function(a, simplify) {
     if(isInt(a) || a instanceof Fraction) {
         var thisTerm = this.copy();
-        thisTerm.coefficients = thisTerm.coefficients.map(function(c){return c.divide(a,simplify)});
+        thisTerm.coefficients = thisTerm.coefficients.map(function(c){return c.divide(a,simplify);});
         return thisTerm;
     } else {
         throw "InvalidArgument";
@@ -616,7 +616,7 @@ Term.prototype.toString = function() {
         }
     }
 
-    str = this.variables.reduce(function(p,c){return p.concat(c.toString())},str);
+    str = this.variables.reduce(function(p,c){return p.concat(c.toString());},str);
     str = (str.substring(0, 3) === " * " ? str.substring(3, str.length) : str);
     str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
 
@@ -638,7 +638,7 @@ Term.prototype.toTex = function(dict) {
             str += op + coef.toTex();
         }
     }
-    str = this.variables.reduce(function(p,c){return p.concat(c.toTex())},str);
+    str = this.variables.reduce(function(p,c){return p.concat(c.toTex());},str);
     str = (str.substring(0, op.length) === op ? str.substring(op.length, str.length) : str);
     str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
 
