@@ -31,8 +31,10 @@ This will create a `node_modules` directory in the current working directory.
 ## Run Tests
 
 ```
-$ make test
+$ npm test
 ```
+
+This will run the Jasmine tests, a lint check, and a code coverage check. Any errors from `npm test` should be addressed before making a pull request.
 
 ## Add Tests
 
@@ -47,6 +49,7 @@ If you're adding something completely new, it's probably best if you first [crea
 ### Bug Fixes
 
 If you're just fixing a bug or making a patch change, no need to create an issue; just jump straight to the pull request.
+If the bug you're fixing closes an open issue, be sure to include either [in a commit](https://help.github.com/articles/closing-issues-via-commit-messages/) or in the pull request description which issue is being fixed.
 
 ### Project Page
 
@@ -60,7 +63,8 @@ You can then edit the project page in `index.md`.
 
 ## Commit Your Changes
 
-Commit your changes with a descriptive commit message. Ideally, include an example of what you fixed or added. [This](https://github.com/nicolewhite/algebra.js/commit/3d9b1dbab5d984a270db536378f09519d5df5c8c) is a good example.
+Commit your changes with a descriptive commit message. Ideally, include an example of what you fixed or added.
+[This](https://github.com/nicolewhite/algebra.js/commit/3d9b1dbab5d984a270db536378f09519d5df5c8c) is a good example.
 
 ```
 $ git commit
@@ -81,4 +85,3 @@ Go to your fork on GitHub. You'll see a "Pull Request" button.
 ![pr](http://i.imgur.com/3QjkSMP.png)
 
 Write a description of what you did and submit!
-
