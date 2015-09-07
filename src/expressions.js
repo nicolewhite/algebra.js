@@ -70,19 +70,6 @@ Expression.prototype.add = function(a, simplify) {
     } else if (a instanceof Expression) {
         var keepTerms = a.copy().terms;
 
-        for (var i = 0; i < thisExp.terms.length; i++) {
-            var thisTerm = thisExp.terms[i];
-
-            for (var j = 0; j < keepTerms.length; j++) {
-                var thatTerm = keepTerms[j];
-
-                if (thisTerm.canBeCombinedWith(thatTerm) && simplify) {
-                    thisExp.terms[i] = thisTerm.add(thatTerm);
-                    keepTerms.splice(j, 1);
-                }
-            }
-        }
-
         thisExp.terms = thisExp.terms.concat(keepTerms);
         thisExp.constants = thisExp.constants.concat(a.constants);
         thisExp._sort();
@@ -94,19 +81,8 @@ Expression.prototype.add = function(a, simplify) {
 };
 
 Expression.prototype.subtract = function(a, simplify) {
-    simplify = (simplify === undefined ? true : simplify);
-    var thisExp = this.copy();
-    var negative;
-
-    if (typeof(a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
-        negative = new Expression(a).multiply(-1);
-    } else if (a instanceof Expression) {
-        negative = a.multiply(-1);
-    } else {
-        throw "InvalidArgument";
-    }
-
-    return thisExp.add(negative, simplify);
+    var negative = (a instanceof Expression) ? a.multiply(-1) : new Expression(a).multiply(-1);
+    return this.add(negative, simplify);
 };
 
 Expression.prototype.multiply = function(a, simplify) {
