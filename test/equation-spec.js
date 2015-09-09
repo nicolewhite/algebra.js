@@ -262,6 +262,19 @@ describe("Solving a cubic equation", function() {
         expect(answers.toString()).toEqual("1");
     });
 
+    it("works when there's one distinct real root - discriminant > 0", function() {
+        var a = new Expression("x").pow(3);
+        var b = new Expression("x").pow(2).multiply(-3);
+        var c = new Expression("x").multiply(3);
+        var d = -1;
+
+        var expr = a.add(b).add(c).add(d);
+
+        var eq = new Equation(expr, 15); // x^3 - 3x^2 + 3x - 1 = 0
+        var answers = eq.solveFor("x");
+        expect(answers.toString()).toEqual('2.823108086643085');
+    });
+
     it("works when there's two distinct real roots - discriminant = 0", function() {
         var expr = new Expression("x").pow(3);
         expr = expr.subtract(new Expression("x").multiply(3));

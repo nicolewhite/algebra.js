@@ -295,4 +295,11 @@ describe("Term printing to TeX", function() {
 
         expect(t.toTex({multiplication:"times"})).toEqual("\\frac{3}{4} \\times \\frac{2}{3}x");
     });
+
+    it("negative terms are converted to positive when printing", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+        var z = new Term(x).subtract(t).subtract(t).subtract(t);
+        expect(z.toTex()).toEqual("2x");
+    });
 });

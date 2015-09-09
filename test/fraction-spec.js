@@ -274,6 +274,10 @@ describe("Fraction equality", function() {
         var y = new Fraction(2, 3);
         expect(x.equalTo(y)).toBe(false);
     });
+
+    it("should be false when tested against a non-fraction type", function() {
+        expect(x.equalTo(2)).toBe(false);
+    });
 });
 
 describe("Fraction exponentiation", function() {

@@ -654,6 +654,14 @@ describe("Expression evaluation with unsimplified expressions", function() {
         var answer = exp.eval({x: sub}, false);
         expect(answer.toString()).toEqual("yy + 4y + 4y + 4 * 4");
     });
+
+    it("simplifies correctly when simplify is true for eval", function() {
+        var exp = new Expression("x").multiply("x", false); // xx
+        var sub = new Expression("y").add(4); // y + 4
+
+        var answer = exp.eval({x: sub}, true);
+        expect(answer.toString()).toEqual("y^2 + 8y + 16");
+    });
 });
 
 describe("Checking for cross products in expressions", function() {
