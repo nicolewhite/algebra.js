@@ -28,17 +28,17 @@ $ npm install
 
 This will create a `node_modules` directory in the current working directory.
 
+## Add Tests
+
+Tests are written in [Jasmine](http://jasmine.github.io/edge/introduction.html). The test files are located in the `test` directory. If your tests fit into one of the current test file categories, just go ahead and add them there. Otherwise, you can create a new test file. It has to end in `-spec.js`.
+
 ## Run Tests
 
 ```
 $ npm test
 ```
 
-This will run the Jasmine tests, a lint check, and a code coverage check. Any errors from `npm test` should be addressed before making a pull request.
-
-## Add Tests
-
-Tests are written in [Jasmine](http://jasmine.github.io/edge/introduction.html). The test files are located in the `test` directory. If your tests fit into one of the current test file categories, just go ahead and add them there. Otherwise, you can create a new test file. It has to end in `-spec.js`.
+This will run the Jasmine tests and a lint check. Any errors from `npm test` should be addressed before making a pull request.
 
 ## Contribute Code
 
