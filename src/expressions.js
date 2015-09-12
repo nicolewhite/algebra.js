@@ -634,13 +634,14 @@ Term.prototype.toTex = function(dict) {
     for (var i = 0; i < this.coefficients.length; i++) {
         var coef = this.coefficients[i];
 
-        if (!(coef.abs().numer === 1 && coef.abs().denom === 1)) {
+        if (coef.abs().numer !== 1 || coef.abs().denom !== 1) {
             str += op + coef.toTex();
         }
     }
     str = this.variables.reduce(function(p,c){return p.concat(c.toTex());},str);
     str = (str.substring(0, op.length) === op ? str.substring(op.length, str.length) : str);
     str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
+    str = (str.substring(0, 7) === "\\frac{-" ? "\\frac{" + str.substring(7, str.length) : str);
 
     return str;
 };

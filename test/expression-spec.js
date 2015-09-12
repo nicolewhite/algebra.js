@@ -471,6 +471,14 @@ describe("Expression printing to tex", function() {
 
         expect(exp.toTex({multiplication:"times"})).toEqual("\\frac{2}{3} \\times \\frac{3}{4}x");
     });
+
+    it("brings the negatives to the front of the term when there are fractions", function() {
+        var expr = new Expression("x").add("y"); // x + y
+        expr = expr.multiply(new Fraction(-9, 10)); // -9/10x - 9/10y
+        expr = expr.subtract(new Fraction(3, 4)); // -9/10x - 9/10y - 3/4
+
+        expect(expr.toTex()).toEqual("-\\frac{9}{10}x - \\frac{9}{10}y - \\frac{3}{4}");
+    });
 });
 
 describe("Expression evaluation with one variable - linear", function() {
