@@ -236,7 +236,7 @@ describe("Solving linear equations with no / infinite solution", function() {
         var x = new Expression("x");
         var eq = new Equation(x, x.add(2)); // x = x + 2
 
-        expect(function(){eq.solveFor("x");}).toThrow("NoSolution");
+        expect(function(){eq.solveFor("x");}).toThrow("No Solution");
     });
 
     it("should return 1 when there's infinite solutions", function() {
@@ -337,7 +337,7 @@ describe("Solving a cubic equation", function() {
         var x = new Expression("x").pow(3);
         var eq = new Equation(x, x.add(2)); // x^3 = x^3 + 2
 
-        expect(function(){eq.solveFor("x");}).toThrow("NoSolution");
+        expect(function(){eq.solveFor("x");}).toThrow("No Solution");
     });
 });
 

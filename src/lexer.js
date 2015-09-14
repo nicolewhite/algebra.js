@@ -65,7 +65,7 @@ Lexer.prototype.token = function() {
     } else if (Lexer._isdigit(c)) {
       return this._process_number();
     } else {
-      throw new Error('Token error at character ' + c + ' at position ' + this.pos);
+      throw new SyntaxError('Token error at character ' + c + ' at position ' + this.pos);
     }
   }
 };
@@ -104,7 +104,7 @@ Lexer.prototype._process_number = function() {
   //Check if the last read character is a decimal point.
   //If it is, ignore it and proceed
   if(this.buf.charAt(endpos-1) === '.'){
-    throw new Error("Decimal point without decimal digits at position " + (endpos-1));
+    throw new SyntaxError("Decimal point without decimal digits at position " + (endpos-1));
   } 
   //construct the NUMBER token
   var tok = {

@@ -109,7 +109,7 @@ Parser.prototype.parseEqn = function() {
     }else if(this.match('epsilon')){
         return ex1;
     }else{
-        throw 'Unbalanced Parenthesis';
+        throw new Error('Unbalanced Parenthesis');
     }
 };
 
@@ -122,7 +122,7 @@ Parser.prototype.parseExprRest = function(term) {
     if (this.match('plus')) {
         this.update();
         var plusterm = this.parseTerm();
-        if(term === undefined || plusterm === undefined) throw 'Missing operand';
+        if(term === undefined || plusterm === undefined) throw new Error('Missing operand');
         return this.parseExprRest(term.add(plusterm));
     } else if (this.match('minus')) {
         this.update();
@@ -196,7 +196,7 @@ Parser.prototype.parseFactor = function() {
             this.update();
             return expr;
         } else {
-            throw 'Unbalanced Parenthesis';
+            throw new Error('Unbalanced Parenthesis');
         }
     } else {
         return undefined;

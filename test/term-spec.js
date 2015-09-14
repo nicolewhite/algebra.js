@@ -22,15 +22,15 @@ describe("Terms", function() {
     });
 
     it("can't be initialized with an integer", function() {
-        expect(function(){new Term(5);}).toThrow("Invalid Argument (5): Term initializer must be of type Variable");
+        expect(function(){new Term(5);}).toThrow("Invalid Argument (5): Term initializer must be of type Variable.");
     });
 
     it("can't be initialized with a float", function() {
-        expect(function(){new Term(5.1);}).toThrow("Invalid Argument (5.1): Term initializer must be of type Variable");
+        expect(function(){new Term(5.1);}).toThrow("Invalid Argument (5.1): Term initializer must be of type Variable.");
     });
 
     it("can't be initialized with a string", function() {
-        expect(function(){new Term("x");}).toThrow("Invalid Argument (x): Term initializer must be of type Variable");
+        expect(function(){new Term("x");}).toThrow("Invalid Argument (x): Term initializer must be of type Variable.");
     });
 });
 

@@ -353,7 +353,7 @@ describe("Expression division", function() {
     });
 
     it("should throw an exception if dividing by zero", function() {
-        expect(function(){x.divide(0);}).toThrow("DivideByZero");
+        expect(function(){x.divide(0);}).toThrow("Divide By Zero");
     });
 
     it("should allow for unsimplified terms and constants", function() {

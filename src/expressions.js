@@ -19,7 +19,7 @@ var Expression = function(variable) {
     } else if(typeof(variable) === "undefined") {
         this.terms = [];
     }else{
-        throw "Invalid Argument (" + variable.toString() + "): Argument must be of type String, Integer, Fraction or Term.";
+        throw new TypeError("Invalid Argument (" + variable.toString() + "): Argument must be of type String, Integer, Fraction or Term.");
     }
 };
 
@@ -74,7 +74,7 @@ Expression.prototype.add = function(a, simplify) {
         thisExp.constants = thisExp.constants.concat(a.constants);
         thisExp._sort();
     } else {
-        throw "Invalid Argument (" + a.toString() + "): Summand must be of type String, Expression, Term, Fraction or Integer.";
+        throw new TypeError("Invalid Argument (" + a.toString() + "): Summand must be of type String, Expression, Term, Fraction or Integer.");
     }
 
     return (simplify ? thisExp.simplify() : thisExp);
@@ -140,7 +140,7 @@ Expression.prototype.multiply = function(a, simplify) {
         thisExp.terms = newTerms;
         thisExp._sort();
     } else {
-        throw "Invalid Argument (" + a.toString() + "): Multiplicand must be of type String, Expression, Term, Fraction or Integer.";
+        throw new TypeError("Invalid Argument (" + a.toString() + "): Multiplicand must be of type String, Expression, Term, Fraction or Integer.");
     }
 
     return (simplify ? thisExp.simplify() : thisExp);
@@ -152,7 +152,7 @@ Expression.prototype.divide = function(a, simplify) {
     if (a instanceof Fraction || isInt(a)) {
 
         if (a.valueOf() === 0) {
-            throw "DivideByZero";
+            throw new EvalError("Divide By Zero");
         }
 
         var copy = this.copy();
@@ -171,7 +171,7 @@ Expression.prototype.divide = function(a, simplify) {
 
         return copy;
     } else {
-        throw "Invalid Argument (" + a.toString() + "): Divisor must be of type String, Expression, Term, Fraction or Integer.";
+        throw new TypeError("Invalid Argument (" + a.toString() + "): Divisor must be of type String, Expression, Term, Fraction or Integer.");
     }
 };
 
@@ -193,7 +193,7 @@ Expression.prototype.pow = function(a, simplify) {
 
         return (simplify ? copy.simplify() : copy);
     } else {
-        throw "Invalid Argument (" + a.toString() + "): Exponent must be of type Expression or Integer.";
+        throw new TypeError("Invalid Argument (" + a.toString() + "): Exponent must be of type Expression or Integer.");
     }
 };
 
@@ -488,7 +488,7 @@ Term = function(variable) {
     } else if (typeof(variable) === "undefined") {
         this.variables = [];
     } else {
-        throw "Invalid Argument (" + variable.toString() + "): Term initializer must be of type Variable";
+        throw new TypeError("Invalid Argument (" + variable.toString() + "): Term initializer must be of type Variable.");
     }
 
     this.coefficients = [new Fraction(1, 1)];
@@ -559,7 +559,7 @@ Term.prototype.add = function(term) {
         copy.coefficients = [copy.coefficient().add(term.coefficient())];
         return copy;
     } else {
-        throw "Invalid Argument (" + term.toString() + "): Summand must be of type String, Expression, Term, Fraction or Integer.";
+        throw new TypeError("Invalid Argument (" + term.toString() + "): Summand must be of type String, Expression, Term, Fraction or Integer.");
     }
 };
 
@@ -569,7 +569,7 @@ Term.prototype.subtract = function(term) {
         copy.coefficients = [copy.coefficient().subtract(term.coefficient())];
         return copy;
     } else {
-        throw "Invalid Argument (" + term.toString() + "): Subtrahend must be of type String, Expression, Term, Fraction or Integer.";
+        throw new TypeError("Invalid Argument (" + term.toString() + "): Subtrahend must be of type String, Expression, Term, Fraction or Integer.");
     }
 };
 
@@ -594,7 +594,7 @@ Term.prototype.multiply = function(a, simplify) {
             thisTerm.coefficients.unshift(newCoef);
         }
     } else {
-        throw "Invalid Argument (" + a.toString() + "): Multiplicand must be of type String, Expression, Term, Fraction or Integer.";
+        throw new TypeError("Invalid Argument (" + a.toString() + "): Multiplicand must be of type String, Expression, Term, Fraction or Integer.");
     }
 
     return (simplify ? thisTerm.simplify() : thisTerm);
@@ -612,7 +612,7 @@ Term.prototype.divide = function(a, simplify) {
 
         return thisTerm;
     } else {
-        throw "Invalid Argument (" + a.toString() + "): Argument must be of type Fraction or Integer.";
+        throw new TypeError("Invalid Argument (" + a.toString() + "): Argument must be of type Fraction or Integer.");
     }
 };
 
@@ -640,7 +640,7 @@ Term.prototype.eval = function(values, simplify) {
             } else if(isInt(sub)) {
                 ev = Math.pow(sub, thisVar.degree);
             } else {
-                throw "Invalid Argument (" + sub + "): Can only evaluate Expressions or Fractions.";
+                throw new TypeError("Invalid Argument (" + sub + "): Can only evaluate Expressions or Fractions.");
             }
         } else {
             ev = new Expression(thisVar.variable).pow(thisVar.degree);
@@ -793,7 +793,7 @@ var Variable = function(variable) {
         this.variable = variable;
         this.degree = 1;
     } else {
-        throw "Invalid Argument (" + variable.toString() + "): Variable initalizer must be of type String.";
+        throw new TypeError("Invalid Argument (" + variable.toString() + "): Variable initalizer must be of type String.");
     }
 };
 

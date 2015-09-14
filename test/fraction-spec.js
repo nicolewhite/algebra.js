@@ -2,7 +2,7 @@ var Fraction = require('../src/fractions');
 
 describe("An invalid fraction", function() {
     it("should throw an exception with a denominator of 0", function() {
-        expect(function(){new Fraction(1, 0);}).toThrow("DivideByZero");
+        expect(function(){new Fraction(1, 0);}).toThrow("Divide By Zero");
     });
 
     it("should not initialize with decimals in the numerator", function() {
@@ -258,7 +258,7 @@ describe("Fraction division", function() {
     });
 
     it("should not allow division by zero", function() {
-        expect(function(){x.divide(0);}).toThrow("DivideByZero");
+        expect(function(){x.divide(0);}).toThrow("Divide By Zero");
     });
 });
 
