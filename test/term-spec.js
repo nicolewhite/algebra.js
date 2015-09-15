@@ -22,15 +22,15 @@ describe("Terms", function() {
     });
 
     it("can't be initialized with an integer", function() {
-        expect(function(){new Term(5);}).toThrow("InvalidArgument");
+        expect(function(){new Term(5);}).toThrow("Invalid Argument (5): Term initializer must be of type Variable.");
     });
 
     it("can't be initialized with a float", function() {
-        expect(function(){new Term(5.1);}).toThrow("InvalidArgument");
+        expect(function(){new Term(5.1);}).toThrow("Invalid Argument (5.1): Term initializer must be of type Variable.");
     });
 
     it("can't be initialized with a string", function() {
-        expect(function(){new Term("x");}).toThrow("InvalidArgument");
+        expect(function(){new Term("x");}).toThrow("Invalid Argument (x): Term initializer must be of type Variable.");
     });
 });
 
@@ -50,7 +50,7 @@ describe("Term addition", function() {
         var t1 = new Term(x);
         var t2 = new Term(y);
 
-        expect(function(){t1.add(t2);}).toThrow("InvalidArgument");
+        expect(function(){t1.add(t2);}).toThrow("Invalid Argument (y): Summand must be of type String, Expression, Term, Fraction or Integer.");
     });
 });
 
@@ -72,7 +72,7 @@ describe("Term subtraction", function() {
         var t1 = new Term(x);
         var t2 = new Term(y);
 
-        expect(function(){t1.subtract(t2);}).toThrow("InvalidArgument");
+        expect(function(){t1.subtract(t2);}).toThrow("Invalid Argument (y): Subtrahend must be of type String, Expression, Term, Fraction or Integer.");
     });
 });
 
@@ -133,7 +133,7 @@ describe("Term multiplication", function() {
         var x = new Variable("x");
         var t = new Term(x);
 
-        expect(function(){t.multiply(0.5);}).toThrow("InvalidArgument");
+        expect(function(){t.multiply(0.5);}).toThrow("Invalid Argument (0.5): Multiplicand must be of type String, Expression, Term, Fraction or Integer.");
     });
 
     it("allows unsimplified coefficients", function() {
@@ -178,7 +178,7 @@ describe("Term division", function() {
         var x = new Variable("x");
         var t = new Term(x);
 
-        expect(function(){t.divide(0.5);}).toThrow("InvalidArgument");
+        expect(function(){t.divide(0.5);}).toThrow("Invalid Argument (0.5): Argument must be of type Fraction or Integer.");
     });
 
     it("allows unsimplified terms", function() {

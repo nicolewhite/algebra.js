@@ -10,11 +10,11 @@ describe("Complex number initialization", function(){
     });
 
     it("should throw an error if initialized with an integer for the real part", function() {
-        expect(function(){new Complex(2, new Fraction(3, 1));}).toThrow("InvalidArgument");
+        expect(function(){new Complex(2, new Fraction(3, 1));}).toThrow("Invalid Argument (2, 3): Real and imaginary parts must be of type Fraction.");
     });
 
     it("should throw an error if initialized with an integer for the imaginary part", function() {
-        expect(function(){new Complex(new Fraction(3, 1),2);}).toThrow("InvalidArgument");
+        expect(function(){new Complex(new Fraction(3, 1),2);}).toThrow("Invalid Argument (3, 2): Real and imaginary parts must be of type Fraction.");
     });
 
 });
@@ -35,7 +35,7 @@ describe("Complex number addition", function() {
     });
 
     it("does not work with adding floats", function() {
-        expect(function(){c.add(0.1);}).toThrow("InvalidArgument");
+        expect(function(){c.add(0.1);}).toThrow("Invalid Argument (0.1): Summand must be of type Complex, Fraction or Integer.");
     });
 
     it("works with adding other complex numbers", function() {
@@ -62,7 +62,7 @@ describe("Complex number subtraction", function() {
     });
 
     it("does not work with subtracting floats", function() {
-        expect(function(){c.subtract(0.1);}).toThrow("InvalidArgument");
+        expect(function(){c.subtract(0.1);}).toThrow("Invalid Argument (0.1): Subtrahend must be of type Complex, Fraction or Integer.");
     });
 
     it("works with other complex numbers", function() {
@@ -89,7 +89,7 @@ describe("Complex number multiplication", function() {
     });
 
     it("does not work with multiplying floats", function() {
-        expect(function(){c.multiply(0.1);}).toThrow("InvalidArgument");
+        expect(function(){c.multiply(0.1);}).toThrow("Invalid Argument (0.1): Multiplicand must be of type Complex, Fraction or Integer.");
     });
 
     it("works with other complex numbers, positive sign", function() {
@@ -135,7 +135,7 @@ describe("Complex number division", function() {
     });
 
     it("does not work with floats", function() {
-        expect(function(){c.divide(0.1);}).toThrow("InvalidArgument");
+        expect(function(){c.divide(0.1);}).toThrow("Invalid Argument (0.1): Divisor must be of type Complex, Fraction or Integer.");
     });
 
     it("works with other complex numbers, positive sign", function() {
