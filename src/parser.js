@@ -148,7 +148,7 @@ Parser.prototype.parseTermRest = function(factor) {
     if (this.match('multiply')) {
         this.update();
         var mulfactor = this.parseFactor();
-        return this.parseTermRest(factor.multiply(mulfactor));
+        return factor.multiply(this.parseTermRest(mulfactor));
     } else if (this.match('power')) {
         this.update();
         var powfactor = this.parseFactor();

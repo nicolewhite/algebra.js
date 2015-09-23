@@ -174,4 +174,10 @@ describe("Order of operations", function() {
 
         expect(algebra.parse(input)).toEqual(exp);
     });
+    it("power has a higher operator precedence than multiplication ", function() {
+        var input = "a*x^2";
+        var exp = new Expression("a").multiply(new Expression("x").pow(2));
+
+        expect(algebra.parse(input).toString()).toEqual(exp.toString());
+    });
 });
