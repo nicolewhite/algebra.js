@@ -456,13 +456,8 @@ console.log(eq3.toString());
 If a linear equation only has one variable, solving for that variable will return a fraction object.
 
 ```js
-var x1 = new Expression("x");
-x1 = x1.add(new Fraction(2, 3));
-x1 = x1.divide(5);
-
-var x2 = new Expression("x");
-x2 = x2.divide(7);
-x2 = x2.add(4);
+var x1 = algebra.parse("1/5 * x + 2/15");
+var x2 = algebra.parse("1/7 * x + 4");
 
 var eq = new Equation(x1, x2);
 console.log(eq.toString());
@@ -482,13 +477,8 @@ x = 203/3
 If a linear equation has more than one variable, solving for a variable will return an expression.
 
 ```js
-var expr1 = new Expression("x");
-expr1 = expr1.add(5);
-expr1 = expr1.divide(4);
-
-var expr2 = new Expression("y");
-expr2 = expr2.subtract(new Fraction(4, 5));
-expr2 = expr2.multiply(3);
+var expr1 = algebra.parse("1/4 * x + 5/4");
+var expr2 = algebra.parse("3 * y - 12/5");
 
 var eq = new Equation(expr1, expr2);
 
@@ -520,8 +510,8 @@ Solving a quadratic equation with a discriminant that is greater than or equal t
 depending on if the roots are rational or irrational, respectively. Solving a quadratic equation with a discriminant that is less than 0 will return an empty array.
 
 ```js
-var n1 = new Expression("x").add(5);
-var n2 = new Expression("x").subtract(new Fraction(3, 4));
+var n1 = algebra.parse("x + 5");
+var n2 = algebra.parse("x - 3/4");
 
 var quad = new Equation(n1.multiply(n2), 0);
 
@@ -548,9 +538,9 @@ where $a \neq 0$.
 All cubic equations have at least one real root. Solving a cubic equation returns an array of its real roots as either Fraction objects or numbers.
 
 ```js
-var n1 = new Expression("x").add(2);
-var n2 = new Expression("x").add(3);
-var n3 = new Expression("x").add(4);
+var n1 = algebra.parse("x + 2");
+var n2 = algebra.parse("x + 3");
+var n3 = algebra.parse("x + 4");
 
 var cubic = new Equation(n1.multiply(n2).multiply(n3), 0);
 
