@@ -154,7 +154,7 @@ Expression.prototype.divide = function(a, simplify) {
 
         return copy;
     } else {
-        throw new TypeError("Invalid Argument (" + a.toString() + "): Divisor must be of type String, Expression, Term, Fraction or Integer.");
+        throw new TypeError("Invalid Argument (" + a.toString() + "): Divisor must be of type Fraction or Integer.");
     }
 };
 
@@ -174,7 +174,7 @@ Expression.prototype.pow = function(a, simplify) {
 
         return (simplify || simplify === undefined) ? copy.simplify() : copy;
     } else {
-        throw new TypeError("Invalid Argument (" + a.toString() + "): Exponent must be of type Expression or Integer.");
+        throw new TypeError("Invalid Argument (" + a.toString() + "): Exponent must be of type Integer.");
     }
 };
 

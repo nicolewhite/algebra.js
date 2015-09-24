@@ -349,7 +349,7 @@ describe("Expression division", function() {
     });
 
     it("should not allow dividing by another expression", function() {
-        expect(function(){x.divide(y);}).toThrow("Invalid Argument (y): Divisor must be of type String, Expression, Term, Fraction or Integer.");
+        expect(function(){x.divide(y);}).toThrow("Invalid Argument (y): Divisor must be of type Fraction or Integer.");
     });
 
     it("should throw an exception if dividing by zero", function() {
@@ -716,7 +716,7 @@ describe("Raising expressions to powers", function() {
     });
 
     it("should not allow floats", function() {
-        expect(function(){x.pow(0.25);}).toThrow("Invalid Argument (0.25): Exponent must be of type Expression or Integer.");
+        expect(function(){x.pow(0.25);}).toThrow("Invalid Argument (0.25): Exponent must be of type Integer.");
     });
 });
 
