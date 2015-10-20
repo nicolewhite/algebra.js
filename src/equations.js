@@ -120,8 +120,8 @@ Equation.prototype.solveFor = function(variable) {
                         a = a.valueOf();
                         b = b.valueOf();
 
-                        var root1 = (-b - squareRootDiscriminant) / 2*a;
-                        var root2 = (-b + squareRootDiscriminant) / 2*a;
+                        var root1 = (-b - squareRootDiscriminant) / (2*a);
+                        var root2 = (-b + squareRootDiscriminant) / (2*a);
                         return [root1, root2];
                     }
                 }

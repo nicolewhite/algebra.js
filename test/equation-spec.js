@@ -116,6 +116,19 @@ describe("Solving a quadratic equation", function() {
         expect(round(answers[1])).toEqual(round(expected[1]));
     });
 
+    it("should get the right answer when the answers are irrational and a > 1", function() {
+        var lhs = x.pow(2).multiply(2);
+        lhs = lhs.add(x.multiply(2));
+        lhs = lhs.subtract(5);
+
+        var eq = new Equation(lhs, 0); // 2x^2 + 2x - 5 = 0
+        var answers = eq.solveFor("x");
+        var expected = [-1/2 - Math.sqrt(11)/2, Math.sqrt(11)/2 -1/2];
+
+        expect(round(answers[0])).toEqual(round(expected[0]));
+        expect(round(answers[1])).toEqual(round(expected[1]));
+    });
+
     it("should return one reduced fraction if there's only one real root", function() {
         var ex = x.multiply(x).add(x.multiply(2));
         var eq = new Equation(ex, -1); // x^2 + 2x = -1
