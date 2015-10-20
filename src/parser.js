@@ -167,7 +167,7 @@ Parser.prototype.parseTermRest = function(factor) {
         if (mulfactor2 === undefined) {
             return factor;
         } else {
-            return this.parseTermRest(factor.multiply(mulfactor2));
+            return factor.multiply(this.parseTermRest(mulfactor2));
         }
     }
 };

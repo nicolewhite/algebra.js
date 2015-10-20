@@ -3,6 +3,7 @@
 var Parser = require("../src/parser.js"),
     algebra = require("../algebra.js"),
     Expression = algebra.Expression,
+    Fraction = algebra.Fraction,
     Equation = algebra.Equation;
 
 describe("Input validity", function() {
@@ -180,4 +181,13 @@ describe("Order of operations", function() {
 
         expect(algebra.parse(input).toString()).toEqual(exp.toString());
     });
+
+    it("power has a higher operator precedence than multiplication when the multiply operator is missing", function() {
+        var input = "(3/2)x^2";
+        var exp = new Expression("x").pow(2).multiply(new Fraction(3,2));
+
+        expect(algebra.parse(input).toString()).toEqual(exp.toString());
+    });
+
+
 });
