@@ -617,7 +617,7 @@ console.log(exp.toString());
 xy + 4
 ```
 
-### <a name="parse-expressions"></a> Parse Expressions
+### <a name="parse-equations"></a> Parse Equations
 
 ```js
 var eq = algebra.parse("x^2 + 4 * x + 4 = 0");
