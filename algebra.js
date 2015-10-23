@@ -10,9 +10,26 @@ var parse = function(input){
 	return result;
 };
 
+var toTex = function(input) {
+    if (input instanceof Fraction || input instanceof Expression || input instanceof Equation) {
+        return input.toTex();
+    } else if (input instanceof Array) {
+        return input.map(
+            function(e) {
+                if (e instanceof Fraction) {
+                    return e.toTex();
+                } else {
+                    return e.toString();
+                }
+            }
+        ).join();
+    }
+};
+
 module.exports = {
     Fraction: Fraction,
     Expression: Expression,
     Equation: Equation,
-    parse: parse
+    parse: parse,
+    toTex: toTex
 };

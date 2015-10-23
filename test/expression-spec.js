@@ -1,5 +1,6 @@
 var Fraction = require('../src/fractions');
 var Expression = require('../src/expressions').Expression;
+var algebra = require('../algebra');
 
 describe("An expression initialized with an alphabetic variable name", function() {
     var x = new Expression("x");
@@ -32,6 +33,10 @@ describe("An expression initialized with a greek letter variable name", function
 
     it("converts to string properly, even though it looks weird", function() {
         expect(lambda.toString()).toEqual("5lambda + 15");
+    });
+
+    it("works with algebra.toTex", function() {
+        expect(algebra.toTex(lambda)).toEqual("5\\lambda + 15");
     });
 });
 
@@ -478,6 +483,11 @@ describe("Expression printing to tex", function() {
         expr = expr.subtract(new Fraction(3, 4)); // -9/10x - 9/10y - 3/4
 
         expect(expr.toTex()).toEqual("-\\frac{9}{10}x - \\frac{9}{10}y - \\frac{3}{4}");
+    });
+
+    it("works with algebra.toTex", function() {
+        var x = new Expression("x").add(2);
+        expect(algebra.toTex(x)).toEqual("x + 2");
     });
 });
 

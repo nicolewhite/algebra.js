@@ -1,4 +1,5 @@
 var Fraction = require('../src/fractions');
+var algebra = require('../algebra');
 
 describe("An invalid fraction", function() {
     it("should throw an exception with a denominator of 0", function() {
@@ -34,6 +35,10 @@ describe("A valid, positive fraction", function() {
         expect(frac.toTex()).toEqual("\\frac{1}{2}");
     });
 
+    it("should print to tex properly with algebra.toTex", function() {
+        expect(algebra.toTex(frac)).toEqual("\\frac{1}{2}");
+    });
+
     it("should coerce to a number properly", function() {
         expect(frac.valueOf()).toEqual(0.5);
     });
@@ -53,6 +58,10 @@ describe("A valid fraction with a negative numerator", function() {
 
     it("should print to tex with the negative in the numerator", function() {
         expect(frac.toTex()).toEqual("\\frac{-1}{2}");
+    });
+
+    it("should print to tex with the negative in the numerator with algebra.toTex", function() {
+        expect(algebra.toTex(frac)).toEqual("\\frac{-1}{2}");
     });
 
     it("should coerce to a valueOf properly", function() {
@@ -76,6 +85,11 @@ describe("A valid fraction with a negative denominator", function() {
     it("should print to tex with a negative numerator", function() {
         var red = frac.reduce();
         expect(red.toTex()).toEqual("\\frac{-1}{2}");
+    });
+
+    it("should print to tex with a negative numerator with algebra.toTex", function() {
+        var red = frac.reduce();
+        expect(algebra.toTex(red)).toEqual("\\frac{-1}{2}");
     });
 
     it("should bring the negative up to the numerator when reduced", function() {
@@ -104,6 +118,10 @@ describe("Fractions with 1 in the denominator", function() {
     it("should print to tex with positive integers", function() {
         expect(frac.toTex()).toEqual("5");
     });
+
+    it("should print to tex with positive integers with algebra.toTex", function() {
+        expect(algebra.toTex(frac)).toEqual("5");
+    });
 });
 
 describe("A Fraction representing zero", function() {
@@ -121,6 +139,10 @@ describe("A Fraction representing zero", function() {
     it("should print to tex with zero", function() {
         expect(frac.toTex()).toEqual("0");
     });
+
+    it("should print to tex with zero with algebra.toTex", function() {
+        expect(algebra.toTex(frac)).toEqual("0");
+    });
 });
 
 describe("Fractions with -1 in the denominator", function() {
@@ -137,6 +159,10 @@ describe("Fractions with -1 in the denominator", function() {
 
     it("should print to tex with negative integers", function() {
         expect(frac.toTex()).toEqual("-5");
+    });
+
+    it("should print to tex with negative integers with algebra.toTex", function() {
+        expect(algebra.toTex(frac)).toEqual("-5");
     });
 });
 

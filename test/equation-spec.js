@@ -2,6 +2,7 @@ var Expression = require('../src/expressions').Expression;
 var Equation = require('../src/equations');
 var Fraction = require('../src/fractions');
 var round = require('../src/helper').round;
+var algebra = require('../algebra');
 
 
 describe("A linear equation with one variable", function() {
@@ -19,6 +20,10 @@ describe("A linear equation with one variable", function() {
 
     it("should print to Tex properly", function() {
         expect(eq.toTex()).toEqual("\\frac{1}{5}x + \\frac{4}{5} = x - \\frac{1}{6}");
+    });
+
+    it("should print to TeX properly with algebra.toTex", function() {
+        expect(algebra.toTex(eq)).toEqual("\\frac{1}{5}x + \\frac{4}{5} = x - \\frac{1}{6}");
     });
 
     it("should return a fraction when solving for the one variable", function() {
@@ -167,12 +172,20 @@ describe("Solving a quadratic equation", function() {
 describe("An array of answers resulting from solving an equation", function() {
     var x = new Expression("x");
 
-    it("should convert toTex properly", function() {
+    it("should convert toTex properly with rational solutions", function() {
         var ex = x.multiply(x).add(x).subtract(2);
         var eq = new Equation(ex, 0); // x^2 + x - 2 = 0
 
         var answers = eq.solveFor("x"); // -2, 1
-        expect(answers.toTex()).toEqual("-2,1");
+        expect(algebra.toTex(answers)).toEqual("-2,1");
+    });
+
+    it("should convert toTex properly with irrational solutions", function() {
+        var ex = x.multiply(x).multiply(5).add(x).subtract(2);
+        var eq = new Equation(ex, 0); // 5x^2 + x - 2 = 0
+
+        var answers = eq.solveFor("x");
+        expect(algebra.toTex(answers)).toEqual("-0.7403124237432849,0.5403124237432848");
     });
 });
 
@@ -336,7 +349,7 @@ describe("Solving a cubic equation", function() {
         cubic = new Equation(cubic, 0);
         var answers = cubic.solveFor("x");
 
-        expect(answers.toTex()).toEqual("-4,-3,-1");
+        expect(algebra.toTex(answers)).toEqual("-4,-3,-1");
     });
 
     it("works when there is one real root, discriminant < 0", function() {

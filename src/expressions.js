@@ -1,5 +1,6 @@
 var Fraction = require('./fractions');
 var isInt = require('./helper').isInt;
+var GREEK_LETTERS = require('./helper').GREEK_LETTERS;
 
 var Expression = function(variable) {
     this.constants = [];
@@ -573,7 +574,7 @@ Term.prototype.canBeCombinedWith = function(term) {
         return false;
     }
 
-    matches = 0;
+    var matches = 0;
 
     for(var i = 0; i < thisVars.length; i++) {
         for(var j = 0; j < thatVars.length; j++) {

@@ -22,15 +22,7 @@ function round(decimal, places) {
     return Math.round(parseFloat(decimal) * x) / x;
 }
 
-Number.prototype.toTex = function() {
-    return this.toString();
-};
-
-Array.prototype.toTex = function() {
-    return this.map(function(e){return e.toTex();}).join();
-};
-
-GREEK_LETTERS = [
+var GREEK_LETTERS = [
     'alpha',
     'beta',
     'gamma',
