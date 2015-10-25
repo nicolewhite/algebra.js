@@ -1,7 +1,8 @@
-gcd = require('../src/helper').gcd;
-lcm = require('../src/helper').lcm;
-isInt = require('../src/helper').isInt;
-round = require('../src/helper').round;
+var gcd = require('../src/helper').gcd;
+var lcm = require('../src/helper').lcm;
+var isInt = require('../src/helper').isInt;
+var round = require('../src/helper').round;
+var algebra = require('../algebra');
 
 describe("Greatest common divisor", function() {
     it("returns 1 when the arguments are 1 and 1", function() {
@@ -67,5 +68,22 @@ describe("round", function() {
 
     it("should equal itself when rounding to decimal places beyond what's necessary", function() {
         expect(round(5.55, 4)).toEqual(5.55);
+    });
+});
+
+describe("algebra.toTex", function() {
+    it("converts non-algebra.js objects to strings - string", function() {
+        var x = "hello";
+        expect(algebra.toTex(x)).toEqual(x.toString());
+    });
+
+    it("converts non-algebra.js objects to strings - number", function() {
+        var x = 3.5;
+        expect(algebra.toTex(x)).toEqual(x.toString());
+    });
+
+    it("converts non-algebra.js objects to strings - boolean", function() {
+        var x = true;
+        expect(algebra.toTex(x)).toEqual(x.toString());
     });
 });

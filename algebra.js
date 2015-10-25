@@ -23,6 +23,8 @@ var toTex = function(input) {
                 }
             }
         ).join();
+    } else {
+        return input.toString();
     }
 };
 
