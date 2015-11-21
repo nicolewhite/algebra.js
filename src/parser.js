@@ -129,7 +129,7 @@ Parser.prototype.parseExprRest = function(term) {
         var minusterm = this.parseTerm();
         //This case is entered when a negative number is parsed e.g. x = -4
         if (term === undefined) {
-            return minusterm.multiply(-1);
+            return this.parseExprRest(minusterm.multiply(-1));
         } else {
             return this.parseExprRest(term.subtract(minusterm));
         }

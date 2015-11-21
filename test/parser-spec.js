@@ -71,6 +71,12 @@ describe("Input validity", function() {
         var eqn = new Equation(new Expression("x"),new Expression(-4));
         expect(algebra.parse(input)).toEqual(eqn);
     });
+
+    it("should parse terms following negative terms correctly", function(){
+        var input = "-2*x+3y=4";
+        var eqn = new Equation(new Expression("x").multiply(-2).add(new Expression("y").multiply(3)),new Expression(4));
+        expect(algebra.parse(input)).toEqual(eqn);
+    });
 });
 
 describe("Operators", function() {
