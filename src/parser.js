@@ -176,8 +176,12 @@ Parser.prototype.parseTermRest = function(factor) {
  * Is used to convert expressions to fractions, as dividing by expressions is not possible
 **/
 Parser.prototype.convertToFraction = function(expression) {
-    var c = expression.constants[0];
-    return new Fraction(c.numer, c.denom);
+    if(expression.terms.length > 0){
+        throw new TypeError('Invalid Argument (' + expression.toString() + '): Divisor must be of type Integer or Fraction.');
+    }else{
+        var c = expression.constants[0];
+        return new Fraction(c.numer, c.denom);
+    }
 };
 
 Parser.prototype.parseFactor = function() {
