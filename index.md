@@ -70,7 +70,7 @@ x = 7/2
 
 ## <a name="usage-right-now"></a> Right Now
 
-You can follow along with the examples right now by executing the suggested keyboard shortcut for your browser and 
+You can follow along with the examples right now by executing the suggested keyboard shortcut for your browser and
 operating system. This will open the JavaScript Console in your browser.
 
 <table>
@@ -81,7 +81,7 @@ operating system. This will open the JavaScript Console in your browser.
             <th>Keyboard Shortcut</th>
         </tr>
     </thead>
-    
+
     <tbody>
         <tr>
             <td>OS X</td>
@@ -125,7 +125,7 @@ $ npm install algebra.js
 var algebra = require('algebra.js');
 ```
 
-# <a name="getting-started"></a> Getting Started 
+# <a name="getting-started"></a> Getting Started
 
 The main objects available are Fraction, Expression, and Equation.
 
@@ -135,9 +135,9 @@ var Expression = algebra.Expression;
 var Equation = algebra.Equation;
 ```
 
-## <a name="fractions"></a> Fractions 
+## <a name="fractions"></a> Fractions
 
-Add, subtract, multiply, and divide fractions by either integers or other fractions. Fractions are automatically 
+Add, subtract, multiply, and divide fractions by either integers or other fractions. Fractions are automatically
 reduced.
 
 ```js
@@ -165,9 +165,9 @@ console.log(frac.toString());
 -1/5
 ```
 
-## <a name="expressions"></a> Expressions 
+## <a name="expressions"></a> Expressions
 
-Initialize expressions with a variable name. 
+Initialize expressions with a variable name.
 
 ```js
 var x = new Expression("x");
@@ -341,7 +341,7 @@ y + 6
 
 ### <a name="expressions-simplification"></a> Simplification
 
-All expression operations accept a `simplify` argument that will yield an unsimplified expression when set to `false`. 
+All expression operations accept a `simplify` argument that will yield an unsimplified expression when set to `false`.
 You can then get a simplified expression with `Expression.simplify`.
 
 ```js
@@ -506,7 +506,7 @@ $$ax^2 + bx + c = 0$$
 where $a \neq 0$.
 
 A quadratic equation has at least one real root if its discriminant, $b^2 - 4ac$, is greater than or equal to 0.
-Solving a quadratic equation with a discriminant that is greater than or equal to 0 returns an array of its real roots as either Fraction objects or numbers, 
+Solving a quadratic equation with a discriminant that is greater than or equal to 0 returns an array of its real roots as either Fraction objects or numbers,
 depending on if the roots are rational or irrational, respectively. Solving a quadratic equation with a discriminant that is less than 0 will return an empty array.
 
 ```js
@@ -563,7 +563,7 @@ Coming soon.
 ### <a name="equations-anything-else"></a> Solve Anything Else
 
 Equations will only be solved if there is an [algebraic solution](https://en.wikipedia.org/wiki/Algebraic_solution) or if the variable being solved for can be isolated through arithmetic operations. Attempting to solve an equation that does not fit these criteria returns `undefined`.
- 
+
 ```js
 var expr = new Expression("x");
 expr = expr.multiply("x");
@@ -636,7 +636,7 @@ x = -2
 
 # <a name="latex"></a> LaTeX
 
-Make things pretty with LaTeX. All classes have a `.toTex()` method for rendering LaTeX. Combining this with
+Make things pretty with LaTeX. The `algebra` object has a `.toTex()` method for rendering LaTeX. Combining this with
  [KaTeX](https://github.com/Khan/KaTeX), for example, is easy.
 
 ## <a name="latex-example"></a> Example
@@ -653,10 +653,10 @@ var c = new Fraction(-21, 4);
 var expr = a.add(b).add(c);
 
 var quad = new Equation(expr, 0);
-katex.render(quad.toTex(), myEquation);
+katex.render(algebra.toTex(quad), myEquation);
 
 var answers = quad.solveFor("x");
-katex.render("x = " + answers.toTex(), mySolution);
+katex.render("x = " + algebra.toTex(answers), mySolution);
 </script>
 ```
 
@@ -671,10 +671,10 @@ var c = new Fraction(-21, 4);
 var expr = a.add(b).add(c);
 
 var quad = new Equation(expr, 0);
-katex.render(quad.toTex(), myEquation);
+katex.render(algebra.toTex(quad), myEquation);
 
 var answers = quad.solveFor("x");
-katex.render("x = " + answers.toTex(), mySolution);
+katex.render("x = " + algebra.toTex(answers), mySolution);
 </script>
 
 ## <a name="latex-greek-letters"></a> Greek Letters
@@ -691,8 +691,8 @@ Also supports Greek letters, obviously!
 var lambda = new Expression("lambda").add(3).divide(4);
 var Phi = new Expression("Phi").subtract(new Fraction(1, 5)).add(lambda);
 
-katex.render(lambda.toTex(), expr1);
-katex.render(Phi.toTex(), expr2);
+katex.render(algebra.toTex(lambda), expr1);
+katex.render(algebra.toTex(Phi), expr2);
 </script>
 ```
 
