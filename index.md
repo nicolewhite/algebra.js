@@ -109,10 +109,10 @@ operating system. This will open the JavaScript Console in your browser.
 
 ## <a name="usage-in-browser"></a> In the Browser
 
-Download <a href="javascripts/algebra.min.js" download><u>`algebra.min.js`</u></a>.
+Download <a href="javascripts/algebra-0.2.5.min.js" download><u>`algebra-0.2.5.min.js`</u></a>.
 
 ```html
-<script src="algebra.min.js"></script>
+<script src="algebra-0.2.5.min.js"></script>
 ```
 
 ## <a name="usage-in-node"></a> In Node
