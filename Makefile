@@ -1,17 +1,19 @@
 .PHONY: test
 
+PACKAGE_VERSION=$(shell npm view algebra.js version)
+
 test:
 	./node_modules/.bin/jasmine-node test
 
 bundle:
-	./node_modules/.bin/browserify algebra.js --standalone algebra > build/algebra.js
+	./node_modules/.bin/browserify algebra.js --standalone algebra > build/algebra-$(PACKAGE_VERSION).js
 
 minify: bundle
-	./node_modules/.bin/uglifyjs --mangle --beautify ascii_only=true,beautify=false build/algebra.js > build/algebra.min.js
+	./node_modules/.bin/uglifyjs --mangle --beautify ascii_only=true,beautify=false build/algebra-$(PACKAGE_VERSION).js > build/algebra-$(PACKAGE_VERSION).min.js
 
 sync: minify
 	git checkout gh-pages
-	cp build/algebra.min.js javascripts/algebra.min.js
+	cp build/*.min.js javascripts
 
 coveralls:
 	./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine-node --captureExceptions test && \
