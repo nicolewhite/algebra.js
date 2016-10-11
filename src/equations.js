@@ -147,7 +147,9 @@ Equation.prototype.solveFor = function(variable) {
             var D0 = b.pow(2).subtract(a.multiply(c).multiply(3));
 
             // Check for special cases when D = 0.
+            
             if (D.valueOf() === 0) {
+            
                 // If D = D0 = 0, there is one distinct real root, -b / 3a.
                 if (D0.valueOf() === 0) {
                     var root1 = b.multiply(-1).divide(a.multiply(3));
@@ -169,9 +171,58 @@ Equation.prototype.solveFor = function(variable) {
 
                 // Otherwise, if D != 0, reduce to a depressed cubic.
             } else {
+            
                 // TODO: Make this work with non-integer rationals.
                 // Reduce to a depressed cubic with the Tschirnhaus transformation, x = t - b/3a.
-                var t = new Expression("t").subtract(b.divide(a.multiply(3)));
+               
+               
+               var f = ((3*(c/a)) - ((Math.pow(b, 2))/(Math.pow(a, 2))))/3;
+               var g = (2*(Math.pow(b, 3))/(Math.pow(a, 3)));
+               g = g - (9*b*c/(Math.pow(a, 2)));
+               g = g + (27*d)/a;
+               g = g/27;
+               var h = (Math.pow(g, 2)/4) + (Math.pow(f, 3)/27);
+               
+               
+               
+               /*
+               	if f = g = h = 0 then roots are equal (has been already taken care of!)
+               	if h>0, only one real root
+               	if h<=0, all three roots are real
+               */
+               
+               if(h>0)
+               {
+               		
+               		var R = -(g/2) + Math.sqrt(h);
+               		var S = Math.cbrt(R);
+               		var T = -(g/2) - Math.sqrt(h);
+               		var U = Math.cbrt(T);
+               		var root1 = (S+U) - (b/(3*a));
+               		
+               		return [root1];	
+               }
+               else
+               {
+               		var i = Math.sqrt(((Math.pow(g, 2)/4) - h));
+               		var j = Math.cbrt(i);
+               		
+               		var k = Math.acos(-(g/(2*i)));
+               		var L = -j;
+               		var M = Math.cos(k/3);
+               		var N = Math.sqrt(3) * Math.sin(k/3);
+               		var P = -(b/(3*a));
+               		
+               		var root1 = 2*j*Math.cos(k/3) - (b/(3*a));
+               		var root2 = L*(M+N) + P;
+               		var root3 = L*(M-N) + P;
+               		
+               		return [root1, root2, root3];
+               
+               }
+               
+               
+               /* var t = new Expression("t").subtract(b.divide(a.multiply(3)));
                 var params = {};
                 params[variable] = t;
                 var depressed = newLhs.eval(params);
@@ -209,6 +260,7 @@ Equation.prototype.solveFor = function(variable) {
 
                     // If D > 0, there are three real roots.
                 } else {
+                
                     // Let q = √(-3ac / 9a^2), h = 2aq^3.
                     var q = Math.sqrt((-3 * a * c) / (9 * Math.pow(a, 2)));
                     var h = 2 * a * Math.pow(q, 3);
@@ -249,7 +301,7 @@ Equation.prototype.solveFor = function(variable) {
                     x3 = (newLhs.eval(params3).toString() === "0" ? new Fraction(Math.round(x3), 1) : x3);
 
                     return [x3, x2, x1];
-                }
+                }*/
             }
         }
     }
