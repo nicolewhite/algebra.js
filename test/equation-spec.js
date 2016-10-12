@@ -298,7 +298,7 @@ describe("Solving a cubic equation", function() {
 
         var eq = new Equation(expr, 15); // x^3 - 3x^2 + 3x - 1 = 0
         var answers = eq.solveFor("x");
-        expect(answers.toString()).toEqual('2.823108086643085');
+        expect(answers.toString()).toEqual('3.46621207433047');
     });
 
     it("works when there's two distinct real roots - discriminant = 0", function() {
@@ -320,10 +320,9 @@ describe("Solving a cubic equation", function() {
         var cubic = n1.multiply(n2).multiply(n3);
         cubic = new Equation(cubic, 0);
         var answers = cubic.solveFor("x");
+		
+		expect(answers.toString()).toEqual("-4,-3,-2");
 
-        expect(answers[0].equalTo(new Fraction(-4, 1))).toBe(true);
-        expect(answers[1].equalTo(new Fraction(-3, 1))).toBe(true);
-        expect(answers[2].equalTo(new Fraction(-2, 1))).toBe(true);
     });
 
     it("works when there are three real roots, discriminant > 0 and a != 1", function() {
@@ -335,9 +334,8 @@ describe("Solving a cubic equation", function() {
         cubic = new Equation(cubic, 0);
         var answers = cubic.solveFor("x");
 
-        expect(answers[0].equalTo(new Fraction(-4, 1))).toBe(true);
-        expect(answers[1].equalTo(new Fraction(-3, 1))).toBe(true);
-        expect(answers[2].equalTo(new Fraction(-1, 1))).toBe(true);
+		expect(answers.toString()).toEqual("-4,-3,-1");
+   
     });
 
     it("toTex works", function() {
@@ -361,7 +359,8 @@ describe("Solving a cubic equation", function() {
 
         var answers = cubic.solveFor("x");
 
-        expect(answers[0].equalTo(new Fraction(2, 1))).toBe(true);
+		expect(answers.toString()).toEqual("2");
+
     });
 
     it("returns 1 when there are infinite solutions", function() {

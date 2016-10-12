@@ -1,6 +1,7 @@
 .PHONY: test
 
 PACKAGE_VERSION=$(shell npm view algebra.js version)
+$(info version is $(PACKAGE_VERSION))
 
 test:
 	./node_modules/.bin/jasmine-node test

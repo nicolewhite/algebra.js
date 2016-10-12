@@ -147,7 +147,9 @@ Equation.prototype.solveFor = function(variable) {
             var D0 = b.pow(2).subtract(a.multiply(c).multiply(3));
 
             // Check for special cases when D = 0.
+            
             if (D.valueOf() === 0) {
+            
                 // If D = D0 = 0, there is one distinct real root, -b / 3a.
                 if (D0.valueOf() === 0) {
                     var root1 = b.multiply(-1).divide(a.multiply(3));
@@ -167,89 +169,108 @@ Equation.prototype.solveFor = function(variable) {
                     return [root1.reduce(), root2.reduce()];
                 }
 
-                // Otherwise, if D != 0, reduce to a depressed cubic.
+                // Otherwise, use a different method for solving.
             } else {
-                // TODO: Make this work with non-integer rationals.
-                // Reduce to a depressed cubic with the Tschirnhaus transformation, x = t - b/3a.
-                var t = new Expression("t").subtract(b.divide(a.multiply(3)));
-                var params = {};
-                params[variable] = t;
-                var depressed = newLhs.eval(params);
+               var f = ((3*(c/a)) - ((Math.pow(b, 2))/(Math.pow(a, 2))))/3;
+               var g = (2*(Math.pow(b, 3))/(Math.pow(a, 3)));
+               g = g - (9*b*c/(Math.pow(a, 2)));
+               g = g + (27*d)/a;
+               g = g/27;
+               var h = (Math.pow(g, 2)/4) + (Math.pow(f, 3)/27);
 
-                var depressedCoefs = depressed._cubicCoefficients();
-
-                var a = depressedCoefs.a.valueOf();
-                var b = depressedCoefs.b.valueOf();
-                var c = depressedCoefs.c.valueOf();
-                var d = depressedCoefs.d.valueOf();
-
-                // If D < 0, there is one real root.
-                if (D.valueOf() < 0) {
-                    // Solve with Cardano's formula.
-                    // Let p = -b / 3*a
-                    //     q = p^3 + ((b*c - 3*a*d) / (6*a^2))
-                    //     r = c / 3*a
-
-                    var p = -b / 3 * a;
-                    var q = Math.pow(p, 3) + ((b * c - 3 * a * d) / (6 * a^2));
-                    var r = c / 3 * a;
-
-                    // Let s = √(q^2 + (r - p^2)^3)
-                    // Then, x = (q + s)^(1/3) + (q - s)^(1/3) + p
-
-                    var s = Math.sqrt(Math.pow(q, 2) + Math.pow((r - Math.pow(p, 2)), 3));
-                    var x = Math.cbrt(q + s) + Math.cbrt(q - s) + p;
-
-                    x = (isInt(x) ? new Fraction(x, 1) : x);
-                    var params = {};
-                    params[variable] = Math.round(x);
-                    x = (newLhs.eval(params).toString() === "0" ? new Fraction(Math.round(x), 1) : x);
-
-                    return [x];
-
-                    // If D > 0, there are three real roots.
-                } else {
-                    // Let q = √(-3ac / 9a^2), h = 2aq^3.
-                    var q = Math.sqrt((-3 * a * c) / (9 * Math.pow(a, 2)));
-                    var h = 2 * a * Math.pow(q, 3);
-
-                    // theta = (1/3)arccos(-d/h)
-                    var theta = (1 / 3) * Math.acos(-d / h);
-
-                    // t1 = 2 * q * cos(theta)
-                    // t2 = 2 * q * cos((2pi / 3) - theta)
-                    // t3 = 2 * q * cos((2pi / 3) + theta)
-
-                    var t1 = 2 * q * Math.cos(theta);
-                    var t2 = 2 * q * Math.cos((2 * Math.PI / 3) - theta);
-                    var t3 = 2 * q * Math.cos((2 * Math.PI / 3) + theta);
-
-                    // x1 = t1 - b/3a;
-                    // x2 = t2 - b/3a;
-                    // x3 = t3 - b/3a;
-
-                    var x1 = t1 + t.constant().valueOf();
-                    var x2 = t2 + t.constant().valueOf();
-                    var x3 = t3 + t.constant().valueOf();
-
-                    x1 = (isInt(x1) ? new Fraction(x1, 1) : x1);
-                    x2 = (isInt(x2) ? new Fraction(x2, 1) : x2);
-                    x3 = (isInt(x3) ? new Fraction(x3, 1) : x3);
-
-                    var params1 = {};
-                    var params2 = {};
-                    var params3 = {};
-
-                    params1[variable] = Math.round(x1);
-                    params2[variable] = Math.round(x2);
-                    params3[variable] = Math.round(x3);
-
-                    x1 = (newLhs.eval(params1).toString() === "0" ? new Fraction(Math.round(x1), 1) : x1);
-                    x2 = (newLhs.eval(params2).toString() === "0" ? new Fraction(Math.round(x2), 1) : x2);
-                    x3 = (newLhs.eval(params3).toString() === "0" ? new Fraction(Math.round(x3), 1) : x3);
-
-                    return [x3, x2, x1];
-                }
+               /*
+               	if f = g = h = 0 then roots are equal (has been already taken care of!)
+               	if h>0, only one real root
+               	if h<=0, all three roots are real
+               */
+               
+               if(h>0)
+               {
+               		
+               		var R = -(g/2) + Math.sqrt(h);
+               		var S = Math.cbrt(R);
+               		var T = -(g/2) - Math.sqrt(h);
+               		var U = Math.cbrt(T);
+               		var root1 = (S+U) - (b/(3*a));
+               		/* Round off the roots if the difference between absolute value of ceil and number is < e-15*/
+               		if(root1<0)
+               		{
+               			var Croot1 = Math.floor(root1);
+               			if(root1 - Croot1 < 1e-15)
+               				root1 = Croot1;
+               		}
+               		else if(root1>0)
+               		{
+               			var Croot1 = Math.ceil(root1);
+               			if(Croot1 - root1 < 1e-15)
+               				root1 = Croot1;
+               		}
+               		
+               		return [root1];	
+               }
+               else
+               {
+               		var i = Math.sqrt(((Math.pow(g, 2)/4) - h));
+               		var j = Math.cbrt(i);
+               		
+               		var k = Math.acos(-(g/(2*i)));
+               		var L = -j;
+               		var M = Math.cos(k/3);
+               		var N = Math.sqrt(3) * Math.sin(k/3);
+               		var P = -(b/(3*a));
+               		
+               		var root1 = 2*j*Math.cos(k/3) - (b/(3*a));
+               		var root2 = L*(M+N) + P;
+               		var root3 = L*(M-N) + P;
+               		
+               		
+               		/* Round off the roots if the difference between absolute value of ceil and number is < e-15*/
+               		if(root1<0)
+               		{
+               			var Croot1 = Math.floor(root1);
+               			if(root1 - Croot1 < 1e-15)
+               				root1 = Croot1;
+               		}
+               		else if(root1>0)
+               		{
+               			var Croot1 = Math.ceil(root1);
+               			if(Croot1 - root1 < 1e-15)
+               				root1 = Croot1;
+               		}
+               		
+               		if(root2<0)
+               		{
+               			var Croot2 = Math.floor(root2);
+               			if(root2 - Croot2 < 1e-15)
+               				root2 = Croot2;
+               		}
+               		else if(root2>0)
+               		{
+               			var Croot2 = Math.ceil(root2);
+               			if(Croot2 - root2 < 1e-15)
+               				root2 = Croot2;
+               		}
+               		
+               		if(root1<0)
+               		{
+               			var Croot3 = Math.floor(root3);
+               			if(root3 - Croot3 < 1e-15)
+               				root3 = Croot3;
+               		}
+               		else if(root3>0)
+               		{
+               			var Croot3 = Math.ceil(root3);
+               			if(Croot3 - root3 < 1e-15)
+               				root3 = Croot3;
+               		}
+               		
+               		var roots = [root1, root2, root3];
+               		roots.sort(function(a, b){return a-b;});	// roots in ascending order
+               		
+               		return [roots[0], roots[1], roots[2]];
+               
+               }
+               
             }
         }
     }
