@@ -53,7 +53,7 @@ npm install algebra.js
 
 #### In the Browser
 
-Download [algebra.min.js](http://algebra.js.org/javascripts/algebra.min.js).
+Download [algebra.min.js](http://algebra.js.org/javascripts/algebra-0.2.6.min.js).
 
 ### Latest Development Release
 
