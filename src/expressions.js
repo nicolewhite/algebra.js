@@ -200,13 +200,13 @@ Expression.prototype.summation = function(variable, lower, upper, simplify) {
 	return newExpr;
 };
 
-Expression.prototype.toString = function() {
+Expression.prototype.toString = function(options) {
     var str = "";
 
     for (var i = 0; i < this.terms.length; i++) {
         var term = this.terms[i];
 
-        str += (term.coefficients[0].valueOf() < 0 ? " - " : " + ") + term.toString();
+        str += (term.coefficients[0].valueOf() < 0 ? " - " : " + ") + term.toString(options);
     }
 
     for (var i = 0; i < this.constants.length; i++) {
@@ -606,7 +606,8 @@ Term.prototype.sort = function() {
     return this;
 };
 
-Term.prototype.toString = function() {
+Term.prototype.toString = function(options) {
+    var implicit = options && options.implicit;
     var str = "";
 
     for (var i = 0; i < this.coefficients.length; i++) {
@@ -616,8 +617,13 @@ Term.prototype.toString = function() {
             str += " * " + coef.toString();
         }
     }
-
-    str = this.variables.reduce(function(p,c){return p.concat(c.toString());},str);
+    str = this.variables.reduce(function (p, c) {
+        if (implicit && !!p) {
+            var vStr = c.toString();
+            return !!vStr ? p + "*" + vStr : p;
+        } else
+            return p.concat(c.toString());
+    }, str);
     str = (str.substring(0, 3) === " * " ? str.substring(3, str.length) : str);
     str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
 
