@@ -399,3 +399,20 @@ describe("Equation evaluation", function() {
         expect(answer.toString()).toEqual("y + 4 = 2");
     });
 });
+
+describe("An equation toString should accept options", function() {
+    var a = new Expression("a");
+    var b = new Expression("b");
+    var c = new Expression("c");
+    var d = new Expression("d");
+
+    var eq = new Equation(a.multiply(b), c.multiply(d));
+
+    it("implicit should be disabled", function() {
+        expect(eq.toString()).toEqual("ab = cd");
+    });
+
+    it("implicit should be applied to both expressions", function() {
+        expect(eq.toString({implicit: true})).toEqual("a*b = c*d");
+    });
+});

@@ -403,7 +403,7 @@ describe("Expression printing to string", function() {
         expect(x.toString()).toEqual("x");
     });
 
-    it("should only print the constant if all the other terms have been canceled out", function() {
+    it("should only print the constant if all the other terms have been cancelled out", function() {
         var x = new Expression("x");
         var y = new Expression("y");
 
@@ -413,6 +413,16 @@ describe("Expression printing to string", function() {
         var answer = expr1.subtract(expr2); // x + y - 3 - (x + y) = -3
 
         expect(answer.toString()).toEqual("-3");
+    });
+
+    it("should allows you to pass in options", function() {
+        var x = new Expression("x");
+        var y = new Expression("y");
+        var z = new Expression("z");
+
+        x = x.multiply(y).subtract(z.multiply(x)).add(5); // x*y - z*y + 5
+
+        expect(x.toString({implicit: true})).toEqual("x*y - z*x + 5");
     });
 });
 
@@ -443,7 +453,7 @@ describe("Expression printing to tex", function() {
         expect(x.toTex()).toEqual("x");
     });
 
-    it("should only print the constant if all the other terms have been canceled out", function() {
+    it("should only print the constant if all the other terms have been cancelled out", function() {
         var x = new Expression("x");
         var y = new Expression("y");
 
@@ -603,7 +613,7 @@ describe("Expression evaluation with multiple variables - crossproducts", functi
     });
 });
 
-describe("Expression evaulation with other expressions", function() {
+describe("Expression evaluation with other expressions", function() {
     it("works with no coefficient", function() {
        var x = new Expression("x").add(2);   // x + 2
        var sub = new Expression("y").add(4); // y + 4

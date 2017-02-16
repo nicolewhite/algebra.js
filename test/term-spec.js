@@ -310,3 +310,44 @@ describe("Term printing to TeX", function() {
         expect(z.toTex()).toEqual("\\frac{9}{10}x");
     });
 });
+
+describe("Term printing to to string", function() {
+    it("implicit should be disabled by default", function() {
+        var x = new Variable("x");
+        var y = new Variable("y");
+        var t = new Term(x);
+
+        t = t.multiply(new Term(y)); // x*y
+
+        expect(t.toString()).toEqual("xy");
+    });
+
+    it("implicit should add * between variables", function() {
+        var x = new Variable("x");
+        var y = new Variable("y");
+        var t = new Term(x);
+
+        t = t.multiply(new Term(y)); // x*y
+
+        expect(t.toString({implicit: true})).toEqual("x*y");
+    });
+
+    it("implicit should add * between the coefficient and the variables", function() {
+        var x = new Variable("x");
+        var t = new Term(x);
+
+        t = t.multiply(3); // 3*x
+
+        expect(t.toString({implicit: true})).toEqual("3*x");
+    });
+
+    it("implicit should ignore a variable with degree 0", function() {
+        var x = new Variable("x");
+        x.degree = 0;
+        var t = new Term(x);
+
+        t = t.multiply(3).multiply(new Term(new Variable("y"))); // 3*(x^0)*y
+
+        expect(t.toString({implicit: true})).toEqual("3*y");
+    });
+});
