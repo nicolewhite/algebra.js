@@ -196,7 +196,7 @@ Expression.prototype.divide = function(a, simplify) {
 
         return num;
       } else {
-        throw new TypeError("Invalid Argument (" + a.toString() + "): Only monomial expressions can be divided.");
+        throw new TypeError("Invalid Argument ((" + num.toString() + ")/("+ denom.toString() + ")): Only monomial expressions can be divided.");
       }
     } else {
         throw new TypeError("Invalid Argument (" + a.toString() + "): Divisor must be of type Fraction or Integer.");
