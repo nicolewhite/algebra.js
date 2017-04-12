@@ -140,8 +140,25 @@ Fraction.prototype.pow = function(n, simplify) {
 
     var copy = this.copy();
 
-    copy.numer = Math.pow(copy.numer, n);
-    copy.denom = Math.pow(copy.denom, n);
+    var numer = Math.pow(copy.numer, n);
+    var denom = Math.pow(copy.denom, n);
+
+    for (i = 0; i < 10; i++) {
+      if (!isInt(numer) || !isInt(denom)) {
+        numer *= 10;
+        denom *= 10;
+      } else {
+        break;
+      }
+    }
+
+    if (!isInt(numer) || !isInt(denom)) {
+      numer = Math.round(numer);
+      denom = Math.round(denom);
+    }
+
+    copy.numer = numer;
+    copy.denom = denom;
 
     return (simplify ? copy.reduce() : copy);
 };
