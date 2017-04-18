@@ -1,6 +1,5 @@
 .idea
 node_modules
 _site
-build
 .DS_Store
 coverage
