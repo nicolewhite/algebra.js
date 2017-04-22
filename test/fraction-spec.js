@@ -333,6 +333,12 @@ describe("Fraction exponentiation", function() {
         expect(squareRootFrac.equalTo(new Fraction(1, 2))).toBe(true);
     });
 
+    it("should work with n < 0", function () {
+      answer = x.pow(-2);
+
+      expect(answer.equalTo(new Fraction(4, 1))).toBe(true);
+    });
+
     it("should return a reduced answer", function() {
         var frac = new Fraction(2, 4);    // 2/4
         var squareFrac = frac.pow(2); // 2^2/4^2 = 4/16 = 1/4
