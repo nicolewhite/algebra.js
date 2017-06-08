@@ -140,8 +140,17 @@ Fraction.prototype.pow = function(n, simplify) {
 
     var copy = this.copy();
 
-    copy.numer = Math.pow(copy.numer, n);
-    copy.denom = Math.pow(copy.denom, n);
+    if (n >= 0) {
+        copy.numer = Math.pow(copy.numer, n);
+        copy.denom = Math.pow(copy.denom, n);
+    } else if (n < 0) {
+        copy = copy.pow(Math.abs(n));
+
+        //Switch numerator and denominator
+        var tmp = copy.numer;
+        copy.numer = copy.denom;
+        copy.denom = tmp;
+    }
 
     return (simplify ? copy.reduce() : copy);
 };
