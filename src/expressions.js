@@ -45,7 +45,7 @@ Expression.prototype.simplify = function() {
 
 Expression.prototype.copy = function() {
     var copy = new Expression();
-    
+
     //copy all constants
     copy.constants = this.constants.map(function(c){return c.copy();});
     //copy all terms
@@ -154,6 +154,50 @@ Expression.prototype.divide = function(a, simplify) {
         copy.constants = copy.constants.map(function(c){return c.divide(a,simplify);});
 
         return copy;
+    } else if (a instanceof Expression) {
+      //Simplify both expressions
+      var num = this.copy().simplify();
+      var denom = a.copy().simplify();
+
+      //Total amount of terms and constants
+      var numTotal = num.terms.length + num.constants.length;
+      var denomTotal = denom.terms.length + denom.constants.length;
+
+      //Check if both terms are monomial
+      if (numTotal === 1 && denomTotal === 1) {
+        //Devide coefficients
+        var numCoef = num.terms[0].coefficients[0];
+        var denomCoef = denom.terms[0].coefficients[0];
+
+        //The expressions have just been simplified - only one coefficient per term
+        num.terms[0].coefficients[0] = numCoef.divide(denomCoef, simplify);
+        denom.terms[0].coefficients[0] = new Fraction(1, 1);
+
+        //Cancel variables
+        for (var i = 0; i < num.terms[0].variables.length; i++) {
+          var numVar = num.terms[0].variables[i];
+          for (var j = 0; j < denom.terms[0].variables.length; j++) {
+            var denomVar = denom.terms[0].variables[j];
+            //Check for equal variables
+            if (numVar.variable === denomVar.variable) {
+              //Use the rule for division of powers
+              num.terms[0].variables[i].degree = numVar.degree - denomVar.degree;
+              denom.terms[0].variables[j].degree = 0;
+            }
+          }
+        }
+
+        //Invers all degrees of remaining variables
+        for (var i = 0; i < denom.terms[0].variables.length; i++) {
+          denom.terms[0].variables[i].degree *= -1;
+        }
+        //Multiply the inversed variables to the numenator
+        num = num.multiply(denom, simplify);
+
+        return num;
+      } else {
+        throw new TypeError("Invalid Argument ((" + num.toString() + ")/("+ denom.toString() + ")): Only monomial expressions can be divided.");
+      }
     } else {
         throw new TypeError("Invalid Argument (" + a.toString() + "): Divisor must be of type Fraction or Integer.");
     }
@@ -633,7 +677,7 @@ Term.prototype.toString = function(options) {
 Term.prototype.toTex = function(dict) {
     var dict = (dict === undefined) ? {} : dict;
     dict.multiplication = !("multiplication" in dict) ? "cdot" : dict.multiplication;
-    
+
     var op =  " \\" + dict.multiplication + " ";
 
     var str = "";

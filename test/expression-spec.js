@@ -353,8 +353,20 @@ describe("Expression division", function() {
         expect(answer.toString()).toEqual("1/5x");
     });
 
-    it("should not allow dividing by another expression", function() {
-        expect(function(){x.divide(y);}).toThrow("Invalid Argument (y): Divisor must be of type Fraction or Integer.");
+    it("should allow dividing monomial expressions", function() {
+        expect(x.divide(y).toString()).toEqual("xy^-1");
+    });
+
+    it("should not allow division of a multinominal denomenator", function() {
+      var multi = new Expression("x").add(3);
+
+      expect(function(){x.divide(multi);}).toThrow("Invalid Argument ((x)/(x + 3)): Only monomial expressions can be divided.");
+    });
+
+    it("should not allow division of a multinominal numenator", function() {
+      var multi = new Expression("x").add(3);
+
+      expect(function(){multi.divide(x);}).toThrow("Invalid Argument ((x + 3)/(x)): Only monomial expressions can be divided.");
     });
 
     it("should throw an exception if dividing by zero", function() {
