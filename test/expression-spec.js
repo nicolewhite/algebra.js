@@ -859,3 +859,11 @@ describe("Expression summation", function() {
         expect(answer.toString()).toEqual("4y + 30");
     });
 });
+
+describe("Differentiation of expression", function() {
+  var exp = new Expression("x").pow(2);
+
+  var answer = exp.diff("x");
+
+  expect(answer.toString()).toEqual("2x");
+});
