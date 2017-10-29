@@ -859,3 +859,45 @@ describe("Expression summation", function() {
         expect(answer.toString()).toEqual("4y + 30");
     });
 });
+
+describe("Differentiation of expression", function() {
+    it("should use power rule", function () {
+        var exp = new Expression("x").pow(2);
+
+        var answer = exp.diff("x");
+
+        expect(answer.toString()).toEqual("2x");
+    });
+
+    it("should turn a single power variable of the chosen variable into 1", function () {
+        var exp = algebra.parse("x+x^2");
+
+        var answer = exp.diff("x");
+
+        expect(answer.toString()).toEqual("2x + 1");
+    });
+
+    it("should ignore other variables", function () {
+        var exp = algebra.parse("y+x^2");
+
+        var answer = exp.diff("x");
+
+        expect(answer.toString()).toEqual("2x + y");
+    });
+
+    it("should work for other varibles", function () {
+        var exp = algebra.parse("y+x^2");
+
+        var answer = exp.diff("y");
+
+        expect(answer.toString()).toEqual("x^2 + 1");
+    });
+
+    it("should work for products of main and other variables", function () {
+        var exp = algebra.parse("y*x");
+
+        var answer = exp.diff("x");
+
+        expect(answer.toString()).toEqual("y");
+    });
+});

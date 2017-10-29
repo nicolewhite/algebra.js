@@ -244,6 +244,32 @@ Expression.prototype.summation = function(variable, lower, upper, simplify) {
 	return newExpr;
 };
 
+Expression.prototype.diff = function(variable) {
+    var expr = this.copy();
+    expr.constants = [];
+    epxr = expr.simplify();
+
+    for (var i = 0; i < expr.terms.length; i++) {
+        var thisTerm = expr.terms[i];
+        var termIncludesVar = false;
+        for (var j = 0; j < thisTerm.variables.length; j++) {
+            var thisVar = thisTerm.variables[j];
+            if (thisVar.variable === variable) {
+                thisTerm.coefficients.push(new Fraction(thisVar.degree, 1));
+                thisVar.degree--;
+                if (thisVar.degree === 0 && thisTerm.variables.length === 1) {
+                    expr.constants.push(new Fraction(1, 1));
+                    expr.terms.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    expr = expr.simplify();
+
+    return expr;
+}
+
 Expression.prototype.toString = function(options) {
     var str = "";
 
