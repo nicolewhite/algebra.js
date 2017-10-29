@@ -255,24 +255,17 @@ Expression.prototype.diff = function(variable) {
         for (var j = 0; j < thisTerm.variables.length; j++) {
             var thisVar = thisTerm.variables[j];
             if (thisVar.variable === variable) {
-              thisTerm.coefficients.push(new Fraction(thisVar.degree, 1));
-              thisVar.degree--;
-              if (thisVar.degree !== 0) {
-                termIncludesVar = true;
-              }
+                thisTerm.coefficients.push(new Fraction(thisVar.degree, 1));
+                thisVar.degree--;
+                if (thisVar.degree === 0 && thisTerm.variables.length === 1) {
+                    expr.constants.push(new Fraction(1, 1));
+                    expr.terms.splice(i, 1);
+                }
             }
-      }
-      if (!termIncludesVar) {
-        thisTerm.coefficients = [new Fraction (0,1)];
-      }
+        }
     }
 
     expr = expr.simplify();
-
-    /*console.log(expr);
-    console.log(expr.terms[1].variables);
-    console.log(expr.terms[1].coefficients);
-    console.log(expr.toString());*/
 
     return expr;
 }
