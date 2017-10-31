@@ -901,3 +901,45 @@ describe("Differentiation of expression", function() {
         expect(answer.toString()).toEqual("y");
     });
 });
+
+describe("integration of expression", function () {
+    it("should integrate using power rule", function () {
+        var exp = new Expression("x").multiply(2);
+
+        var answer = exp.int("x");
+
+        expect(answer.toString()).toEqual("x^2");
+    });
+
+    it("should work with other variables", function () {
+        var exp = new Expression("x").multiply(2).add("y");
+
+        var answer = exp.int("x");
+
+        expect(answer.toString()).toEqual("x^2 + yx");
+    });
+
+    it("should work with constants", function () {
+        var exp = new Expression("x").multiply(2).add(5);
+
+        var answer = exp.int("x");
+
+        expect(answer.toString()).toEqual("x^2 + 5x");
+    });
+
+    it("should work for other variables", function () {
+        var exp = new Expression("y").multiply(2);
+
+        var answer = exp.int("y");
+
+        expect(answer.toString()).toEqual("y^2");
+    });
+
+    it("should add constant term", function () {
+        var exp = new Expression("x").multiply(2).add("y");
+
+        var answer = exp.int("x", true);
+
+        expect(answer.toString()).toEqual("x^2 + yx + c");
+    });
+});
