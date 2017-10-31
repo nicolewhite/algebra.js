@@ -244,6 +244,62 @@ Expression.prototype.summation = function(variable, lower, upper, simplify) {
 	return newExpr;
 };
 
+Expression.prototype.diff = function(variable) {
+    var expr = this.copy();
+    expr.constants = [];
+    epxr = expr.simplify();
+
+    for (var i = 0; i < expr.terms.length; i++) {
+        var thisTerm = expr.terms[i];
+        for (var j = 0; j < thisTerm.variables.length; j++) {
+            var thisVar = thisTerm.variables[j];
+            if (thisVar.variable === variable) {
+                thisTerm.coefficients.push(new Fraction(thisVar.degree, 1));
+                thisVar.degree--;
+                if (thisVar.degree === 0 && thisTerm.variables.length === 1) {
+                    expr.constants.push(new Fraction(1, 1));
+                    expr.terms.splice(i, 1);
+                }
+            }
+        }
+    }
+
+    expr = expr.simplify();
+
+    return expr;
+}
+
+Expression.prototype.int = function(variable, addConstant = false) {
+    variable = new Variable(variable);
+    var expr = this.copy();
+    expr = expr.simplify();
+
+    for (var i = 0; i < expr.terms.length; i++) {
+        expr.terms[i] = expr.terms[i].multiply(new Term(variable));
+        for (var j = 0; j < expr.terms[i].variables.length; j++) {
+            var thisVar = expr.terms[i].variables[j];
+            if (thisVar.variable === variable.variable) {
+                expr.terms[i] = expr.terms[i].multiply(new Fraction(1, thisVar.degree));
+            }
+        }
+    }
+
+    for (var i = 0; i < expr.constants.length; i++) {
+        var thisConstant = expr.constants[i];
+        expr.terms.push(new Term(variable).multiply(thisConstant));
+    }
+
+    if (addConstant) {
+        expr.terms.push(new Term(new Variable("c")));
+    }
+
+    expr.constants = [];
+
+    expr = expr.simplify();
+
+    return expr;
+}
+
 Expression.prototype.toString = function(options) {
     var str = "";
 
