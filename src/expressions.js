@@ -3,7 +3,7 @@ var isInt = require('./helper').isInt;
 var GREEK_LETTERS = require('./helper').GREEK_LETTERS;
 
 var ExpressionError = function ExpressionError (variable) {
-  let error;
+  var error;
   error = new TypeError();
 
   error.message = "Invalid Argument (" + variable.toString() + "): Argument must be of type String, Integer, Fraction or Term.";
