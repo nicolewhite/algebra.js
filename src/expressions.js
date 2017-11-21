@@ -2,6 +2,16 @@ var Fraction = require('./fractions');
 var isInt = require('./helper').isInt;
 var GREEK_LETTERS = require('./helper').GREEK_LETTERS;
 
+var ExpressionError = function ExpressionError (variable) {
+  var error;
+  error = new TypeError();
+
+  error.message = "Invalid Argument (" + variable.toString() + "): Argument must be of type String, Integer, Fraction or Term.";
+  error.name = 'ExpressionError';
+
+  return error;
+};
+
 var Expression = function(variable) {
     this.constants = [];
 
@@ -20,7 +30,7 @@ var Expression = function(variable) {
     } else if(typeof(variable) === "undefined") {
         this.terms = [];
     }else{
-        throw new TypeError("Invalid Argument (" + variable.toString() + "): Argument must be of type String, Integer, Fraction or Term.");
+        throw new ExpressionError(variable);
     }
 };
 

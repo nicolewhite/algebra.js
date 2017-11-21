@@ -3,3 +3,4 @@ node_modules
 _site
 .DS_Store
 coverage
+package-lock.json
