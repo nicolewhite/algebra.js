@@ -342,7 +342,7 @@ Expression.prototype._moveTermsWithDegreeZeroToConstants = function() {
     for (var i = 0; i < this.terms.length; i++) {
         var thisTerm = this.terms[i];
 
-        if (thisTerm.variables.length === 0) {
+        if (thisTerm.maxDegree() == 0) {
             constant = constant.add(thisTerm.coefficient());
         } else {
             keepTerms.push(thisTerm);
@@ -416,11 +416,11 @@ Expression.prototype._noCrossProducts = function() {
 };
 
 Expression.prototype._maxDegree = function() {
-    return this.terms.reduce(function(p,c){return Math.max(p,c.maxDegree());},1);
+    return this.terms.reduce(function(p,c){return Math.max(p,c.maxDegree());},0);
 };
 
 Expression.prototype._maxDegreeOfVariable = function(variable) {
-    return this.terms.reduce(function(p,c){return Math.max(p,c.maxDegreeOfVariable(variable));},1);
+    return this.terms.reduce(function(p,c){return Math.max(p,c.maxDegreeOfVariable(variable));},0);
 };
 
 Expression.prototype._quadraticCoefficients = function() {
@@ -603,11 +603,11 @@ Term.prototype.hasVariable = function(variable) {
 };
 
 Term.prototype.maxDegree = function() {
-    return this.variables.reduce(function(p,c){return Math.max(p,c.degree);},1);
+    return this.variables.reduce(function(p,c){return Math.max(p,c.degree);},0);
 };
 
 Term.prototype.maxDegreeOfVariable = function(variable) {
-    return this.variables.reduce(function(p,c){return (c.variable === variable) ? Math.max(p,c.degree) : p;},1);
+    return this.variables.reduce(function(p,c){return (c.variable === variable) ? Math.max(p,c.degree) : p;},0);
 };
 
 Term.prototype.canBeCombinedWith = function(term) {
