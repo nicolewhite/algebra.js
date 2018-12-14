@@ -1,5 +1,6 @@
 var Fraction = require('./src/fractions');
 var Expression = require('./src/expressions').Expression;
+var Rational = require('./src/expressions').Rational;
 var Equation = require('./src/equations');
 var Parser = require('./src/parser');
 
@@ -30,6 +31,7 @@ var toTex = function(input) {
 
 module.exports = {
     Fraction: Fraction,
+    Rational: Rational,
     Expression: Expression,
     Equation: Equation,
     parse: parse,

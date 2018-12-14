@@ -91,7 +91,7 @@ describe("An equation with multiple variables", function() {
 describe("Solving a quadratic equation", function() {
     var x = new Expression("x");
 
-    it("should return two reduced fractions if the equation has two real roots that are rational", function() {
+    it("should return two reduced fractions if the equation has two real roots that are Fraction", function() {
         var ex = x.multiply(x).add(x).subtract(2);
         var eq = new Equation(ex, 0); // x^2 + x - 2 = 0
 
@@ -101,7 +101,7 @@ describe("Solving a quadratic equation", function() {
         expect(answers[1].equalTo(new Fraction(1, 1))).toBe(true);
     });
 
-    it("should return two reduced fractions if the equation has two real roots that are rational fractions", function() {
+    it("should return two reduced fractions if the equation has two real roots that are Fraction fractions", function() {
         var ex = x.multiply(x).multiply(2).add(x);
         var eq = new Equation(ex, 0);
         var answers = eq.solveFor("x");
@@ -110,7 +110,7 @@ describe("Solving a quadratic equation", function() {
         expect(answers[1].equalTo(new Fraction(0, 1))).toBe(true);
     });
 
-    it("should return two numbers if the equation has two real roots that are irrational", function() {
+    it("should return two numbers if the equation has two real roots that are irFraction", function() {
         var ex = x.multiply(x).add(x.multiply(4)).add(2);
         var eq = new Equation(ex, 0); // x^2 + 4x + 2 = 0
 
@@ -121,7 +121,7 @@ describe("Solving a quadratic equation", function() {
         expect(round(answers[1])).toEqual(round(expected[1]));
     });
 
-    it("should get the right answer when the answers are irrational and a > 1", function() {
+    it("should get the right answer when the answers are irFraction and a > 1", function() {
         var lhs = x.pow(2).multiply(2);
         lhs = lhs.add(x.multiply(2));
         lhs = lhs.subtract(5);
@@ -172,7 +172,7 @@ describe("Solving a quadratic equation", function() {
 describe("An array of answers resulting from solving an equation", function() {
     var x = new Expression("x");
 
-    it("should convert toTex properly with rational solutions", function() {
+    it("should convert toTex properly with Fraction solutions", function() {
         var ex = x.multiply(x).add(x).subtract(2);
         var eq = new Equation(ex, 0); // x^2 + x - 2 = 0
 
@@ -180,7 +180,7 @@ describe("An array of answers resulting from solving an equation", function() {
         expect(algebra.toTex(answers)).toEqual("-2,1");
     });
 
-    it("should convert toTex properly with irrational solutions", function() {
+    it("should convert toTex properly with irFraction solutions", function() {
         var ex = x.multiply(x).multiply(5).add(x).subtract(2);
         var eq = new Equation(ex, 0); // 5x^2 + x - 2 = 0
 

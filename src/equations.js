@@ -108,13 +108,13 @@ Equation.prototype.solveFor = function(variable) {
                 } else {
                     var squareRootDiscriminant;
 
-                    // If the answers will be rational, return reduced Fraction objects.
-                    if (discriminant._squareRootIsRational()) {
+                    // If the answers will be Fraction, return reduced Fraction objects.
+                    if (discriminant._squareRootIsFraction()) {
                         squareRootDiscriminant = discriminant.pow(0.5);
                         var root1 = b.multiply(-1).subtract(squareRootDiscriminant).divide(a.multiply(2));
                         var root2 = b.multiply(-1).add(squareRootDiscriminant).divide(a.multiply(2));
                         return [root1.reduce(), root2.reduce()];
-                        // If the answers will be irrational, return numbers.
+                        // If the answers will be irFraction, return numbers.
                     } else {
                         squareRootDiscriminant = Math.sqrt(discriminant.valueOf());
                         a = a.valueOf();
