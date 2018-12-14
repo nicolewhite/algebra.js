@@ -13,6 +13,9 @@ var Expression = function (variable) {
         var f = new Fraction(variable, 1)
         var t = new Term(f);
         this.terms = [t];
+    } else if (variable instanceof Fraction) {
+        var t = new Term(variable);
+        this.terms = [t];
     } else if (variable instanceof Rational) {
         this.terms = [variable];
     } else if (variable instanceof Term) {

@@ -192,7 +192,7 @@ Fraction.prototype.toTex = function() {
     }
 };
 
-Fraction.prototype._squareRootIsFraction = function() {
+Fraction.prototype._squareRootIsRational = function() {
     if (this.valueOf() === 0) {
         return true;
     }
@@ -203,7 +203,7 @@ Fraction.prototype._squareRootIsFraction = function() {
     return isInt(sqrtNumer) && isInt(sqrtDenom);
 };
 
-Fraction.prototype._cubeRootIsFraction = function() {
+Fraction.prototype._cubeRootIsRational = function() {
     if (this.valueOf() === 0) {
         return true;
     }
