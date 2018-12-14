@@ -158,9 +158,8 @@ Parser.prototype.parseTermRest = function (factor) {
     } else if (this.match('divide')) {
         this.update();
         var devfactor = this.parseFactor();
-        var rational = new Rational(factor, devfactor);
         //WORKAROUND: algebra.js only allows integers and fractions for division
-        return this.parseTermRest(rational);
+        return this.parseTermRest(factor.divide(devfactor));
     } else if (this.match('epsilon')) {
         return factor;
     } else {
