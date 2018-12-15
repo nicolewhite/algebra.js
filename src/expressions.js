@@ -493,6 +493,9 @@ Term.prototype.subtract = function (term) {
         var copy = this.copy();
         copy.coefficients = [copy.coefficient().subtract(term.coefficient())];
         return copy;
+    } else if (a instanceof Rational) {
+        var exp = new Expression(this);
+        return exp.toRational().subtract(a);
     } else {
         throw new TypeError("Invalid Argument (" + term.toString() + "): Subtrahend must be of type String, Expression, Term, Fraction or Integer.");
     }
@@ -813,13 +816,18 @@ Rational.prototype.add = function (a) {
     } else if (a instanceof Expression) {
         return this.add(a.toRational());
     } else {
-        return this.multiply(new Expression(a));
+        return this.add(new Expression(a));
     }
 }
 
 Rational.prototype.subtract = function (a) {
-    if (a instanceof Rational)
+    if (a instanceof Rational) {
         return this.copy().add(a.multiply(-1));
+    } else if (a instanceof Expression) {
+        return this.subtract(a.toRational());
+    } else {
+        return this.subtract(new Expression(a));
+    }
 }
 
 Rational.prototype.multiply = function (a) {

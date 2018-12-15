@@ -158,8 +158,7 @@ Parser.prototype.parseTermRest = function (factor) {
     } else if (this.match('divide')) {
         this.update();
         var devfactor = this.parseFactor();
-        //WORKAROUND: algebra.js only allows integers and fractions for division
-        return this.parseTermRest(factor.divide(devfactor));
+        return factor.divide(this.parseTermRest(devfactor));
     } else if (this.match('epsilon')) {
         return factor;
     } else {

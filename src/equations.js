@@ -51,7 +51,6 @@ Equation.prototype._crossMultiply = function () {
 
 Equation.prototype.solveFor = function (variable) {
     this._crossMultiply();
-    console.log(this.toString());
     if (!this.lhs._hasVariable(variable) && !this.rhs._hasVariable(variable)) {
         throw new TypeError("Invalid Argument (" + variable.toString() + "): Variable does not exist in the equation.");
     }
