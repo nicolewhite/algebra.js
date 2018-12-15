@@ -881,7 +881,7 @@ Rational.prototype.reduce = function () {
 }
 
 Rational.prototype.toString = function () {
-    return `(${this.numer}) / (${this.denom})`;
+    return "(" + this.numer + ") / (" + this.denom + ")";
 }
 
 module.exports = {
