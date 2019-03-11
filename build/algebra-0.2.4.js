@@ -129,13 +129,13 @@ Equation.prototype.solveFor = function(variable) {
                 } else {
                     var squareRootDiscriminant;
 
-                    // If the answers will be Fraction, return reduced Fraction objects.
-                    if (discriminant._squareRootIsFraction()) {
+                    // If the answers will be rational, return reduced Fraction objects.
+                    if (discriminant._squareRootIsRational()) {
                         squareRootDiscriminant = discriminant.pow(0.5);
                         var root1 = b.multiply(-1).subtract(squareRootDiscriminant).divide(a.multiply(2));
                         var root2 = b.multiply(-1).add(squareRootDiscriminant).divide(a.multiply(2));
                         return [root1.reduce(), root2.reduce()];
-                        // If the answers will be irFraction, return numbers.
+                        // If the answers will be irrational, return numbers.
                     } else {
                         squareRootDiscriminant = Math.sqrt(discriminant.valueOf());
                         a = a.valueOf();
@@ -190,7 +190,7 @@ Equation.prototype.solveFor = function(variable) {
 
                 // Otherwise, if D != 0, reduce to a depressed cubic.
             } else {
-                // TODO: Make this work with non-integer Fractions.
+                // TODO: Make this work with non-integer rationals.
                 // Reduce to a depressed cubic with the Tschirnhaus transformation, x = t - b/3a.
                 var t = new Expression("t").subtract(b.divide(a.multiply(3)));
                 var params = {};
@@ -1212,7 +1212,7 @@ Fraction.prototype.toTex = function() {
     }
 };
 
-Fraction.prototype._squareRootIsFraction = function() {
+Fraction.prototype._squareRootIsRational = function() {
     if (this.valueOf() === 0) {
         return true;
     }
@@ -1223,7 +1223,7 @@ Fraction.prototype._squareRootIsFraction = function() {
     return isInt(sqrtNumer) && isInt(sqrtDenom);
 };
 
-Fraction.prototype._cubeRootIsFraction = function() {
+Fraction.prototype._cubeRootIsRational = function() {
     if (this.valueOf() === 0) {
         return true;
     }
