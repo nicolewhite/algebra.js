@@ -326,4 +326,20 @@ Equation.prototype._isCubic = function(variable) {
     return this._maxDegree() === 3 && this._onlyHasVariable(variable);
 };
 
+Equation.prototype.subtract = function(val, simplify) {
+    return new Equation(this.lhs.subtract(val, simplify), this.rhs.subtract(val, simplify));
+};
+
+Equation.prototype.add = function(val, simplify) {
+    return new Equation(this.lhs.add(val, simplify), this.rhs.add(val, simplify));
+};
+
+Equation.prototype.multiply = function(val, simplify) {
+    return new Equation(this.lhs.multiply(val, simplify), this.rhs.multiply(val, simplify));
+};
+
+Equation.prototype.divide = function(val, simplify) {
+    return new Equation(this.lhs.divide(val, simplify), this.rhs.divide(val, simplify));
+};
+
 module.exports = Equation;
