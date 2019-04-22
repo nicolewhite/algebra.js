@@ -5,7 +5,7 @@ var Term = require('./expressions').Term;
 var Fraction = require('./fractions');
 var isInt = require('./helper').isInt;
 
-var Equation = function (lhs, rhs) {
+var Equation = function(lhs, rhs) {
     if (lhs instanceof Expression) {
         if (lhs.terms[0] instanceof Rational) {
             this.lhs = lhs.terms[0];
@@ -28,7 +28,7 @@ var Equation = function (lhs, rhs) {
     }
 };
 
-Equation.prototype._crossMultiply = function () {
+Equation.prototype._crossMultiply = function() {
     var newLhs, newRhs;
     if (this.lhs instanceof Rational) {
         newLhs = this.lhs;
@@ -49,7 +49,7 @@ Equation.prototype._crossMultiply = function () {
     this.rhs = newLhs.denom.multiply(newRhs.numer);
 }
 
-Equation.prototype.solveFor = function (variable) {
+Equation.prototype.solveFor = function(variable) {
     this._crossMultiply();
     if (!this.lhs._hasVariable(variable) && !this.rhs._hasVariable(variable)) {
         throw new TypeError("Invalid Argument (" + variable.toString() + "): Variable does not exist in the equation.");
@@ -280,7 +280,7 @@ Equation.prototype.solveFor = function (variable) {
                     }
 
                     var roots = [root1, root2, root3];
-                    roots.sort(function (a, b) { return a - b; });	// roots in ascending order
+                    roots.sort(function(a, b) { return a - b; });	// roots in ascending order
 
                     return [roots[0], roots[1], roots[2]];
 
@@ -291,53 +291,53 @@ Equation.prototype.solveFor = function (variable) {
     }
 };
 
-Equation.prototype.eval = function (values) {
+Equation.prototype.eval = function(values) {
     return new Equation(this.lhs.eval(values), this.rhs.eval(values));
 };
 
-Equation.prototype.toString = function (options) {
+Equation.prototype.toString = function(options) {
     return this.lhs.toString(options) + " = " + this.rhs.toString(options);
 };
 
-Equation.prototype.toTex = function () {
+Equation.prototype.toTex = function() {
     return this.lhs.toTex() + " = " + this.rhs.toTex();
 };
 
-Equation.prototype._maxDegree = function () {
+Equation.prototype._maxDegree = function() {
     var lhsMax = this.lhs._maxDegree();
     var rhsMax = this.rhs._maxDegree();
     return Math.max(lhsMax, rhsMax);
 };
 
-Equation.prototype._maxDegreeOfVariable = function (variable) {
+Equation.prototype._maxDegreeOfVariable = function(variable) {
     return Math.max(this.lhs._maxDegreeOfVariable(variable), this.rhs._maxDegreeOfVariable(variable));
 };
 
-Equation.prototype._variableCanBeIsolated = function (variable) {
+Equation.prototype._variableCanBeIsolated = function(variable) {
     return this._maxDegreeOfVariable(variable) === 1;
 };
 
-Equation.prototype._noCrossProductsWithVariable = function (variable) {
+Equation.prototype._noCrossProductsWithVariable = function(variable) {
     return this.lhs._noCrossProductsWithVariable(variable) && this.rhs._noCrossProductsWithVariable(variable);
 };
 
-Equation.prototype._noCrossProducts = function () {
+Equation.prototype._noCrossProducts = function() {
     return this.lhs._noCrossProducts() && this.rhs._noCrossProducts();
 };
 
-Equation.prototype._onlyHasVariable = function (variable) {
+Equation.prototype._onlyHasVariable = function(variable) {
     return this.lhs._onlyHasVariable(variable) && this.rhs._onlyHasVariable(variable);
 };
 
-Equation.prototype._isLinear = function () {
+Equation.prototype._isLinear = function() {
     return this._maxDegree() === 1 && this._noCrossProducts();
 };
 
-Equation.prototype._isQuadratic = function (variable) {
+Equation.prototype._isQuadratic = function(variable) {
     return this._maxDegree() === 2 && this._onlyHasVariable(variable);
 };
 
-Equation.prototype._isCubic = function (variable) {
+Equation.prototype._isCubic = function(variable) {
     return this._maxDegree() === 3 && this._onlyHasVariable(variable);
 };
 

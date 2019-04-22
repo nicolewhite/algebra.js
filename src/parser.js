@@ -7,7 +7,7 @@ var Lexer = require('./lexer'),
     Fraction = require('./fractions'),
     Equation = require('./equations');
 
-var Parser = function () {
+var Parser = function() {
     this.lexer = new Lexer();
     this.current_token = null;
 
@@ -54,12 +54,12 @@ var Parser = function () {
 };
 
 // Updates the current token to the next input token 
-Parser.prototype.update = function () {
+Parser.prototype.update = function() {
     this.current_token = this.lexer.token();
 };
 
 // Returns true if the current token matches the keyword
-Parser.prototype.match = function (keyword) {
+Parser.prototype.match = function(keyword) {
     if (this.current_token === null) return keyword === 'epsilon';
 
     switch (keyword) {
@@ -94,14 +94,14 @@ Parser.prototype.match = function (keyword) {
     header comment. The parsing process constructs a abstract syntax tree
     using the classes the algebra.js library provides
 */
-Parser.prototype.parse = function (input) {
+Parser.prototype.parse = function(input) {
     //pass the input to the lexer
     this.lexer.input(input);
     this.update();
     return this.parseEqn();
 };
 
-Parser.prototype.parseEqn = function () {
+Parser.prototype.parseEqn = function() {
     var ex1 = this.parseExpr();
     if (this.match('equal')) {
         this.update();
@@ -114,12 +114,12 @@ Parser.prototype.parseEqn = function () {
     }
 };
 
-Parser.prototype.parseExpr = function () {
+Parser.prototype.parseExpr = function() {
     var term = this.parseTerm();
     return this.parseExprRest(term);
 };
 
-Parser.prototype.parseExprRest = function (term) {
+Parser.prototype.parseExprRest = function(term) {
     if (this.match('plus')) {
         this.update();
         var plusterm = this.parseTerm();
@@ -140,12 +140,12 @@ Parser.prototype.parseExprRest = function (term) {
 };
 
 
-Parser.prototype.parseTerm = function () {
+Parser.prototype.parseTerm = function() {
     var factor = this.parseFactor();
     return this.parseTermRest(factor);
 };
 
-Parser.prototype.parseTermRest = function (factor) {
+Parser.prototype.parseTermRest = function(factor) {
     if (this.match('multiply')) {
         this.update();
         var mulfactor = this.parseFactor();
@@ -175,8 +175,8 @@ Parser.prototype.parseTermRest = function (factor) {
 /**
  * Is used to convert expressions to fractions, as dividing by expressions is not possible
 **/
-Parser.prototype.convertToFraction = function (expression) {
-    if (expression.terms.filter(function (term) { return term.maxDegree() > 0 }).length > 0) {
+Parser.prototype.convertToFraction = function(expression) {
+    if (expression.terms.filter(function(term) { return term.maxDegree() > 0 }).length > 0) {
         throw new TypeError('Invalid Argument (' + expression.toString() + '): Divisor must be of type Integer or Fraction.');
     } else {
         var c = expression.constant();
@@ -184,7 +184,7 @@ Parser.prototype.convertToFraction = function (expression) {
     }
 };
 
-Parser.prototype.parseFactor = function () {
+Parser.prototype.parseFactor = function() {
     if (this.match('num')) {
         var num = this.parseNumber();
         this.update();
@@ -208,7 +208,7 @@ Parser.prototype.parseFactor = function () {
 };
 
 // Converts a number token - integer or decimal - to an expression
-Parser.prototype.parseNumber = function () {
+Parser.prototype.parseNumber = function() {
     //Integer conversion
     if (parseInt(this.current_token.value) == this.current_token.value) {
         return new Expression(parseInt(this.current_token.value));
