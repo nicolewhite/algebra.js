@@ -63,7 +63,7 @@ Equation.prototype.solveFor = function(variable) {
         for (var i = 0; i < this.rhs.terms.length; i++) {
             var term = this.rhs.terms[i];
 
-            if (term.canBeCombinedWith(solvingFor)) {
+            if (term.hasVariable(variable)) {
                 newLhs = newLhs.subtract(term);
             } else {
                 newRhs = newRhs.add(term);
@@ -73,14 +73,14 @@ Equation.prototype.solveFor = function(variable) {
         for (var i = 0; i < this.lhs.terms.length; i++) {
             var term = this.lhs.terms[i];
 
-            if (term.canBeCombinedWith(solvingFor)) {
+            if (term.hasVariable(variable)) {
                 newLhs = newLhs.add(term);
             } else {
                 newRhs = newRhs.subtract(term);
             }
         }
 
-        if (newLhs.terms.length === 0) {
+        if (newLhs._maxDegree() == 0) {
             if (newLhs.constant().equalTo(newRhs.constant())) {
                 return new Fraction(1, 1);
             } else {
@@ -88,8 +88,11 @@ Equation.prototype.solveFor = function(variable) {
             }
         }
 
-        newRhs = newRhs.divide(newLhs.terms[0].coefficient());
-        if (newRhs.terms.length === 0) {
+        var isolated = newLhs.terms[0].divide(solvingFor);
+        var divisor = new Expression(isolated);
+        newRhs = newRhs.divide(divisor);
+
+        if (newRhs._maxDegree() == 0) {
             return newRhs.constant().reduce();
         }
 
@@ -317,7 +320,7 @@ Equation.prototype._maxDegreeOfVariable = function(variable) {
 };
 
 Equation.prototype._variableCanBeIsolated = function(variable) {
-    return this._maxDegreeOfVariable(variable) === 1 && this._noCrossProductsWithVariable(variable);
+    return this._maxDegreeOfVariable(variable) === 1;
 };
 
 Equation.prototype._noCrossProductsWithVariable = function(variable) {

@@ -124,7 +124,7 @@ Expression.prototype.multiply = function(a, simplify) {
 
 Expression.prototype.divide = function(a, simplify) {
     if (a instanceof Expression) {
-        if (a.terms.length == 1) {
+        if (a.terms.length == 1 && a._maxDegree() == 0) {
             var thatTerm = a.terms[0];
             if (thatTerm.coefficient() === 0) {
                 throw new EvalError("Divide By Zero");
@@ -618,9 +618,7 @@ Term.prototype.maxDegreeOfVariable = function(variable) {
 };
 
 Term.prototype.canBeCombinedWith = function(term) {
-    if (term instanceof Rational ||
-        (this.maxDegree() == 0 &&
-            term.maxDegree() == 0))
+    if (term instanceof Rational || this.maxDegree() == 0 && term.maxDegree() == 0)
         return true;
     var thisVars = this.variables;
     var thatVars = term.variables;
@@ -803,6 +801,10 @@ Rational.prototype.copy = function() {
 Rational.prototype.canBeCombinedWith = function(a) {
     return true;
 };
+
+Rational.prototype.maxDegree = function() {
+    return Math.max(this.numer._maxDegree, this.denom._maxDegree());
+}
 
 Rational.prototype.add = function(a) {
     if (a instanceof Rational) {

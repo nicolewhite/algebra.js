@@ -27,9 +27,9 @@ describe("A linear equation with one variable", function() {
         expect(algebra.toTex(eq)).toEqual("\\frac{1}{5}x + \\frac{4}{5} = x - \\frac{1}{6}");
     });
 
-    it("should return a Rational when solving for the one variable", function() {
+    it("should return a fraction when solving for the one variable", function() {
         var answer = eq.solveFor("x");
-        expect(answer instanceof Expression).toBe(true);
+        expect(answer instanceof Fraction).toBe(true);
     });
 
     it("should throw an exception when solving for a variable that isn't there", function() {
@@ -240,12 +240,6 @@ describe("Checking the type of an equation", function() {
 });
 
 describe("Solving for variables that can't be isolated", function() {
-    it("should return undefined if the variable is crossproducts with other vars", function() {
-        var expr = new Expression("x").multiply("y");
-        var eq = new Equation(expr, 2); // xy = 2
-        var answer = eq.solveFor("x");
-        expect(answer).toBeUndefined();
-    });
 
     it("should return undefined if the variable has multiple degrees and there are other vars", function() {
         var expr = new Expression("x");

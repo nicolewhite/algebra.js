@@ -269,9 +269,9 @@ describe("Term evaluation", function() {
 
         t = t.multiply(6, false); // 6 * 5 * 3xy
 
-        var answer = t.eval({x:-2}, true); // 6 * 5 * 3 * -2y
+        var answer = t.eval({x:-2}, false); // 6 * 5 * 3 * -2y
 
-        expect(answer.toString()).toEqual("-180y");
+        expect(answer.toString()).toEqual("-2 * 3 * 5 * 6y");
     });
 });
 
