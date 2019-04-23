@@ -9,11 +9,6 @@ var Parser = require("../src/parser.js"),
 describe("Input validity", function() {
     var p = new Parser();
 
-    it("should throw an error if the input contains invalid divisions.", function(){
-        var input = "1/(x-3)=1";
-        expect(function(){p.parse(input);}).toThrow(new Error("Invalid Argument (x - 3): Divisor must be of type Integer or Fraction."));
-    });
-
     it("does not accept special characters", function(){
         var input = "2+4*x-€";
         expect(function(){p.parse(input);}).toThrow(new Error("Token error at character € at position 6"));
@@ -101,7 +96,7 @@ describe("Operators", function() {
         expect(p.parse(input).toString()).toEqual(new Equation(lhs,rhs).toString());
     });
 
-    it("should parse / correctly", function(){
+    it("should parse / correctly", function() {
         var input = "x/2 = 8";
         var lhs = new Expression("x").divide(2);
         var rhs = new Expression(8);

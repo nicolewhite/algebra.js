@@ -1,4 +1,5 @@
 var Expression = require('../src/expressions').Expression;
+var Rational = require('../src/expressions').Rational;
 var Equation = require('../src/equations');
 var Fraction = require('../src/fractions');
 var round = require('../src/helper').round;
@@ -26,9 +27,9 @@ describe("A linear equation with one variable", function() {
         expect(algebra.toTex(eq)).toEqual("\\frac{1}{5}x + \\frac{4}{5} = x - \\frac{1}{6}");
     });
 
-    it("should return a fraction when solving for the one variable", function() {
+    it("should return a Rational when solving for the one variable", function() {
         var answer = eq.solveFor("x");
-        expect(answer instanceof Fraction).toBe(true);
+        expect(answer instanceof Expression).toBe(true);
     });
 
     it("should throw an exception when solving for a variable that isn't there", function() {

@@ -158,7 +158,7 @@ Parser.prototype.parseTermRest = function(factor) {
     } else if (this.match('divide')) {
         this.update();
         var devfactor = this.parseFactor();
-        return factor.divide(this.parseTermRest(devfactor));
+        return this.parseTermRest(factor.divide(devfactor));
     } else if (this.match('epsilon')) {
         return factor;
     } else {
@@ -176,7 +176,7 @@ Parser.prototype.parseTermRest = function(factor) {
  * Is used to convert expressions to fractions, as dividing by expressions is not possible
 **/
 Parser.prototype.convertToFraction = function(expression) {
-    if (expression.terms.filter(function(term) { return term.maxDegree() > 0 }).length > 0) {
+    if (expression.terms.filter(function(term) { return term.maxDegree() > 0; }).length > 0) {
         throw new TypeError('Invalid Argument (' + expression.toString() + '): Divisor must be of type Integer or Fraction.');
     } else {
         var c = expression.constant();

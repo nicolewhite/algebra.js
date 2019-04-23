@@ -47,7 +47,7 @@ Equation.prototype._crossMultiply = function() {
     // Both sides should now be rationals and we are ready to cross-multiply
     this.lhs = newLhs.numer.multiply(newRhs.denom);
     this.rhs = newLhs.denom.multiply(newRhs.numer);
-}
+};
 
 Equation.prototype.solveFor = function(variable) {
     this._crossMultiply();
@@ -161,6 +161,9 @@ Equation.prototype.solveFor = function(variable) {
             var b = coefs.b;
             var c = coefs.c;
             var d = coefs.d;
+
+            if (a == undefined)
+                throw new Error("No Solution");
 
             // Calculate D and D0.
             var D = a.multiply(b).multiply(c).multiply(d).multiply(18);
@@ -314,7 +317,7 @@ Equation.prototype._maxDegreeOfVariable = function(variable) {
 };
 
 Equation.prototype._variableCanBeIsolated = function(variable) {
-    return this._maxDegreeOfVariable(variable) === 1;
+    return this._maxDegreeOfVariable(variable) === 1 && this._noCrossProductsWithVariable(variable);
 };
 
 Equation.prototype._noCrossProductsWithVariable = function(variable) {
