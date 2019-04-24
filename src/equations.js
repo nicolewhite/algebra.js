@@ -6,44 +6,29 @@ var Fraction = require('./fractions');
 var isInt = require('./helper').isInt;
 
 var Equation = function(lhs, rhs) {
-    if (lhs instanceof Expression) {
-        if (lhs.terms[0] instanceof Rational) {
-            this.lhs = lhs.terms[0];
-        } else {
-            this.lhs = lhs;
-        }
-        if (rhs instanceof Expression) {
-            if (rhs.terms[0] instanceof Rational) {
-                this.rhs = rhs.terms[0];
-            } else {
-                this.rhs = rhs;
-            }
-        } else if (rhs instanceof Fraction || isInt(rhs)) {
-            this.rhs = new Expression(rhs);
-        } else {
-            throw new TypeError("Invalid Argument (" + rhs.toString() + "): Right-hand side must be of type Expression, Fraction or Integer.");
-        }
+    if (lhs instanceof Rational) {
+        this.lhs = lhs;
+    } else if (lhs instanceof Expression) {
+        this.lhs = new Rational(lhs);        
+    } else if (lhs instanceof Fraction || isInt(lhs)) {
+        this.lhs = new Rational(lhs);
     } else {
         throw new TypeError("Invalid Argument (" + lhs.toString() + "): Left-hand side must be of type Expression.");
+    }
+    if (rhs instanceof Rational) {
+        this.rhs = rhs;
+    } else if (rhs instanceof Expression) {
+        this.rhs = new Rational(rhs);
+    } else if (rhs instanceof Fraction || isInt(rhs)) {
+        this.rhs = new Rational(rhs);
+    } else {
+        throw new TypeError("Invalid Argument (" + rhs.toString() + "): Right-hand side must be of type Expression, Fraction or Integer.");
     }
 };
 
 Equation.prototype._crossMultiply = function() {
-    var newLhs, newRhs;
-    if (this.lhs instanceof Rational) {
-        newLhs = this.lhs;
-        if (this.rhs instanceof Expression) {
-            newRhs = this.rhs.toRational();
-        }
-    } else if (this.rhs instanceof Rational) {
-        newRhs = this.rhs;
-        if (this.lhs instanceof Expression) {
-            newLhs = this.lhs.toRational();
-        }
-    } else {
-        newLhs = this.lhs.toRational();
-        newRhs = this.rhs.toRational();
-    }
+    var newLhs = this.lhs.copy();
+    var newRhs = this.rhs.copy();
     // Both sides should now be rationals and we are ready to cross-multiply
     this.lhs = newLhs.numer.multiply(newRhs.denom);
     this.rhs = newLhs.denom.multiply(newRhs.numer);
@@ -92,12 +77,11 @@ Equation.prototype.solveFor = function(variable) {
         var divisor = new Expression(isolated);
         newRhs = newRhs.divide(divisor);
 
-        if (newRhs._maxDegree() == 0) {
+        if (newRhs.maxDegree() == 0) {
             return newRhs.constant().reduce();
         }
 
-        newRhs._sort();
-        return newRhs;
+        return newRhs.simplify();
 
         // Otherwise, move everything to the LHS.
     } else {

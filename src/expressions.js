@@ -43,7 +43,7 @@ Expression.prototype.simplify = function() {
     var copy = this.copy();
 
     //simplify all terms
-    copy.terms = copy.terms.map(function(t) { return (t instanceof Rational) ? t.reduce() : t.simplify(); });
+    copy.terms = copy.terms.map(function(t) { return t.simplify(); });
 
     copy._sort();
     copy._combineLikeTerms();
@@ -124,17 +124,15 @@ Expression.prototype.multiply = function(a, simplify) {
 
 Expression.prototype.divide = function(a, simplify) {
     if (a instanceof Expression) {
-        if (a.terms.length == 1) {
+        if (a.terms.length == 1 && a.terms[0].maxDegree() === 0) {
             var thatTerm = a.terms[0];
-            var isConstant = thatTerm.maxDegree() === 0;
-            if (isConstant && thatTerm.coefficient() === 0) {
+            if (thatTerm.coefficient() === 0) {
                 throw new EvalError("Divide By Zero");
             }
 
             var copy = this.copy();
 
             for (var i = 0; i < copy.terms.length; i++) {
-                if (isConstant || copy.terms[i] instanceof Rational)
                 copy.terms[i] = copy.terms[i].divide(thatTerm, simplify);
             }
 
@@ -142,7 +140,7 @@ Expression.prototype.divide = function(a, simplify) {
         }
         else {
             var rational = new Rational(this.copy(), a.copy());
-            return new Expression(rational);
+            return rational;
         }
     } else if (a instanceof Rational || a instanceof Term || a instanceof Fraction || isInt(a)) {
         return this.divide(new Expression(a), simplify);
@@ -786,7 +784,7 @@ Rational.prototype.canBeCombinedWith = function(a) {
 };
 
 Rational.prototype.maxDegree = function() {
-    return Math.max(this.numer._maxDegree, this.denom._maxDegree());
+    return Math.max(this.numer._maxDegree(), this.denom._maxDegree());
 };
 
 Rational.prototype.add = function(a) {
@@ -848,7 +846,12 @@ Rational.prototype.divide = function(a) {
     }
 };
 
-Rational.prototype.reduce = function() {
+Rational.prototype.pow = function(a) {
+    this.numer = this.numer.pow(a);
+    this.denom = this.denom.pow(a);
+};
+
+Rational.prototype.simplify = function() {
     var copy = this.copy();
     var terms = copy.numer.terms.concat(copy.denom.terms).concat();
     var a = terms[0], b;
