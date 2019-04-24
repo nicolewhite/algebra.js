@@ -804,7 +804,7 @@ Rational.prototype.canBeCombinedWith = function(a) {
 
 Rational.prototype.maxDegree = function() {
     return Math.max(this.numer._maxDegree, this.denom._maxDegree());
-}
+};
 
 Rational.prototype.add = function(a) {
     if (a instanceof Rational) {
