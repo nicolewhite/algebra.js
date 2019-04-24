@@ -150,11 +150,6 @@ Parser.prototype.parseTermRest = function(factor) {
         this.update();
         var mulfactor = this.parseFactor();
         return factor.multiply(this.parseTermRest(mulfactor));
-    } else if (this.match('power')) {
-        this.update();
-        var powfactor = this.parseFactor();
-        //WORKAROUND: algebra.js only allows integers and fractions for raising
-        return this.parseTermRest(factor.pow(parseInt(powfactor.toString())));
     } else if (this.match('divide')) {
         this.update();
         var devfactor = this.parseFactor();
@@ -188,23 +183,33 @@ Parser.prototype.parseFactor = function() {
     if (this.match('num')) {
         var num = this.parseNumber();
         this.update();
-        return num;
+        return this.parseFactorRest(num);
     } else if (this.match('id')) {
         var id = new Expression(this.current_token.value);
         this.update();
-        return id;
+        return this.parseFactorRest(id);
     } else if (this.match('lparen')) {
         this.update();
         var expr = this.parseExpr();
         if (this.match('rparen')) {
             this.update();
-            return expr;
+            return this.parseFactorRest(expr);
         } else {
             throw new SyntaxError('Unbalanced Parenthesis');
         }
     } else {
         return undefined;
     }
+};
+
+Parser.prototype.parseFactorRest = function(factor) {
+    if (this.match('power')) {
+        this.update();
+        var powfactor = this.parseFactor();
+        //WORKAROUND: algebra.js only allows integers and fractions for raising
+        return this.parseFactorRest(factor.pow(parseInt(powfactor.toString())));
+    }
+    return factor;
 };
 
 // Converts a number token - integer or decimal - to an expression
