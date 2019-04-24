@@ -1,5 +1,4 @@
 var Expression = require('../src/expressions').Expression;
-var Rational = require('../src/expressions').Rational;
 var Equation = require('../src/equations');
 var Fraction = require('../src/fractions');
 var round = require('../src/helper').round;

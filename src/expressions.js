@@ -124,15 +124,17 @@ Expression.prototype.multiply = function(a, simplify) {
 
 Expression.prototype.divide = function(a, simplify) {
     if (a instanceof Expression) {
-        if (a.terms.length == 1 && a._maxDegree() == 0) {
+        if (a.terms.length == 1) {
             var thatTerm = a.terms[0];
-            if (thatTerm.coefficient() === 0) {
+            var isConstant = thatTerm.maxDegree() === 0;
+            if (isConstant && thatTerm.coefficient() === 0) {
                 throw new EvalError("Divide By Zero");
             }
 
             var copy = this.copy();
 
             for (var i = 0; i < copy.terms.length; i++) {
+                if (isConstant || copy.terms[i] instanceof Rational)
                 copy.terms[i] = copy.terms[i].divide(thatTerm, simplify);
             }
 
@@ -142,7 +144,7 @@ Expression.prototype.divide = function(a, simplify) {
             var rational = new Rational(this.copy(), a.copy());
             return new Expression(rational);
         }
-    } else if (a instanceof Fraction || isInt(a)) {
+    } else if (a instanceof Rational || a instanceof Term || a instanceof Fraction || isInt(a)) {
         return this.divide(new Expression(a), simplify);
     } else {
         throw new TypeError("Invalid Argument (" + a.toString() + "): Divisor must be of type Expression, Fraction or Integer.");
@@ -289,29 +291,8 @@ Expression.prototype._combineLikeTerms = function() {
     return this;
 };
 
-Expression.prototype._moveTermsWithDegreeZeroToConstants = function() {
-    var keepTerms = [];
-    var constant = new Fraction(0, 1);
-
-    for (var i = 0; i < this.terms.length; i++) {
-        var thisTerm = this.terms[i];
-
-        if (thisTerm.maxDegree() == 0) {
-            constant = constant.add(thisTerm.coefficient());
-        } else {
-            keepTerms.push(thisTerm);
-        }
-    }
-
-    this.constants.push(constant);
-    this.terms = keepTerms;
-    return this;
-};
-
 Expression.prototype._sort = function() {
     function sortTerms(a, b) {
-        if (a instanceof Rational || b instanceof Rational)
-            return 0;
         var x = a.maxDegree();
         var y = b.maxDegree();
 
@@ -759,8 +740,10 @@ var Rational = function(a, b) {
         this.numer = new Expression(a);
     if (b instanceof Expression)
         this.denom = b;
-    else
+    else if (b !== undefined)
         this.denom = new Expression(b);
+    else
+        this.denom = new Expression(1);
 };
 
 function toFraction(a) {
@@ -810,12 +793,16 @@ Rational.prototype.add = function(a) {
     if (a instanceof Rational) {
         var summand = a.copy();
         var me = this.copy();
-        me.numer = me.numer.multiply(summand.denom);
-        summand.numer = summand.numer.multiply(me.denom);
-        var new_denom = me.denom.multiply(summand.denom);
-        var new_numer = me.numer.add(summand.numer);
-        var sum = new Rational(new_numer, new_denom);
-        return sum;
+        if (Object.compare(me.denom, summand.denom)) {
+            return new Rational(me.numer.add(summand.numer), me.denom);
+        } else {
+            me.numer = me.numer.multiply(summand.denom);
+            summand.numer = summand.numer.multiply(me.denom);
+            var new_denom = me.denom.multiply(summand.denom);
+            var new_numer = me.numer.add(summand.numer);
+            var sum = new Rational(new_numer, new_denom);
+            return sum;
+        }
     } else if (a instanceof Expression) {
         return this.add(a.toRational());
     } else {
@@ -875,7 +862,7 @@ Rational.prototype.reduce = function() {
         d = constants[i];
         c = (d == 0) ? c : gcd_num(c, d);
     }
-    a.coefficients = [toFraction(c)];
+    a.coefficients = [toFraction(Math.abs(c))];
     var g = new Expression(a);
     copy.numer = copy.numer.divide(g);
     copy.denom = copy.denom.divide(g);
