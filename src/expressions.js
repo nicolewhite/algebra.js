@@ -16,8 +16,6 @@ var Expression = function(variable) {
     } else if (variable instanceof Fraction) {
         var t = new Term(variable);
         this.terms = [t];
-    } else if (variable instanceof Rational) {
-        this.terms = [variable];
     } else if (variable instanceof Term) {
         this.terms = [variable];
     } else if (typeof (variable) === "undefined") {
@@ -69,14 +67,7 @@ Expression.prototype.add = function(a, simplify) {
         var exp = new Expression(a);
         return thisExp.add(exp, simplify);
     } else if (a instanceof Rational) {
-        var d = a.denom.constant();
-        if (d === 1) {
-            var exp = a.numer.copy();
-            return thisExp.add(exp);
-        } else if (d !== 0) {
-            var exp = new Expression(a);
-            return thisExp.add(exp);
-        }
+        return a.add(thisExp);
     } else if (a instanceof Expression) {
         var keepTerms = a.copy().terms;
 
@@ -90,16 +81,18 @@ Expression.prototype.add = function(a, simplify) {
 };
 
 Expression.prototype.subtract = function(a, simplify) {
-    var negative = (a instanceof Expression) ? a.multiply(-1) : new Expression(a).multiply(-1);
+    var negative = (a instanceof Rational || a instanceof Expression) ? a.multiply(-1) : new Expression(a).multiply(-1);
     return this.add(negative, simplify);
 };
 
 Expression.prototype.multiply = function(a, simplify) {
     var thisExp = this.copy();
 
-    if (typeof (a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction || a instanceof Rational) {
+    if (typeof (a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
         var exp = new Expression(a);
         return thisExp.multiply(exp, simplify);
+    } else if (a instanceof Rational) {
+        return a.multiply(new Rational(this));
     } else if (a instanceof Expression) {
         var thatExp = a.copy();
         var newTerms = [];
@@ -142,7 +135,9 @@ Expression.prototype.divide = function(a, simplify) {
             var rational = new Rational(this.copy(), a.copy());
             return rational;
         }
-    } else if (a instanceof Rational || a instanceof Term || a instanceof Fraction || isInt(a)) {
+    } else if (a instanceof Rational) {
+        return a.multiply(new Rational(1, this));
+    } else if (a instanceof Term || a instanceof Fraction || isInt(a)) {
         return this.divide(new Expression(a), simplify);
     } else {
         throw new TypeError("Invalid Argument (" + a.toString() + "): Divisor must be of type Expression, Fraction or Integer.");
@@ -187,13 +182,6 @@ Expression.prototype.summation = function(variable, lower, upper, simplify) {
         newExpr = newExpr.add(thisExpr.eval(sub, simplify), simplify);
     }
     return newExpr;
-};
-
-Expression.prototype.toRational = function() {
-    var copy = this.copy();
-    var numer = copy;
-    var denom = new Expression(1);
-    return new Rational(numer, denom);
 };
 
 Expression.prototype.toString = function(options) {
@@ -453,8 +441,6 @@ Term.prototype.add = function(term) {
         var copy = this.copy();
         copy.coefficients = [copy.coefficient().add(term.coefficient())];
         return copy;
-    } else if (term instanceof Rational) {
-        return term.add(new Expression(this));
     } else {
         throw new TypeError("Invalid Argument (" + term.toString() + "): Summand must be of type String, Expression, Term, Fraction or Integer.");
     }
@@ -465,9 +451,6 @@ Term.prototype.subtract = function(term) {
         var copy = this.copy();
         copy.coefficients = [copy.coefficient().subtract(term.coefficient())];
         return copy;
-    } else if (term instanceof Rational) {
-        var exp = new Expression(this);
-        return exp.toRational().subtract(term);
     } else {
         throw new TypeError("Invalid Argument (" + term.toString() + "): Subtrahend must be of type String, Expression, Term, Fraction or Integer.");
     }
@@ -494,8 +477,6 @@ Term.prototype.multiply = function(a, simplify) {
         } else {
             thisTerm.coefficients.unshift(newCoef);
         }
-    } else if (a instanceof Rational) {
-        return a.multiply(new Expression(this));
     } else {
         throw new TypeError("Invalid Argument (" + a.toString() + "): Multiplicand must be of type String, Expression, Term, Fraction or Integer.");
     }
@@ -540,9 +521,6 @@ Term.prototype.divide = function(a, simplify) {
         //Multiply the inversed variables to the numenator
         num = num.multiply(denom, simplify);
         return num;
-    } else if (a instanceof Rational) {
-        var exp = new Expression(this);
-        return exp.toRational().divide(a);
     } else {
         throw new TypeError("Invalid Argument (" + a.toString() + "): Argument must be of type Fraction or Integer.");
     }
@@ -793,20 +771,16 @@ Rational.prototype.add = function(a) {
             var sum = new Rational(new_numer, new_denom);
             return sum;
         }
-    } else if (a instanceof Expression) {
-        return this.add(a.toRational());
     } else {
-        return this.add(new Expression(a));
+        return this.add(new Rational(a));
     }
 };
 
 Rational.prototype.subtract = function(a) {
     if (a instanceof Rational) {
         return this.copy().add(a.multiply(-1));
-    } else if (a instanceof Expression) {
-        return this.subtract(a.toRational());
     } else {
-        return this.subtract(new Expression(a));
+        return this.subtract(new Rational(a));
     }
 };
 
@@ -817,10 +791,8 @@ Rational.prototype.multiply = function(a) {
         var new_numer = me.numer.multiply(copy.numer);
         var new_denom = me.denom.multiply(copy.denom);
         return new Rational(new_numer, new_denom);
-    } else if (a instanceof Expression) {
-        return this.multiply(a.toRational());
     } else {
-        return this.multiply(new Expression(a));
+        return this.multiply(new Rational(a));
     }
 };
 
@@ -832,7 +804,7 @@ Rational.prototype.divide = function(a) {
         var rational = new Rational(new_numer, new_denom);
         return this.multiply(rational);
     } else if (a instanceof Expression) {
-        return this.divide(a.toRational());
+        return this.divide(new Rational(a));
     } else {
         return this.divide(new Expression(a));
     }
@@ -858,12 +830,9 @@ Rational.prototype.simplify = function() {
         c = (d == 0) ? c : gcd_num(c, d);
     }
     a.coefficients = [toFraction(Math.abs(c))];
-    for (var i = 0; i < copy.numer.terms.length; i++) {
-        copy.numer.terms[i] = copy.numer.terms[i].divide(a);
-    }
-    for (var i = 0; i < copy.denom.terms.length; i++) {
-        copy.denom.terms[i] = copy.denom.terms[i].divide(a);
-    }
+    var g = new Expression(a);
+    copy.numer = copy.numer.divide(g);
+    copy.denom = copy.denom.divide(g);
     return copy;
 };
 
@@ -876,6 +845,26 @@ Rational.prototype.toString = function(options) {
         return this.numer.toString(options);
     else
         return "(" + this.numer.toString(options) + ") / (" + this.denom.toString(options) + ")";
+};
+
+Rational.prototype._hasVariable = function(variable) {
+    return this.numer._hasVariable(variable) || this.denom._hasVariable(variable);
+};
+
+Rational.prototype._onlyHasVariable = function(variable) {
+    return this.numer._onlyHasVariable(variable) && this.denom._onlyHasVariable(variable);
+};
+
+Rational.prototype._noCrossProductsWithVariable = function(variable) {
+    return this.numer._noCrossProductsWithVariable(variable) && this.denom._noCrossProductsWithVariable(variable);
+};
+
+Rational.prototype._noCrossProducts = function() {
+    return this.numer._noCrossProducts() && this.denom._noCrossProducts();
+};
+
+Rational.prototype._maxDegreeOfVariable = function(variable) {
+    return Math.max(this.numer._maxDegreeOfVariable(variable), this.denom._maxDegreeOfVariable(variable));
 };
 
 Rational.prototype._maxDegree = function() {
