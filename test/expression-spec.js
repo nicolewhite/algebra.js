@@ -353,7 +353,11 @@ describe("Expression division", function() {
         expect(answer.toString()).toEqual("1/5x");
     });
 
-    it("should allow dividing expressions", function() {
+    it("should allow dividing monomial expressions", function() {
+        expect(x.divide(y).toString()).toEqual("xy^-1");
+    });
+
+    it("should allow dividing multinomial expressions", function() {
         expect(x.add(3).divide(y.subtract(4)).toString()).toEqual("(x + 3) / (y - 4)");
     });
 

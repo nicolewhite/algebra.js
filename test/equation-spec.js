@@ -1,4 +1,5 @@
 var Expression = require('../src/expressions').Expression;
+var Rational = require('../src/expressions').Rational;
 var Equation = require('../src/equations');
 var Fraction = require('../src/fractions');
 var round = require('../src/helper').round;
@@ -57,9 +58,9 @@ describe("An equation with multiple variables", function() {
         expect(eq.toString()).toEqual("a + b = c + d");
     });
 
-    it("should return an expression when solving for a variable", function() {
+    it("should return a rational when solving for a variable", function() {
         var answer = eq.solveFor("a");
-        expect(answer instanceof Expression).toBe(true);
+        expect(answer instanceof Rational).toBe(true);
     });
 
     it("should throw an exception when solving for a variable that isn't there", function() {

@@ -73,8 +73,8 @@ Equation.prototype.solveFor = function(variable) {
             }
         }
 
-        var isolated = newLhs.terms[0].divide(solvingFor);
-        var divisor = new Expression(isolated);
+        var isolated = newLhs.divide(solvingFor);
+        var divisor = new Rational(isolated);
         newRhs = newRhs.divide(divisor);
 
         if (newRhs._maxDegree() == 0) {

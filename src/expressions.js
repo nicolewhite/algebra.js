@@ -117,7 +117,7 @@ Expression.prototype.multiply = function(a, simplify) {
 
 Expression.prototype.divide = function(a, simplify) {
     if (a instanceof Expression) {
-        if (a.terms.length == 1 && a.terms[0].maxDegree() === 0) {
+        if (a.terms.length == 1) {
             var thatTerm = a.terms[0];
             if (thatTerm.coefficient() === 0) {
                 throw new EvalError("Divide By Zero");
@@ -130,13 +130,12 @@ Expression.prototype.divide = function(a, simplify) {
             }
 
             return copy;
-        }
-        else {
-            var rational = new Rational(this.copy(), a.copy());
+        } else {
+            var rational = new Rational(this, a);
             return rational;
         }
     } else if (a instanceof Rational) {
-        return a.multiply(new Rational(1, this));
+        return new Rational(a.denom, a.numer).multiply(this.copy());
     } else if (a instanceof Term || a instanceof Fraction || isInt(a)) {
         return this.divide(new Expression(a), simplify);
     } else {
@@ -838,13 +837,20 @@ Rational.prototype.simplify = function() {
 
 Rational.prototype.eval = function(subst) {
     return this.numer.eval(subst).divide(this.denom.eval(subst));
-}
+};
 
 Rational.prototype.toString = function(options) {
     if (this.denom._maxDegree() == 0 && this.denom.constant() == 1)
         return this.numer.toString(options);
     else
         return "(" + this.numer.toString(options) + ") / (" + this.denom.toString(options) + ")";
+};
+
+Rational.prototype.constant = function() {
+    if (this._maxDegree() == 0)
+        return this.numer.constant().divide(this.denom.constant());
+    else
+        throw new Error("Error: Rational is non-constant.");
 };
 
 Rational.prototype._hasVariable = function(variable) {
