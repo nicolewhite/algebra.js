@@ -7,7 +7,7 @@ var isInt = require('./helper').isInt;
 
 var Equation = function(lhs, rhs) {
     if (lhs instanceof Rational) {
-        this.lhs = lhs;
+        this.lhs = lhs.copy();
     } else if (lhs instanceof Expression) {
         this.lhs = new Rational(lhs);        
     } else if (lhs instanceof Fraction || isInt(lhs)) {
@@ -16,7 +16,7 @@ var Equation = function(lhs, rhs) {
         throw new TypeError("Invalid Argument (" + lhs.toString() + "): Left-hand side must be of type Expression.");
     }
     if (rhs instanceof Rational) {
-        this.rhs = rhs;
+        this.rhs = rhs.copy();
     } else if (rhs instanceof Expression) {
         this.rhs = new Rational(rhs);
     } else if (rhs instanceof Fraction || isInt(rhs)) {
@@ -24,6 +24,7 @@ var Equation = function(lhs, rhs) {
     } else {
         throw new TypeError("Invalid Argument (" + rhs.toString() + "): Right-hand side must be of type Expression, Fraction or Integer.");
     }
+    this._crossMultiply();
 };
 
 Equation.prototype._crossMultiply = function() {
@@ -35,7 +36,6 @@ Equation.prototype._crossMultiply = function() {
 };
 
 Equation.prototype.solveFor = function(variable) {
-    this._crossMultiply();
     if (!this.lhs._hasVariable(variable) && !this.rhs._hasVariable(variable)) {
         throw new TypeError("Invalid Argument (" + variable.toString() + "): Variable does not exist in the equation.");
     }
@@ -77,11 +77,11 @@ Equation.prototype.solveFor = function(variable) {
         var divisor = new Expression(isolated);
         newRhs = newRhs.divide(divisor);
 
-        if (newRhs.maxDegree() == 0) {
+        if (newRhs._maxDegree() == 0) {
             return newRhs.constant().reduce();
         }
 
-        return newRhs.simplify();
+        return newRhs;
 
         // Otherwise, move everything to the LHS.
     } else {

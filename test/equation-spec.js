@@ -212,10 +212,6 @@ describe("An invalid equation", function() {
     it("should throw an exception with a float on the rhs", function() {
         expect(function(){new Equation(x, 0.25);}).toThrow("Invalid Argument (0.25): Right-hand side must be of type Expression, Fraction or Integer.");
     });
-
-    it("should throw an exception if neither args are expressions", function() {
-        expect(function(){new Equation(1, 2);}).toThrow("Invalid Argument (1): Left-hand side must be of type Expression.");
-    });
 });
 
 describe("Checking the type of an equation", function() {

@@ -733,11 +733,11 @@ Variable.prototype.toTex = function() {
 
 var Rational = function(a, b) {
     if (a instanceof Expression)
-        this.numer = a;
+        this.numer = a.copy();
     else
         this.numer = new Expression(a);
     if (b instanceof Expression)
-        this.denom = b;
+        this.denom = b.copy();
     else if (b !== undefined)
         this.denom = new Expression(b);
     else
@@ -777,14 +777,6 @@ function gcd_term(a, b) {
 
 Rational.prototype.copy = function() {
     return new Rational(this.numer.copy(), this.denom.copy());
-};
-
-Rational.prototype.canBeCombinedWith = function(a) {
-    return true;
-};
-
-Rational.prototype.maxDegree = function() {
-    return Math.max(this.numer._maxDegree(), this.denom._maxDegree());
 };
 
 Rational.prototype.add = function(a) {
@@ -866,15 +858,28 @@ Rational.prototype.simplify = function() {
         c = (d == 0) ? c : gcd_num(c, d);
     }
     a.coefficients = [toFraction(Math.abs(c))];
-    var g = new Expression(a);
-    copy.numer = copy.numer.divide(g);
-    copy.denom = copy.denom.divide(g);
-
+    for (var i = 0; i < copy.numer.terms.length; i++) {
+        copy.numer.terms[i] = copy.numer.terms[i].divide(a);
+    }
+    for (var i = 0; i < copy.denom.terms.length; i++) {
+        copy.denom.terms[i] = copy.denom.terms[i].divide(a);
+    }
     return copy;
 };
 
-Rational.prototype.toString = function() {
-    return "(" + this.numer + ") / (" + this.denom + ")";
+Rational.prototype.eval = function(subst) {
+    return this.numer.eval(subst).divide(this.denom.eval(subst));
+}
+
+Rational.prototype.toString = function(options) {
+    if (this.denom._maxDegree() == 0 && this.denom.constant() == 1)
+        return this.numer.toString(options);
+    else
+        return "(" + this.numer.toString(options) + ") / (" + this.denom.toString(options) + ")";
+};
+
+Rational.prototype._maxDegree = function() {
+    return Math.max(this.numer._maxDegree(), this.denom._maxDegree());
 };
 
 module.exports = {
