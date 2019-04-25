@@ -1,44 +1,52 @@
 var Fraction = require('./fractions');
 var isInt = require('./helper').isInt;
+var gcd_num = require('./helper').gcd;
 var GREEK_LETTERS = require('./helper').GREEK_LETTERS;
 
 var Expression = function(variable) {
     this.constants = [];
-
-    if(typeof(variable) === "string") {
+    if (typeof (variable) === "string") {
         var v = new Variable(variable);
         var t = new Term(v);
         this.terms = [t];
-    } else if(isInt(variable)) {
-        this.constants = [new Fraction(variable, 1)];
-        this.terms = [];
-    } else if(variable instanceof Fraction) {
-        this.constants = [variable];
-        this.terms = [];
-    } else if(variable instanceof Term) {
+    } else if (isInt(variable)) {
+        var f = new Fraction(variable, 1);
+        var t = new Term(f);
+        this.terms = [t];
+    } else if (variable instanceof Fraction) {
+        var t = new Term(variable);
+        this.terms = [t];
+    } else if (variable instanceof Term) {
         this.terms = [variable];
-    } else if(typeof(variable) === "undefined") {
+    } else if (typeof (variable) === "undefined") {
         this.terms = [];
-    }else{
+    } else {
         throw new TypeError("Invalid Argument (" + variable.toString() + "): Argument must be of type String, Integer, Fraction or Term.");
     }
 };
 
 Expression.prototype.constant = function() {
-    return this.constants.reduce(function(p,c){return p.add(c);},new Fraction(0, 1));
+    return this.terms.reduce(function(p, c) { return c.maxDegree() === 0 ? p.add(c.coefficient()) : p; }, new Fraction(0, 1));
+};
+
+Expression.prototype.coefficients = function() {
+    var arr = [this.constant()];
+    for (var i = 0; i < this.terms.length; i++) {
+        arr.push(this.terms[i].coefficient());
+    }
+    return arr;
 };
 
 Expression.prototype.simplify = function() {
     var copy = this.copy();
 
     //simplify all terms
-    copy.terms = copy.terms.map(function(t){return t.simplify();});
+    copy.terms = copy.terms.map(function(t) { return t.simplify(); });
 
     copy._sort();
     copy._combineLikeTerms();
-    copy._moveTermsWithDegreeZeroToConstants();
     copy._removeTermsWithCoefficientZero();
-    copy.constants = (copy.constant().valueOf() === 0 ? [] : [copy.constant()]);
+    copy.constants = [];
 
     return copy;
 };
@@ -46,10 +54,8 @@ Expression.prototype.simplify = function() {
 Expression.prototype.copy = function() {
     var copy = new Expression();
 
-    //copy all constants
-    copy.constants = this.constants.map(function(c){return c.copy();});
     //copy all terms
-    copy.terms = this.terms.map(function(t){return t.copy();});
+    copy.terms = this.terms.map(function(t) { return t.copy(); });
 
     return copy;
 };
@@ -57,14 +63,15 @@ Expression.prototype.copy = function() {
 Expression.prototype.add = function(a, simplify) {
     var thisExp = this.copy();
 
-    if (typeof(a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
+    if (typeof (a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
         var exp = new Expression(a);
         return thisExp.add(exp, simplify);
+    } else if (a instanceof Rational) {
+        return a.add(thisExp);
     } else if (a instanceof Expression) {
         var keepTerms = a.copy().terms;
 
         thisExp.terms = thisExp.terms.concat(keepTerms);
-        thisExp.constants = thisExp.constants.concat(a.constants);
         thisExp._sort();
     } else {
         throw new TypeError("Invalid Argument (" + a.toString() + "): Summand must be of type String, Expression, Term, Fraction or Integer.");
@@ -74,16 +81,18 @@ Expression.prototype.add = function(a, simplify) {
 };
 
 Expression.prototype.subtract = function(a, simplify) {
-    var negative = (a instanceof Expression) ? a.multiply(-1) : new Expression(a).multiply(-1);
+    var negative = (a instanceof Rational || a instanceof Expression) ? a.multiply(-1) : new Expression(a).multiply(-1);
     return this.add(negative, simplify);
 };
 
 Expression.prototype.multiply = function(a, simplify) {
     var thisExp = this.copy();
 
-    if (typeof(a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
+    if (typeof (a) === "string" || a instanceof Term || isInt(a) || a instanceof Fraction) {
         var exp = new Expression(a);
         return thisExp.multiply(exp, simplify);
+    } else if (a instanceof Rational) {
+        return a.multiply(new Rational(this));
     } else if (a instanceof Expression) {
         var thatExp = a.copy();
         var newTerms = [];
@@ -95,35 +104,8 @@ Expression.prototype.multiply = function(a, simplify) {
                 var thatTerm = thatExp.terms[j];
                 newTerms.push(thisTerm.multiply(thatTerm, simplify));
             }
-
-            for (var j = 0; j < thatExp.constants.length; j++) {
-                newTerms.push(thisTerm.multiply(thatExp.constants[j], simplify));
-            }
         }
 
-        for (var i = 0; i < thatExp.terms.length; i++) {
-            var thatTerm = thatExp.terms[i];
-
-            for (var j = 0; j < thisExp.constants.length; j++) {
-                newTerms.push(thatTerm.multiply(thisExp.constants[j], simplify));
-            }
-        }
-
-        var newConstants = [];
-
-        for (var i = 0; i < thisExp.constants.length; i++) {
-            var thisConst = thisExp.constants[i];
-
-            for (var j = 0; j < thatExp.constants.length; j++) {
-                var thatConst = thatExp.constants[j];
-                var t = new Term();
-                t = t.multiply(thatConst, false);
-                t = t.multiply(thisConst, false);
-                newTerms.push(t);
-            }
-        }
-
-        thisExp.constants = newConstants;
         thisExp.terms = newTerms;
         thisExp._sort();
     } else {
@@ -134,72 +116,30 @@ Expression.prototype.multiply = function(a, simplify) {
 };
 
 Expression.prototype.divide = function(a, simplify) {
-    if (a instanceof Fraction || isInt(a)) {
-
-        if (a.valueOf() === 0) {
-            throw new EvalError("Divide By Zero");
-        }
-
-        var copy = this.copy();
-
-        for (var i = 0; i < copy.terms.length; i++) {
-            var thisTerm = copy.terms[i];
-
-            for (var j = 0; j < thisTerm.coefficients.length; j++) {
-                thisTerm.coefficients[j] = thisTerm.coefficients[j].divide(a, simplify);
+    if (a instanceof Expression) {
+        if (a.terms.length == 1) {
+            var thatTerm = a.terms[0];
+            if (thatTerm.coefficient() === 0) {
+                throw new EvalError("Divide By Zero");
             }
-        }
 
-        //divide every constant by a
-        copy.constants = copy.constants.map(function(c){return c.divide(a,simplify);});
+            var copy = this.copy();
 
-        return copy;
-    } else if (a instanceof Expression) {
-      //Simplify both expressions
-      var num = this.copy().simplify();
-      var denom = a.copy().simplify();
-
-      //Total amount of terms and constants
-      var numTotal = num.terms.length + num.constants.length;
-      var denomTotal = denom.terms.length + denom.constants.length;
-
-      //Check if both terms are monomial
-      if (numTotal === 1 && denomTotal === 1) {
-        //Devide coefficients
-        var numCoef = num.terms[0].coefficients[0];
-        var denomCoef = denom.terms[0].coefficients[0];
-
-        //The expressions have just been simplified - only one coefficient per term
-        num.terms[0].coefficients[0] = numCoef.divide(denomCoef, simplify);
-        denom.terms[0].coefficients[0] = new Fraction(1, 1);
-
-        //Cancel variables
-        for (var i = 0; i < num.terms[0].variables.length; i++) {
-          var numVar = num.terms[0].variables[i];
-          for (var j = 0; j < denom.terms[0].variables.length; j++) {
-            var denomVar = denom.terms[0].variables[j];
-            //Check for equal variables
-            if (numVar.variable === denomVar.variable) {
-              //Use the rule for division of powers
-              num.terms[0].variables[i].degree = numVar.degree - denomVar.degree;
-              denom.terms[0].variables[j].degree = 0;
+            for (var i = 0; i < copy.terms.length; i++) {
+                copy.terms[i] = copy.terms[i].divide(thatTerm, simplify);
             }
-          }
-        }
 
-        //Invers all degrees of remaining variables
-        for (var i = 0; i < denom.terms[0].variables.length; i++) {
-          denom.terms[0].variables[i].degree *= -1;
+            return copy;
+        } else {
+            var rational = new Rational(this, a);
+            return rational;
         }
-        //Multiply the inversed variables to the numenator
-        num = num.multiply(denom, simplify);
-
-        return num;
-      } else {
-        throw new TypeError("Invalid Argument ((" + num.toString() + ")/("+ denom.toString() + ")): Only monomial expressions can be divided.");
-      }
+    } else if (a instanceof Rational) {
+        return new Rational(a.denom, a.numer).multiply(this.copy());
+    } else if (a instanceof Term || a instanceof Fraction || isInt(a)) {
+        return this.divide(new Expression(a), simplify);
     } else {
-        throw new TypeError("Invalid Argument (" + a.toString() + "): Divisor must be of type Fraction or Integer.");
+        throw new TypeError("Invalid Argument (" + a.toString() + "): Divisor must be of type Expression, Fraction or Integer.");
     }
 };
 
@@ -225,23 +165,22 @@ Expression.prototype.pow = function(a, simplify) {
 
 Expression.prototype.eval = function(values, simplify) {
     var exp = new Expression();
-    exp.constants = (simplify ? [this.constant()] : this.constants.slice());
 
     //add all evaluated terms of this to exp
-    exp = this.terms.reduce(function(p,c){return p.add(c.eval(values,simplify),simplify);},exp);
+    exp = this.terms.reduce(function(p, c) { return p.add(c.eval(values, simplify), simplify); }, exp);
 
     return exp;
 };
 
 Expression.prototype.summation = function(variable, lower, upper, simplify) {
-	var thisExpr = this.copy();
-	var newExpr = new Expression();
-	for(var i = lower; i < (upper + 1); i++) {
-		var sub = {};
-		sub[variable] = i;
-		newExpr = newExpr.add(thisExpr.eval(sub, simplify), simplify);
-	}
-	return newExpr;
+    var thisExpr = this.copy();
+    var newExpr = new Expression();
+    for (var i = lower; i < (upper + 1); i++) {
+        var sub = {};
+        sub[variable] = i;
+        newExpr = newExpr.add(thisExpr.eval(sub, simplify), simplify);
+    }
+    return newExpr;
 };
 
 Expression.prototype.toString = function(options) {
@@ -249,8 +188,10 @@ Expression.prototype.toString = function(options) {
 
     for (var i = 0; i < this.terms.length; i++) {
         var term = this.terms[i];
-
-        str += (term.coefficients[0].valueOf() < 0 ? " - " : " + ") + term.toString(options);
+        if (term instanceof Rational)
+            str += " + " + term.toString();
+        else
+            str += (term.coefficients[0].valueOf() < 0 ? " - " : " + ") + term.toString(options);
     }
 
     for (var i = 0; i < this.constants.length; i++) {
@@ -293,7 +234,7 @@ Expression.prototype.toTex = function(dict) {
 };
 
 Expression.prototype._removeTermsWithCoefficientZero = function() {
-    this.terms = this.terms.filter(function(t){return t.coefficient().reduce().numer !== 0;});
+    this.terms = this.terms.filter(function(t) { return (t instanceof Rational) ? true : t.coefficient().reduce().numer !== 0; });
     return this;
 };
 
@@ -332,25 +273,6 @@ Expression.prototype._combineLikeTerms = function() {
     }
 
     this.terms = newTerms;
-    return this;
-};
-
-Expression.prototype._moveTermsWithDegreeZeroToConstants = function() {
-    var keepTerms = [];
-    var constant = new Fraction(0, 1);
-
-    for (var i = 0; i < this.terms.length; i++) {
-        var thisTerm = this.terms[i];
-
-        if (thisTerm.variables.length === 0) {
-            constant = constant.add(thisTerm.coefficient());
-        } else {
-            keepTerms.push(thisTerm);
-        }
-    }
-
-    this.constants.push(constant);
-    this.terms = keepTerms;
     return this;
 };
 
@@ -396,7 +318,7 @@ Expression.prototype._onlyHasVariable = function(variable) {
 Expression.prototype._noCrossProductsWithVariable = function(variable) {
     for (var i = 0; i < this.terms.length; i++) {
         var term = this.terms[i];
-        if (term.hasVariable(variable)  && !term.onlyHasVariable(variable)) {
+        if (term.hasVariable(variable) && !term.onlyHasVariable(variable)) {
             return false;
         }
     }
@@ -416,11 +338,11 @@ Expression.prototype._noCrossProducts = function() {
 };
 
 Expression.prototype._maxDegree = function() {
-    return this.terms.reduce(function(p,c){return Math.max(p,c.maxDegree());},1);
+    return this.terms.reduce(function(p, c) { return Math.max(p, c.maxDegree()); }, 0);
 };
 
 Expression.prototype._maxDegreeOfVariable = function(variable) {
-    return this.terms.reduce(function(p,c){return Math.max(p,c.maxDegreeOfVariable(variable));},1);
+    return this.terms.reduce(function(p, c) { return Math.max(p, c.maxDegreeOfVariable(variable)); }, 0);
 };
 
 Expression.prototype._quadraticCoefficients = function() {
@@ -434,7 +356,7 @@ Expression.prototype._quadraticCoefficients = function() {
     }
     var c = this.constant();
 
-    return {a:a, b:b, c:c};
+    return { a: a, b: b, c: c };
 };
 
 Expression.prototype._cubicCoefficients = function() {
@@ -451,24 +373,27 @@ Expression.prototype._cubicCoefficients = function() {
     }
 
     var d = this.constant();
-    return {a:a, b:b, c:c, d:d};
+    return { a: a, b: b, c: c, d: d };
 };
 
 Term = function(variable) {
     if (variable instanceof Variable) {
         this.variables = [variable.copy()];
-    } else if (typeof(variable) === "undefined") {
+        this.coefficients = [new Fraction(1, 1)];
+    } else if (variable instanceof Fraction) {
         this.variables = [];
+        this.coefficients = [variable];
+    } else if (typeof (variable) === "undefined") {
+        this.variables = [];
+        this.coefficients = [new Fraction(1, 1)];
     } else {
         throw new TypeError("Invalid Argument (" + variable.toString() + "): Term initializer must be of type Variable.");
     }
-
-    this.coefficients = [new Fraction(1, 1)];
 };
 
 Term.prototype.coefficient = function() {
     //calculate the product of all coefficients
-    return this.coefficients.reduce(function(p,c){return p.multiply(c);}, new Fraction(1,1));
+    return this.coefficients.reduce(function(p, c) { return p.multiply(c); }, new Fraction(1, 1));
 };
 
 Term.prototype.simplify = function() {
@@ -505,13 +430,13 @@ Term.prototype.combineVars = function() {
 
 Term.prototype.copy = function() {
     var copy = new Term();
-    copy.coefficients = this.coefficients.map(function(c){return c.copy();});
-    copy.variables = this.variables.map(function(v){return v.copy();});
+    copy.coefficients = this.coefficients.map(function(c) { return c.copy(); });
+    copy.variables = this.variables.map(function(v) { return v.copy(); });
     return copy;
 };
 
 Term.prototype.add = function(term) {
-    if(term instanceof Term && this.canBeCombinedWith(term)) {
+    if (term instanceof Term && this.canBeCombinedWith(term)) {
         var copy = this.copy();
         copy.coefficients = [copy.coefficient().add(term.coefficient())];
         return copy;
@@ -535,7 +460,13 @@ Term.prototype.multiply = function(a, simplify) {
 
     if (a instanceof Term) {
         thisTerm.variables = thisTerm.variables.concat(a.variables);
-        thisTerm.coefficients = a.coefficients.concat(thisTerm.coefficients);
+        thisTerm.coefficients = a.coefficients
+            .concat(thisTerm.coefficients)
+            .filter(function(a) {
+                return !(a.numer == 1 && a.denom == 1);
+            });
+        if (thisTerm.coefficients.length == 0)
+            thisTerm.coefficients.push(new Fraction(1, 1));
 
     } else if (isInt(a) || a instanceof Fraction) {
         var newCoef = (isInt(a) ? new Fraction(a, 1) : a);
@@ -553,10 +484,42 @@ Term.prototype.multiply = function(a, simplify) {
 };
 
 Term.prototype.divide = function(a, simplify) {
-    if(isInt(a) || a instanceof Fraction) {
+    if (isInt(a) || a instanceof Fraction) {
         var thisTerm = this.copy();
-        thisTerm.coefficients = thisTerm.coefficients.map(function(c){return c.divide(a,simplify);});
+        thisTerm.coefficients = thisTerm.coefficients.map(function(c) { return c.divide(a, simplify); });
         return thisTerm;
+    } else if (a instanceof Term) {
+        var num = this.copy();
+        var denom = a.copy();
+        //Devide coefficients
+        var numCoef = num.coefficient();
+        var denomCoef = denom.coefficient();
+
+        //The expressions have just been simplified - only one coefficient per term
+        num.coefficients[0] = numCoef.divide(denomCoef, simplify);
+        denom.coefficients[0] = new Fraction(1, 1);
+
+        //Cancel variables
+        for (var i = 0; i < num.variables.length; i++) {
+            var numVar = num.variables[i];
+            for (var j = 0; j < denom.variables.length; j++) {
+                var denomVar = denom.variables[j];
+                //Check for equal variables
+                if (numVar.variable === denomVar.variable) {
+                    //Use the rule for division of powers
+                    num.variables[i].degree = numVar.degree - denomVar.degree;
+                    denom.variables[j].degree = 0;
+                }
+            }
+        }
+
+        //Invers all degrees of remaining variables
+        for (var i = 0; i < denom.variables.length; i++) {
+            denom.variables[i].degree *= -1;
+        }
+        //Multiply the inversed variables to the numenator
+        num = num.multiply(denom, simplify);
+        return num;
     } else {
         throw new TypeError("Invalid Argument (" + a.toString() + "): Argument must be of type Fraction or Integer.");
     }
@@ -565,9 +528,9 @@ Term.prototype.divide = function(a, simplify) {
 Term.prototype.eval = function(values, simplify) {
     var copy = this.copy();
     var keys = Object.keys(values);
-    var exp = copy.coefficients.reduce(function(p,c){return p.multiply(c,simplify);}, new Expression(1));
+    var exp = copy.coefficients.reduce(function(p, c) { return p.multiply(c, simplify); }, new Expression(1));
 
-    for(var i = 0; i < copy.variables.length; i++) {
+    for (var i = 0; i < copy.variables.length; i++) {
         var thisVar = copy.variables[i];
 
         var ev;
@@ -575,9 +538,9 @@ Term.prototype.eval = function(values, simplify) {
         if (thisVar.variable in values) {
             var sub = values[thisVar.variable];
 
-            if(sub instanceof Fraction || sub instanceof Expression) {
+            if (sub instanceof Fraction || sub instanceof Expression) {
                 ev = sub.pow(thisVar.degree);
-            } else if(isInt(sub)) {
+            } else if (isInt(sub)) {
                 ev = Math.pow(sub, thisVar.degree);
             } else {
                 throw new TypeError("Invalid Argument (" + sub + "): Can only evaluate Expressions or Fractions.");
@@ -603,26 +566,28 @@ Term.prototype.hasVariable = function(variable) {
 };
 
 Term.prototype.maxDegree = function() {
-    return this.variables.reduce(function(p,c){return Math.max(p,c.degree);},1);
+    return this.variables.reduce(function(p, c) { return Math.max(p, c.degree); }, 0);
 };
 
 Term.prototype.maxDegreeOfVariable = function(variable) {
-    return this.variables.reduce(function(p,c){return (c.variable === variable) ? Math.max(p,c.degree) : p;},1);
+    return this.variables.reduce(function(p, c) { return (c.variable === variable) ? Math.max(p, c.degree) : p; }, 0);
 };
 
 Term.prototype.canBeCombinedWith = function(term) {
+    if (term instanceof Rational || this.maxDegree() == 0 && term.maxDegree() == 0)
+        return true;
     var thisVars = this.variables;
     var thatVars = term.variables;
 
-    if(thisVars.length != thatVars.length) {
+    if (thisVars.length != thatVars.length) {
         return false;
     }
 
     var matches = 0;
 
-    for(var i = 0; i < thisVars.length; i++) {
-        for(var j = 0; j < thatVars.length; j++) {
-            if(thisVars[i].variable === thatVars[j].variable && thisVars[i].degree === thatVars[j].degree) {
+    for (var i = 0; i < thisVars.length; i++) {
+        for (var j = 0; j < thatVars.length; j++) {
+            if (thisVars[i].variable === thatVars[j].variable && thisVars[i].degree === thatVars[j].degree) {
                 matches += 1;
             }
         }
@@ -657,11 +622,11 @@ Term.prototype.toString = function(options) {
     for (var i = 0; i < this.coefficients.length; i++) {
         var coef = this.coefficients[i];
 
-        if (coef.abs().numer !== 1 || coef.abs().denom !== 1) {
+        if (coef.abs().numer !== 1 || coef.abs().denom !== 1 || this.maxDegree() === 0) {
             str += " * " + coef.toString();
         }
     }
-    str = this.variables.reduce(function (p, c) {
+    str = this.variables.reduce(function(p, c) {
         if (implicit && !!p) {
             var vStr = c.toString();
             return !!vStr ? p + "*" + vStr : p;
@@ -678,7 +643,7 @@ Term.prototype.toTex = function(dict) {
     var dict = (dict === undefined) ? {} : dict;
     dict.multiplication = !("multiplication" in dict) ? "cdot" : dict.multiplication;
 
-    var op =  " \\" + dict.multiplication + " ";
+    var op = " \\" + dict.multiplication + " ";
 
     var str = "";
 
@@ -689,7 +654,7 @@ Term.prototype.toTex = function(dict) {
             str += op + coef.toTex();
         }
     }
-    str = this.variables.reduce(function(p,c){return p.concat(c.toTex());},str);
+    str = this.variables.reduce(function(p, c) { return p.concat(c.toTex()); }, str);
     str = (str.substring(0, op.length) === op ? str.substring(op.length, str.length) : str);
     str = (str.substring(0, 1) === "-" ? str.substring(1, str.length) : str);
     str = (str.substring(0, 7) === "\\frac{-" ? "\\frac{" + str.substring(7, str.length) : str);
@@ -698,7 +663,7 @@ Term.prototype.toTex = function(dict) {
 };
 
 var Variable = function(variable) {
-    if (typeof(variable) === "string") {
+    if (typeof (variable) === "string") {
         this.variable = variable;
         this.degree = 1;
     } else {
@@ -742,7 +707,178 @@ Variable.prototype.toTex = function() {
     }
 };
 
+
+var Rational = function(a, b) {
+    if (a instanceof Expression)
+        this.numer = a.copy();
+    else
+        this.numer = new Expression(a);
+    if (b instanceof Expression)
+        this.denom = b.copy();
+    else if (b !== undefined)
+        this.denom = new Expression(b);
+    else
+        this.denom = new Expression(1);
+};
+
+function toFraction(a) {
+    var i;
+    for (i = 1; (a * i) % 1 != 0 && i < 10000; i++);
+    return new Fraction(a * i, i);
+}
+
+function gcd_term(a, b) {
+    var a_vars = a.variables;
+    var b_vars = b.variables;
+
+    var variables = [];
+    for (var i = 0; i < a_vars.length; i++) {
+        for (var j = 0; j < b_vars.length; j++) {
+            if (a_vars[i].variable == b_vars[j].variable) {
+                var variable = a_vars[i].copy();
+                variable.degree = Math.min(a_vars[i].degree, b_vars[j].degree);
+                variables.push(variable);
+            }
+        }
+    }
+
+    var a_coeff = a.coefficient();
+    var b_coeff = b.coefficient();
+    var final_coeff = gcd_num(a_coeff, b_coeff);
+    var term = new Term();
+    term.variables = variables;
+    term.coefficients = [toFraction(final_coeff)];
+
+    return term;
+}
+
+Rational.prototype.copy = function() {
+    return new Rational(this.numer.copy(), this.denom.copy());
+};
+
+Rational.prototype.add = function(a) {
+    if (a instanceof Rational) {
+        var summand = a.copy();
+        var me = this.copy();
+        if (Object.compare(me.denom, summand.denom)) {
+            return new Rational(me.numer.add(summand.numer), me.denom);
+        } else {
+            me.numer = me.numer.multiply(summand.denom);
+            summand.numer = summand.numer.multiply(me.denom);
+            var new_denom = me.denom.multiply(summand.denom);
+            var new_numer = me.numer.add(summand.numer);
+            var sum = new Rational(new_numer, new_denom);
+            return sum;
+        }
+    } else {
+        return this.add(new Rational(a));
+    }
+};
+
+Rational.prototype.subtract = function(a) {
+    if (a instanceof Rational) {
+        return this.copy().add(a.multiply(-1));
+    } else {
+        return this.subtract(new Rational(a));
+    }
+};
+
+Rational.prototype.multiply = function(a) {
+    if (a instanceof Rational) {
+        var copy = a.copy();
+        var me = this.copy();
+        var new_numer = me.numer.multiply(copy.numer);
+        var new_denom = me.denom.multiply(copy.denom);
+        return new Rational(new_numer, new_denom);
+    } else {
+        return this.multiply(new Rational(a));
+    }
+};
+
+Rational.prototype.divide = function(a) {
+    if (a instanceof Rational) {
+        var copy = a.copy();
+        var new_numer = copy.denom;
+        var new_denom = copy.numer;
+        var rational = new Rational(new_numer, new_denom);
+        return this.multiply(rational);
+    } else if (a instanceof Expression) {
+        return this.divide(new Rational(a));
+    } else {
+        return this.divide(new Expression(a));
+    }
+};
+
+Rational.prototype.pow = function(a) {
+    this.numer = this.numer.pow(a);
+    this.denom = this.denom.pow(a);
+};
+
+Rational.prototype.simplify = function() {
+    var copy = this.copy();
+    var terms = copy.numer.terms.concat(copy.denom.terms).concat();
+    var a = terms[0], b;
+    for (var i = 1; i < terms.length; i++) {
+        b = terms[i];
+        a = gcd_term(a, b);
+    }
+    var constants = [a.coefficient(), copy.numer.constant(), copy.denom.constant()];
+    var c = constants[0], d;
+    for (var i = 1; i < constants.length; i++) {
+        d = constants[i];
+        c = (d == 0) ? c : gcd_num(c, d);
+    }
+    a.coefficients = [toFraction(Math.abs(c))];
+    var g = new Expression(a);
+    copy.numer = copy.numer.divide(g);
+    copy.denom = copy.denom.divide(g);
+    return copy;
+};
+
+Rational.prototype.eval = function(subst) {
+    return this.numer.eval(subst).divide(this.denom.eval(subst));
+};
+
+Rational.prototype.toString = function(options) {
+    if (this.denom._maxDegree() == 0 && this.denom.constant() == 1)
+        return this.numer.toString(options);
+    else
+        return "(" + this.numer.toString(options) + ") / (" + this.denom.toString(options) + ")";
+};
+
+Rational.prototype.constant = function() {
+    if (this._maxDegree() == 0)
+        return this.numer.constant().divide(this.denom.constant());
+    else
+        throw new Error("Error: Rational is non-constant.");
+};
+
+Rational.prototype._hasVariable = function(variable) {
+    return this.numer._hasVariable(variable) || this.denom._hasVariable(variable);
+};
+
+Rational.prototype._onlyHasVariable = function(variable) {
+    return this.numer._onlyHasVariable(variable) && this.denom._onlyHasVariable(variable);
+};
+
+Rational.prototype._noCrossProductsWithVariable = function(variable) {
+    return this.numer._noCrossProductsWithVariable(variable) && this.denom._noCrossProductsWithVariable(variable);
+};
+
+Rational.prototype._noCrossProducts = function() {
+    return this.numer._noCrossProducts() && this.denom._noCrossProducts();
+};
+
+Rational.prototype._maxDegreeOfVariable = function(variable) {
+    return Math.max(this.numer._maxDegreeOfVariable(variable), this.denom._maxDegreeOfVariable(variable));
+};
+
+Rational.prototype._maxDegree = function() {
+    return Math.max(this.numer._maxDegree(), this.denom._maxDegree());
+};
+
 module.exports = {
+    Rational: Rational,
     Expression: Expression,
     Term: Term,
     Variable: Variable

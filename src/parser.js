@@ -3,6 +3,7 @@
 
 var Lexer = require('./lexer'),
     Expression = require('./expressions').Expression,
+    Rational = require('./expressions').Rational,
     Fraction = require('./fractions'),
     Equation = require('./equations');
 
@@ -105,10 +106,10 @@ Parser.prototype.parseEqn = function() {
     if (this.match('equal')) {
         this.update();
         var ex2 = this.parseExpr();
-        return new Equation(ex1,ex2);
-    }else if(this.match('epsilon')){
+        return new Equation(ex1, ex2);
+    } else if (this.match('epsilon')) {
         return ex1;
-    }else{
+    } else {
         throw new SyntaxError('Unbalanced Parenthesis');
     }
 };
@@ -122,7 +123,7 @@ Parser.prototype.parseExprRest = function(term) {
     if (this.match('plus')) {
         this.update();
         var plusterm = this.parseTerm();
-        if(term === undefined || plusterm === undefined) throw new SyntaxError('Missing operand');
+        if (term === undefined || plusterm === undefined) throw new SyntaxError('Missing operand');
         return this.parseExprRest(term.add(plusterm));
     } else if (this.match('minus')) {
         this.update();
@@ -149,16 +150,10 @@ Parser.prototype.parseTermRest = function(factor) {
         this.update();
         var mulfactor = this.parseFactor();
         return factor.multiply(this.parseTermRest(mulfactor));
-    } else if (this.match('power')) {
-        this.update();
-        var powfactor = this.parseFactor();
-        //WORKAROUND: algebra.js only allows integers and fractions for raising
-        return this.parseTermRest(factor.pow(parseInt(powfactor.toString())));
     } else if (this.match('divide')) {
         this.update();
         var devfactor = this.parseFactor();
-        //WORKAROUND: algebra.js only allows integers and fractions for division
-        return this.parseTermRest(factor.divide(this.convertToFraction(devfactor)));
+        return this.parseTermRest(factor.divide(devfactor));
     } else if (this.match('epsilon')) {
         return factor;
     } else {
@@ -176,10 +171,10 @@ Parser.prototype.parseTermRest = function(factor) {
  * Is used to convert expressions to fractions, as dividing by expressions is not possible
 **/
 Parser.prototype.convertToFraction = function(expression) {
-    if(expression.terms.length > 0){
+    if (expression.terms.filter(function(term) { return term.maxDegree() > 0; }).length > 0) {
         throw new TypeError('Invalid Argument (' + expression.toString() + '): Divisor must be of type Integer or Fraction.');
-    }else{
-        var c = expression.constants[0];
+    } else {
+        var c = expression.constant();
         return new Fraction(c.numer, c.denom);
     }
 };
@@ -188,17 +183,17 @@ Parser.prototype.parseFactor = function() {
     if (this.match('num')) {
         var num = this.parseNumber();
         this.update();
-        return num;
+        return this.parseFactorRest(num);
     } else if (this.match('id')) {
         var id = new Expression(this.current_token.value);
         this.update();
-        return id;
+        return this.parseFactorRest(id);
     } else if (this.match('lparen')) {
         this.update();
         var expr = this.parseExpr();
         if (this.match('rparen')) {
             this.update();
-            return expr;
+            return this.parseFactorRest(expr);
         } else {
             throw new SyntaxError('Unbalanced Parenthesis');
         }
@@ -207,18 +202,28 @@ Parser.prototype.parseFactor = function() {
     }
 };
 
+Parser.prototype.parseFactorRest = function(factor) {
+    if (this.match('power')) {
+        this.update();
+        var powfactor = this.parseFactor();
+        //WORKAROUND: algebra.js only allows integers and fractions for raising
+        return this.parseFactorRest(factor.pow(parseInt(powfactor.toString())));
+    }
+    return factor;
+};
+
 // Converts a number token - integer or decimal - to an expression
 Parser.prototype.parseNumber = function() {
-     //Integer conversion
-    if(parseInt(this.current_token.value) == this.current_token.value){
-        return new Expression(parseInt(this.current_token.value));      
-    }else{
+    //Integer conversion
+    if (parseInt(this.current_token.value) == this.current_token.value) {
+        return new Expression(parseInt(this.current_token.value));
+    } else {
         //Split the decimal number to integer and decimal parts
         var splits = this.current_token.value.split('.');
         //count the digits of the decimal part
         var decimals = splits[1].length;
         //determine the multiplication factor
-        var factor = Math.pow(10,decimals);
+        var factor = Math.pow(10, decimals);
         var float_op = parseFloat(this.current_token.value);
         //multiply the float with the factor and divide it again afterwards 
         //to create a valid expression object

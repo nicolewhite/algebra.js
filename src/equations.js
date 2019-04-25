@@ -1,30 +1,44 @@
 var Expression = require('./expressions').Expression;
+var Rational = require('./expressions').Rational;
 var Variable = require('./expressions').Variable;
 var Term = require('./expressions').Term;
 var Fraction = require('./fractions');
 var isInt = require('./helper').isInt;
 
 var Equation = function(lhs, rhs) {
-    if (lhs instanceof Expression) {
-        this.lhs = lhs;
-
-        if (rhs instanceof Expression) {
-            this.rhs = rhs;
-        } else if (rhs instanceof Fraction || isInt(rhs)) {
-            this.rhs = new Expression(rhs);
-        } else {
-            throw new TypeError("Invalid Argument (" + rhs.toString() + "): Right-hand side must be of type Expression, Fraction or Integer.");
-        }
+    if (lhs instanceof Rational) {
+        this.lhs = lhs.copy();
+    } else if (lhs instanceof Expression) {
+        this.lhs = new Rational(lhs);        
+    } else if (lhs instanceof Fraction || isInt(lhs)) {
+        this.lhs = new Rational(lhs);
     } else {
         throw new TypeError("Invalid Argument (" + lhs.toString() + "): Left-hand side must be of type Expression.");
     }
+    if (rhs instanceof Rational) {
+        this.rhs = rhs.copy();
+    } else if (rhs instanceof Expression) {
+        this.rhs = new Rational(rhs);
+    } else if (rhs instanceof Fraction || isInt(rhs)) {
+        this.rhs = new Rational(rhs);
+    } else {
+        throw new TypeError("Invalid Argument (" + rhs.toString() + "): Right-hand side must be of type Expression, Fraction or Integer.");
+    }
+    this._crossMultiply();
+};
+
+Equation.prototype._crossMultiply = function() {
+    var newLhs = this.lhs.copy();
+    var newRhs = this.rhs.copy();
+    // Both sides should now be rationals and we are ready to cross-multiply
+    this.lhs = newLhs.numer.multiply(newRhs.denom);
+    this.rhs = newLhs.denom.multiply(newRhs.numer);
 };
 
 Equation.prototype.solveFor = function(variable) {
     if (!this.lhs._hasVariable(variable) && !this.rhs._hasVariable(variable)) {
         throw new TypeError("Invalid Argument (" + variable.toString() + "): Variable does not exist in the equation.");
     }
-
     // If the equation is linear and the variable in question can be isolated through arithmetic, solve.
     if (this._isLinear() || this._variableCanBeIsolated(variable)) {
         var solvingFor = new Term(new Variable(variable));
@@ -34,7 +48,7 @@ Equation.prototype.solveFor = function(variable) {
         for (var i = 0; i < this.rhs.terms.length; i++) {
             var term = this.rhs.terms[i];
 
-            if (term.canBeCombinedWith(solvingFor)) {
+            if (term.hasVariable(variable)) {
                 newLhs = newLhs.subtract(term);
             } else {
                 newRhs = newRhs.add(term);
@@ -44,17 +58,14 @@ Equation.prototype.solveFor = function(variable) {
         for (var i = 0; i < this.lhs.terms.length; i++) {
             var term = this.lhs.terms[i];
 
-            if (term.canBeCombinedWith(solvingFor)) {
+            if (term.hasVariable(variable)) {
                 newLhs = newLhs.add(term);
             } else {
                 newRhs = newRhs.subtract(term);
             }
         }
 
-        newRhs = newRhs.subtract(this.lhs.constant());
-        newRhs = newRhs.add(this.rhs.constant());
-
-        if (newLhs.terms.length === 0) {
+        if (newLhs._maxDegree() == 0) {
             if (newLhs.constant().equalTo(newRhs.constant())) {
                 return new Fraction(1, 1);
             } else {
@@ -62,16 +73,17 @@ Equation.prototype.solveFor = function(variable) {
             }
         }
 
-        newRhs = newRhs.divide(newLhs.terms[0].coefficient());
+        var isolated = newLhs.divide(solvingFor);
+        var divisor = new Rational(isolated);
+        newRhs = newRhs.divide(divisor);
 
-        if (newRhs.terms.length === 0) {
+        if (newRhs._maxDegree() == 0) {
             return newRhs.constant().reduce();
         }
 
-        newRhs._sort();
         return newRhs;
 
-    // Otherwise, move everything to the LHS.
+        // Otherwise, move everything to the LHS.
     } else {
         var newLhs = this.lhs.copy();
         newLhs = newLhs.subtract(this.rhs);
@@ -85,7 +97,7 @@ Equation.prototype.solveFor = function(variable) {
                 throw new EvalError("No Solution");
             }
 
-        // Otherwise, check degree and solve.
+            // Otherwise, check degree and solve.
         } else if (this._isQuadratic(variable)) {
             var coefs = newLhs._quadraticCoefficients();
 
@@ -120,8 +132,8 @@ Equation.prototype.solveFor = function(variable) {
                         a = a.valueOf();
                         b = b.valueOf();
 
-                        var root1 = (-b - squareRootDiscriminant) / (2*a);
-                        var root2 = (-b + squareRootDiscriminant) / (2*a);
+                        var root1 = (-b - squareRootDiscriminant) / (2 * a);
+                        var root2 = (-b + squareRootDiscriminant) / (2 * a);
                         return [root1, root2];
                     }
                 }
@@ -137,6 +149,9 @@ Equation.prototype.solveFor = function(variable) {
             var c = coefs.c;
             var d = coefs.d;
 
+            if (a == undefined)
+                throw new Error("No Solution");
+
             // Calculate D and D0.
             var D = a.multiply(b).multiply(c).multiply(d).multiply(18);
             D = D.subtract(b.pow(3).multiply(d).multiply(4));
@@ -147,9 +162,9 @@ Equation.prototype.solveFor = function(variable) {
             var D0 = b.pow(2).subtract(a.multiply(c).multiply(3));
 
             // Check for special cases when D = 0.
-            
+
             if (D.valueOf() === 0) {
-            
+
                 // If D = D0 = 0, there is one distinct real root, -b / 3a.
                 if (D0.valueOf() === 0) {
                     var root1 = b.multiply(-1).divide(a.multiply(3));
@@ -171,106 +186,96 @@ Equation.prototype.solveFor = function(variable) {
 
                 // Otherwise, use a different method for solving.
             } else {
-               var f = ((3*(c/a)) - ((Math.pow(b, 2))/(Math.pow(a, 2))))/3;
-               var g = (2*(Math.pow(b, 3))/(Math.pow(a, 3)));
-               g = g - (9*b*c/(Math.pow(a, 2)));
-               g = g + (27*d)/a;
-               g = g/27;
-               var h = (Math.pow(g, 2)/4) + (Math.pow(f, 3)/27);
+                var f = ((3 * (c / a)) - ((Math.pow(b, 2)) / (Math.pow(a, 2)))) / 3;
+                var g = (2 * (Math.pow(b, 3)) / (Math.pow(a, 3)));
+                g = g - (9 * b * c / (Math.pow(a, 2)));
+                g = g + (27 * d) / a;
+                g = g / 27;
+                var h = (Math.pow(g, 2) / 4) + (Math.pow(f, 3) / 27);
 
-               /*
-               	if f = g = h = 0 then roots are equal (has been already taken care of!)
-               	if h>0, only one real root
-               	if h<=0, all three roots are real
-               */
-               
-               if(h>0)
-               {
-               		
-               		var R = -(g/2) + Math.sqrt(h);
-               		var S = Math.cbrt(R);
-               		var T = -(g/2) - Math.sqrt(h);
-               		var U = Math.cbrt(T);
-               		var root1 = (S+U) - (b/(3*a));
-               		/* Round off the roots if the difference between absolute value of ceil and number is < e-15*/
-               		if(root1<0)
-               		{
-               			var Croot1 = Math.floor(root1);
-               			if(root1 - Croot1 < 1e-15)
-               				root1 = Croot1;
-               		}
-               		else if(root1>0)
-               		{
-               			var Croot1 = Math.ceil(root1);
-               			if(Croot1 - root1 < 1e-15)
-               				root1 = Croot1;
-               		}
-               		
-               		return [root1];	
-               }
-               else
-               {
-               		var i = Math.sqrt(((Math.pow(g, 2)/4) - h));
-               		var j = Math.cbrt(i);
-               		
-               		var k = Math.acos(-(g/(2*i)));
-               		var L = -j;
-               		var M = Math.cos(k/3);
-               		var N = Math.sqrt(3) * Math.sin(k/3);
-               		var P = -(b/(3*a));
-               		
-               		var root1 = 2*j*Math.cos(k/3) - (b/(3*a));
-               		var root2 = L*(M+N) + P;
-               		var root3 = L*(M-N) + P;
-               		
-               		
-               		/* Round off the roots if the difference between absolute value of ceil and number is < e-15*/
-               		if(root1<0)
-               		{
-               			var Croot1 = Math.floor(root1);
-               			if(root1 - Croot1 < 1e-15)
-               				root1 = Croot1;
-               		}
-               		else if(root1>0)
-               		{
-               			var Croot1 = Math.ceil(root1);
-               			if(Croot1 - root1 < 1e-15)
-               				root1 = Croot1;
-               		}
-               		
-               		if(root2<0)
-               		{
-               			var Croot2 = Math.floor(root2);
-               			if(root2 - Croot2 < 1e-15)
-               				root2 = Croot2;
-               		}
-               		else if(root2>0)
-               		{
-               			var Croot2 = Math.ceil(root2);
-               			if(Croot2 - root2 < 1e-15)
-               				root2 = Croot2;
-               		}
-               		
-               		if(root1<0)
-               		{
-               			var Croot3 = Math.floor(root3);
-               			if(root3 - Croot3 < 1e-15)
-               				root3 = Croot3;
-               		}
-               		else if(root3>0)
-               		{
-               			var Croot3 = Math.ceil(root3);
-               			if(Croot3 - root3 < 1e-15)
-               				root3 = Croot3;
-               		}
-               		
-               		var roots = [root1, root2, root3];
-               		roots.sort(function(a, b){return a-b;});	// roots in ascending order
-               		
-               		return [roots[0], roots[1], roots[2]];
-               
-               }
-               
+                /*
+                       if f = g = h = 0 then roots are equal (has been already taken care of!)
+                       if h>0, only one real root
+                       if h<=0, all three roots are real
+                */
+
+                if (h > 0) {
+
+                    var R = -(g / 2) + Math.sqrt(h);
+                    var S = Math.cbrt(R);
+                    var T = -(g / 2) - Math.sqrt(h);
+                    var U = Math.cbrt(T);
+                    var root1 = (S + U) - (b / (3 * a));
+                    /* Round off the roots if the difference between absolute value of ceil and number is < e-15*/
+                    if (root1 < 0) {
+                        var Croot1 = Math.floor(root1);
+                        if (root1 - Croot1 < 1e-15)
+                            root1 = Croot1;
+                    }
+                    else if (root1 > 0) {
+                        var Croot1 = Math.ceil(root1);
+                        if (Croot1 - root1 < 1e-15)
+                            root1 = Croot1;
+                    }
+
+                    return [root1];
+                }
+                else {
+                    var i = Math.sqrt(((Math.pow(g, 2) / 4) - h));
+                    var j = Math.cbrt(i);
+
+                    var k = Math.acos(-(g / (2 * i)));
+                    var L = -j;
+                    var M = Math.cos(k / 3);
+                    var N = Math.sqrt(3) * Math.sin(k / 3);
+                    var P = -(b / (3 * a));
+
+                    var root1 = 2 * j * Math.cos(k / 3) - (b / (3 * a));
+                    var root2 = L * (M + N) + P;
+                    var root3 = L * (M - N) + P;
+
+
+                    /* Round off the roots if the difference between absolute value of ceil and number is < e-15*/
+                    if (root1 < 0) {
+                        var Croot1 = Math.floor(root1);
+                        if (root1 - Croot1 < 1e-15)
+                            root1 = Croot1;
+                    }
+                    else if (root1 > 0) {
+                        var Croot1 = Math.ceil(root1);
+                        if (Croot1 - root1 < 1e-15)
+                            root1 = Croot1;
+                    }
+
+                    if (root2 < 0) {
+                        var Croot2 = Math.floor(root2);
+                        if (root2 - Croot2 < 1e-15)
+                            root2 = Croot2;
+                    }
+                    else if (root2 > 0) {
+                        var Croot2 = Math.ceil(root2);
+                        if (Croot2 - root2 < 1e-15)
+                            root2 = Croot2;
+                    }
+
+                    if (root1 < 0) {
+                        var Croot3 = Math.floor(root3);
+                        if (root3 - Croot3 < 1e-15)
+                            root3 = Croot3;
+                    }
+                    else if (root3 > 0) {
+                        var Croot3 = Math.ceil(root3);
+                        if (Croot3 - root3 < 1e-15)
+                            root3 = Croot3;
+                    }
+
+                    var roots = [root1, root2, root3];
+                    roots.sort(function(a, b) { return a - b; });	// roots in ascending order
+
+                    return [roots[0], roots[1], roots[2]];
+
+                }
+
             }
         }
     }
@@ -299,7 +304,7 @@ Equation.prototype._maxDegreeOfVariable = function(variable) {
 };
 
 Equation.prototype._variableCanBeIsolated = function(variable) {
-    return this._maxDegreeOfVariable(variable) === 1 && this._noCrossProductsWithVariable(variable);
+    return this._maxDegreeOfVariable(variable) === 1;
 };
 
 Equation.prototype._noCrossProductsWithVariable = function(variable) {

@@ -357,16 +357,8 @@ describe("Expression division", function() {
         expect(x.divide(y).toString()).toEqual("xy^-1");
     });
 
-    it("should not allow division of a multinominal denomenator", function() {
-      var multi = new Expression("x").add(3);
-
-      expect(function(){x.divide(multi);}).toThrow("Invalid Argument ((x)/(x + 3)): Only monomial expressions can be divided.");
-    });
-
-    it("should not allow division of a multinominal numenator", function() {
-      var multi = new Expression("x").add(3);
-
-      expect(function(){multi.divide(x);}).toThrow("Invalid Argument ((x + 3)/(x)): Only monomial expressions can be divided.");
+    it("should allow dividing multinomial expressions", function() {
+        expect(x.add(3).divide(y.subtract(4)).toString()).toEqual("(x + 3) / (y - 4)");
     });
 
     it("should throw an exception if dividing by zero", function() {
@@ -683,7 +675,7 @@ describe("Expression evaluation with unsimplified expressions", function() {
     it("works when there's multiple coefficients", function() {
         var exp = new Expression("x").multiply(5).multiply(4, false); // 4 * 5x
         var answer = exp.eval({x:2}, false);
-        expect(answer.toString()).toEqual("4 * 5 * 2");
+        expect(answer.toString()).toEqual("2 * 5 * 4");
 
     });
 

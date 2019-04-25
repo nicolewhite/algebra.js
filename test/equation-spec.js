@@ -1,4 +1,5 @@
 var Expression = require('../src/expressions').Expression;
+var Rational = require('../src/expressions').Rational;
 var Equation = require('../src/equations');
 var Fraction = require('../src/fractions');
 var round = require('../src/helper').round;
@@ -57,9 +58,9 @@ describe("An equation with multiple variables", function() {
         expect(eq.toString()).toEqual("a + b = c + d");
     });
 
-    it("should return an expression when solving for a variable", function() {
+    it("should return a rational when solving for a variable", function() {
         var answer = eq.solveFor("a");
-        expect(answer instanceof Expression).toBe(true);
+        expect(answer instanceof Rational).toBe(true);
     });
 
     it("should throw an exception when solving for a variable that isn't there", function() {
@@ -212,10 +213,6 @@ describe("An invalid equation", function() {
     it("should throw an exception with a float on the rhs", function() {
         expect(function(){new Equation(x, 0.25);}).toThrow("Invalid Argument (0.25): Right-hand side must be of type Expression, Fraction or Integer.");
     });
-
-    it("should throw an exception if neither args are expressions", function() {
-        expect(function(){new Equation(1, 2);}).toThrow("Invalid Argument (1): Left-hand side must be of type Expression.");
-    });
 });
 
 describe("Checking the type of an equation", function() {
@@ -239,12 +236,6 @@ describe("Checking the type of an equation", function() {
 });
 
 describe("Solving for variables that can't be isolated", function() {
-    it("should return undefined if the variable is crossproducts with other vars", function() {
-        var expr = new Expression("x").multiply("y");
-        var eq = new Equation(expr, 2); // xy = 2
-        var answer = eq.solveFor("x");
-        expect(answer).toBeUndefined();
-    });
 
     it("should return undefined if the variable has multiple degrees and there are other vars", function() {
         var expr = new Expression("x");

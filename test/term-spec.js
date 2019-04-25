@@ -241,7 +241,7 @@ describe("Term evaluation", function() {
 
         var e = t.eval({x:2}, false);
 
-        expect(e.toString()).toEqual("5 * 3 * 2");
+        expect(e.toString()).toEqual("2 * 3 * 5");
     });
 
     it("should work when there is more than 1 coefficient and more than 1 variable and simplify = false", function() {
@@ -255,7 +255,7 @@ describe("Term evaluation", function() {
         t = t.multiply(6, false); // 6 * 5 * 3xy
 
         var answer = t.eval({x:2}, false); // 6 * 5 * 3 * 2y
-        expect(answer.toString()).toEqual("6 * 5 * 3 * 2y");
+        expect(answer.toString()).toEqual("2 * 3 * 5 * 6y");
     });
 
     it("works with negative numbers", function() {
@@ -271,7 +271,7 @@ describe("Term evaluation", function() {
 
         var answer = t.eval({x:-2}, false); // 6 * 5 * 3 * -2y
 
-        expect(answer.toString()).toEqual("6 * 5 * 3 * -2y");
+        expect(answer.toString()).toEqual("-2 * 3 * 5 * 6y");
     });
 });
 
