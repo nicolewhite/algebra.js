@@ -454,7 +454,7 @@ Expression.prototype._cubicCoefficients = function() {
     return {a:a, b:b, c:c, d:d};
 };
 
-Term = function(variable) {
+var Term = function(variable) {
     if (variable instanceof Variable) {
         this.variables = [variable.copy()];
     } else if (typeof(variable) === "undefined") {
